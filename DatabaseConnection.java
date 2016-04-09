@@ -25,43 +25,42 @@ package nl.riebie.mcclans.persistence;
 import nl.riebie.mcclans.MCClans;
 import nl.riebie.mcclans.config.Config;
 import nl.riebie.mcclans.enums.DBMSType;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.service.sql.SqlService;
 
-import java.sql.*;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DatabaseConnection {
     private static final String MYSQL_DRIVER_NAME = "mysql";
     private static final String SQLITE_DRIVER_NAME = "sqlite";
-    private static final String MYSQL_DRIVER_CLASSPATH = "com.mysql.jdbc.Driver";
-    private static final String SQLITE_DRIVER_CLASSPATH = "org.sqlite.JDBC";
 
     private Connection con = null;
 
     public boolean setupConnection(String server, int port, String database, String user, String password) {
         String driverName;
-        String driverClasspath;
 
         DBMSType dbmsType = DBMSType.getType(Config.getString(Config.DBMS_TYPE));
         if (dbmsType.equals(DBMSType.MYSQL)) {
             driverName = MYSQL_DRIVER_NAME;
-            driverClasspath = MYSQL_DRIVER_CLASSPATH;
         } else if (dbmsType.equals(DBMSType.SQLITE)) {
             driverName = SQLITE_DRIVER_NAME;
-            driverClasspath = SQLITE_DRIVER_CLASSPATH;
         } else {
             return false;
         }
 
-        String url = "jdbc:" + driverName + "://" + server + ":" + String.valueOf(port) + "/" + database;
+        String url = "jdbc:" + driverName + "://" + user + ":" + password + "@" + server + ":" + String.valueOf(port) + "/" + database;
+
+        SqlService sql = Sponge.getGame().getServiceManager().provide(SqlService.class).get();
         try {
-            Class.forName(driverClasspath);
-            con = DriverManager.getConnection(url, user, password);
+            DataSource dataSource = sql.getDataSource(url);
+            con = dataSource.getConnection();
             return true;
-        } catch (ClassNotFoundException e) {
-            MCClans.getPlugin().getLogger().warn("Could not locate driver: " + driverClasspath + ", make sure you have installed the proper connector");
-            e.printStackTrace();
-            return false;
         } catch (SQLException e) {
-            e.printStackTrace();
+            MCClans.getPlugin().getLogger().error("Failed to retrieve sql data source!", e);
             return false;
         }
     }

@@ -26,6 +26,7 @@ import nl.riebie.mcclans.ClansImpl;
 import nl.riebie.mcclans.MCClans;
 import nl.riebie.mcclans.clan.ClanImpl;
 import nl.riebie.mcclans.config.Config;
+import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.implementations.DatabaseLoader;
 import nl.riebie.mcclans.persistence.implementations.DatabaseSaver;
 import nl.riebie.mcclans.persistence.implementations.JsonLoader;
@@ -36,6 +37,8 @@ import nl.riebie.mcclans.player.ClanPlayerImpl;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +98,25 @@ public class DatabaseHandler {
     public void setupDatabase() {
         DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
         databaseConnectionOwner.executeStatement(CREATE_TABLE_DATAVERSION_QUERY);
+
+        ResultSet resultSet = databaseConnectionOwner.executeQuery(COUNT_DATAVERSION_QUERY);
+
+        try {
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count == 0) {
+                    databaseConnectionOwner.executeStatement(INSERT_DATAVERSION_QUERY);
+                    if (Config.getBoolean(Config.DEBUGGING)) {
+                        MCClans.getPlugin().getLogger().info("Inserted dataversion in database");
+                    }
+                }
+            } else {
+                MCClans.getPlugin().getLogger().warn("Could not read result of count dataversion query");
+            }
+        } catch (SQLException e) {
+            throw new WrappedDataException(e);
+        }
+
         databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANS_QUERY);
         databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANS_ALLIES_QUERY);
         databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANPLAYERS_QUERY);
