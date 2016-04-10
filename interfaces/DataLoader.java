@@ -158,9 +158,8 @@ public abstract class DataLoader {
         }
         RankImpl rank = builder.build();
 
-        for (String permission : permissions.split(",")) {
-            rank.addPermission(permission);
-        }
+        rank.setPermissions(new ArrayList<>(Arrays.asList(permissions.split(","))));
+
         clans.get(clanID).addRank(rank);
         ranks.put(rankID, rank);
 
