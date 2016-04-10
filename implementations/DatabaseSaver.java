@@ -23,7 +23,6 @@
 package nl.riebie.mcclans.persistence.implementations;
 
 import nl.riebie.mcclans.api.enums.KillDeathFactor;
-import nl.riebie.mcclans.api.enums.Permission;
 import nl.riebie.mcclans.clan.ClanImpl;
 import nl.riebie.mcclans.clan.RankImpl;
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
@@ -250,11 +249,11 @@ public class DatabaseSaver extends DataSaver {
 
         String permissions = "";
         int i = 0;
-        for (Permission perm : rank.getPermissions()) {
+        for (String perm : rank.getPermissions()) {
             if (i != 0) {
                 permissions += ",";
             }
-            permissions += perm.name();
+            permissions += perm;
             i++;
         }
 
