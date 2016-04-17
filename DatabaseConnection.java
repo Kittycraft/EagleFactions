@@ -22,6 +22,7 @@
 
 package nl.riebie.mcclans.persistence;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import nl.riebie.mcclans.MCClans;
 import nl.riebie.mcclans.config.Config;
 import nl.riebie.mcclans.enums.DBMSType;
@@ -61,6 +62,9 @@ public class DatabaseConnection {
             return true;
         } catch (SQLException e) {
             MCClans.getPlugin().getLogger().error("Failed to retrieve sql data source!", e);
+            return false;
+        } catch (UncheckedExecutionException e) {
+            MCClans.getPlugin().getLogger().error("Please check your database settings!", e);
             return false;
         }
     }
