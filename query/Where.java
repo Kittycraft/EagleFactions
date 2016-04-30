@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import nl.riebie.mcclans.persistence.query.QueryValue.DataType;
-
 public class Where {
 
 	private Map<String, QueryValue> values = new HashMap<String, QueryValue>();

@@ -22,7 +22,7 @@
 
 package nl.riebie.mcclans.persistence.upgrade.versions;
 
-import nl.riebie.mcclans.persistence.query.QueryValue.DataType;
+import nl.riebie.mcclans.persistence.query.DataType;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DatabaseUpgrade;
 
 public class DatabaseUpgrade2 extends DatabaseUpgrade {
@@ -35,7 +35,7 @@ public class DatabaseUpgrade2 extends DatabaseUpgrade {
     @Override
     public void upgradeDatabase() {
         System.out.println(getVersion());
-        alterTable("MCClans").addColumn("newFeature", DataType.FLOAT).dropColumn("oldFeature");
+        alterTable("MCClans").addColumn("newFeature", DataType.FLOAT).dropColumn("oldFeature").alterColumn("changedFeature", DataType.FLOAT);
     }
 
 }

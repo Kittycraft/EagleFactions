@@ -27,8 +27,6 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.riebie.mcclans.persistence.query.QueryValue.DataType;
-
 public abstract class Query {
 
 	private final String tableName;

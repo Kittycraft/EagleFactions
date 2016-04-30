@@ -29,10 +29,10 @@ import java.util.List;
 
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
-import nl.riebie.mcclans.persistence.query.AlterQuery;
-import nl.riebie.mcclans.persistence.query.CreateQuery;
-import nl.riebie.mcclans.persistence.query.TableQuery;
-import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
+import nl.riebie.mcclans.persistence.query.table.AlterQuery;
+import nl.riebie.mcclans.persistence.query.table.CreateQuery;
+import nl.riebie.mcclans.persistence.query.table.DropQuery;
+import nl.riebie.mcclans.persistence.query.table.TableQuery;
 
 public abstract class DatabaseUpgrade extends DataUpgrade {
 
@@ -51,6 +51,8 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
     }
 
     protected void dropTable(String tableName) {
+        DropQuery query = new DropQuery(tableName, DatabaseConnectionOwner.getInstance().getConnection());
+        queries.add(query);
     }
 
     @Override

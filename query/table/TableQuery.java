@@ -20,32 +20,29 @@
  * THE SOFTWARE.
  */
 
-package nl.riebie.mcclans.persistence.query;
+package nl.riebie.mcclans.persistence.query.table;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.HashMap;
-import java.util.Map;
 
-import nl.riebie.mcclans.persistence.query.QueryValue.DataType;
+public abstract class TableQuery {
+	
+	private String tableName;
+	private Connection connection;
 
-public class CreateQuery extends TableQuery{
-
-	private Map<String, DataType> addedColumns = new HashMap<String, DataType>();
-
-	public CreateQuery(String tableName, Connection connection) {
-		super(tableName, connection);
-	}
-
-	public CreateQuery column(String key, DataType dataType) {
-		addedColumns.put(key, dataType);
-		return this;
+	public TableQuery(String tableName, Connection connection) {
+		this.tableName = tableName;
+		this.connection = connection;
 	}
 	
-	@Override
-	public PreparedStatement create() {
-		// TODO Auto-generated method stub
-		return null;
+	protected String getTableName() {
+		return tableName;
 	}
+
+	protected Connection getConnection() {
+		return connection;
+	}
+
+	public abstract PreparedStatement create();
 
 }
