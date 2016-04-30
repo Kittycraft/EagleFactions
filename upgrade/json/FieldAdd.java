@@ -31,9 +31,9 @@ import java.io.IOException;
  */
 public class FieldAdd {
 
-    public String fileName;
-    public String fieldName;
-    public Object fieldValue;
+    public final String fileName;
+    public final String fieldName;
+    public final Object fieldValue;
 
     public FieldAdd(String fileName, String fieldName, long fieldValue) {
         this.fileName = fileName;
@@ -68,6 +68,7 @@ public class FieldAdd {
     public FieldAdd(String fileName, String fieldName) {
         this.fileName = fileName;
         this.fieldName = fieldName;
+        this.fieldValue = null;
     }
 
     public void addValueToWriter(JsonWriter jsonWriter) throws IOException {

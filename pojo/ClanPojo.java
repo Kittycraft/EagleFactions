@@ -50,6 +50,8 @@ public class ClanPojo {
     public int homeSetTimes = 0;
     public long homeSetTimeStamp = -1;
 
+    public String bankId;
+
     public static ClanPojo from(ClanImpl clan) {
         ClanPojo clanPojo = new ClanPojo();
         clanPojo.clanID = clan.getID();
@@ -88,6 +90,7 @@ public class ClanPojo {
         clanPojo.homePitch = homePitch;
         clanPojo.homeSetTimes = clan.getHomeSetTimes();
         clanPojo.homeSetTimeStamp = clan.getHomeSetTimeStamp();
+        clanPojo.bankId = clan.getBankId();
         return clanPojo;
     }
 

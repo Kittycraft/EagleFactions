@@ -34,8 +34,7 @@ public class DatabaseUpgrade2 extends DatabaseUpgrade {
 
     @Override
     public void upgradeDatabase() {
-        System.out.println(getVersion());
-        alterTable("MCClans").addColumn("newFeature", DataType.FLOAT).dropColumn("oldFeature").alterColumn("changedFeature", DataType.FLOAT);
+        alterTable("mcc_clans").addColumn("bank_id", DataType.STRING);
     }
 
 }

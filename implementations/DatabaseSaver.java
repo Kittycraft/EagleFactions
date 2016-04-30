@@ -180,6 +180,7 @@ public class DatabaseSaver extends DataSaver {
         }
         int homeSetTimes = clan.getHomeSetTimes();
         long homeLastSetTimeStamp = clan.getHomeSetTimeStamp();
+        String bankId = clan.getBankId();
 
         return QueryGenerator.createInsertQuery("mcc_clans", databaseConnectionOwner.getConnection()).value("clan_id", clanID).value("clantag", tag)
                 .value("clanname", name).value("clanplayer_id_owner", ownerID).value("tagcolor", tagColorId)
@@ -187,7 +188,7 @@ public class DatabaseSaver extends DataSaver {
                 .value("clanhome_y", clanHomeY).value("clanhome_z", clanHomeZ).value("clanhome_yaw", clanHomeYaw)
                 .value("clanhome_pitch", clanHomePitch).value("clanhome_set_times", homeSetTimes)
                 .value("clanhome_set_timestamp", homeLastSetTimeStamp).value("ff_protection", ffProtection).value("creation_time", creationTime)
-                .create();
+                .value("bank_id", bankId).create();
     }
 
     public static PreparedStatement getUpdateClanQuery(ClanImpl clan) {
@@ -217,6 +218,7 @@ public class DatabaseSaver extends DataSaver {
         }
         int homeSetTimes = clan.getHomeSetTimes();
         long homeLastSetTimeStamp = clan.getHomeSetTimeStamp();
+        String bankId = clan.getBankId();
 
         return QueryGenerator.createUpdateQuery("mcc_clans", databaseConnectionOwner.getConnection()).value("clantag", tag).value("clanname", name)
                 .value("clanplayer_id_owner", ownerID).value("tagcolor", tagColorId)
@@ -224,7 +226,7 @@ public class DatabaseSaver extends DataSaver {
                 .value("clanhome_world", clanHomeWorld).value("clanhome_x", clanHomeX).value("clanhome_y", clanHomeY).value("clanhome_z", clanHomeZ)
                 .value("clanhome_yaw", clanHomeYaw).value("clanhome_pitch", clanHomePitch).value("clanhome_set_times", homeSetTimes)
                 .value("clanhome_set_timestamp", homeLastSetTimeStamp).value("ff_protection", ffProtection).value("creation_time", creationTime)
-                .where("clan_id", clanID).create();
+                .value("bank_id", bankId).where("clan_id", clanID).create();
     }
 
     public static PreparedStatement getDeleteClanQuery(int clanID) {

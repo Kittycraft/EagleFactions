@@ -23,16 +23,12 @@
 package nl.riebie.mcclans.persistence.implementations;
 
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
-import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionNotFoundException;
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
 import nl.riebie.mcclans.persistence.upgrade.versions.DatabaseUpgrade2;
-import nl.riebie.mcclans.persistence.upgrade.versions.DatabaseUpgrade3;
-import nl.riebie.mcclans.persistence.upgrade.versions.DatabaseUpgrade4;
-import nl.riebie.mcclans.persistence.upgrade.versions.JsonUpgrade2;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,8 +70,6 @@ public class DatabaseLoader extends DataLoader {
     @Override
     protected List<DataUpgrade> getDataUpgrades(List<DataUpgrade> dataUpgrades) {
         dataUpgrades.add(new DatabaseUpgrade2());
-        dataUpgrades.add(new DatabaseUpgrade3());
-        dataUpgrades.add(new DatabaseUpgrade4());
         return dataUpgrades;
     }
 
@@ -104,8 +98,10 @@ public class DatabaseLoader extends DataLoader {
                     int homeSetTimes = clansResultSet.getInt("clanhome_set_times");
                     long homeLastSetTimeStamp = clansResultSet.getLong("clanhome_set_timestamp");
 
+                    String bankId = clansResultSet.getString("bank_id");
+
                     super.loadedClan(clanID, clanTag, clanName, ownerID, tagColorId, allowAllyInvites, ffProtection, creationTime, homeWorld, homeX,
-                            homeY, homeZ, homeYaw, homePitch, homeSetTimes, homeLastSetTimeStamp);
+                            homeY, homeZ, homeYaw, homePitch, homeSetTimes, homeLastSetTimeStamp, bankId);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

@@ -41,6 +41,7 @@ public class JsonUpgrade2 extends JsonUpgrade {
 
     @Override
     protected List<FieldAdd> getFieldAdditions(List<FieldAdd> fieldAdditions) {
+        fieldAdditions.add(new FieldAdd("clans", "bankId"));
         return fieldAdditions;
     }
 

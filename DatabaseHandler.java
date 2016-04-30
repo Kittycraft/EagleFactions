@@ -44,7 +44,7 @@ import java.util.List;
 
 public class DatabaseHandler {
 
-    public static final int CURRENT_DATA_VERSION = 1;
+    public static final int CURRENT_DATA_VERSION = 2;
 
     private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<ClanPlayerImpl>();
 
@@ -62,7 +62,7 @@ public class DatabaseHandler {
             + "`clanhome_world` VARCHAR(255) NULL,`clanhome_x` DOUBLE NOT NULL, "
             + "`clanhome_y` DOUBLE NOT NULL,`clanhome_z` DOUBLE NOT NULL,`clanhome_yaw` FLOAT NOT NULL "
             + ",`clanhome_pitch` FLOAT NOT NULL,`clanhome_set_times` INT(11) NOT NULL,`clanhome_set_timestamp` BIGINT NOT NULL,`ff_protection` TINYINT(1) NOT NULL,`creation_time` BIGINT NOT NULL, "
-            + "PRIMARY KEY (`clan_id`) " + ") ENGINE=InnoDB;";
+            + "`bank_id` VARCHAR(255) NOT NULL, PRIMARY KEY (`clan_id`) " + ") ENGINE=InnoDB;";
 
     private final String CREATE_TABLE_CLANS_ALLIES_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_clans_allies` " + "( "
             + "`clan_id` INT(11) NOT NULL,`clan_id_ally` INT(11) NOT NULL, " + "PRIMARY KEY (`clan_id`, `clan_id_ally`) " + ") ENGINE=InnoDB;";

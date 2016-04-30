@@ -31,7 +31,6 @@ import nl.riebie.mcclans.config.Config;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataException;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
-import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.implementations.DatabaseLoader;
 import nl.riebie.mcclans.persistence.upgrade.DataUpgradeComparator;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
@@ -133,9 +132,9 @@ public abstract class DataLoader {
 
     protected void loadedClan(int clanID, String clanTag, String clanName, int ownerID, String tagColorId, boolean allowAllyInvites,
                               boolean ffProtection, long creationTime, String homeWorld, double homeX, double homeY, double homeZ, float homeYaw, float homePitch,
-                              int homeSetTimes, long homeLastSetTimeStamp) {
+                              int homeSetTimes, long homeLastSetTimeStamp, String bankId) {
         ClanImpl clan = new ClanImpl.Builder(clanID, clanTag, clanName).tagColor(Utils.getTextColorById(tagColorId, TextColors.DARK_PURPLE)).acceptAllyInvites(allowAllyInvites)
-                .ffProtection(ffProtection).creationTime(creationTime).homeSetTimes(homeSetTimes).homeLastSetTimeStamp(homeLastSetTimeStamp).build();
+                .ffProtection(ffProtection).creationTime(creationTime).homeSetTimes(homeSetTimes).homeLastSetTimeStamp(homeLastSetTimeStamp).bankId(bankId).build();
         if (homeWorld != null && Sponge.getServer().getWorld(UUID.fromString(homeWorld)).isPresent()) {
             // TODO SPONGE homeYaw, homePitch
             clan.setHome(new Location<>(Sponge.getServer().getWorld(UUID.fromString(homeWorld)).get(), homeX, homeY, homeZ));
