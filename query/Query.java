@@ -108,7 +108,7 @@ public abstract class Query {
 	}
 
 	protected WherePart getWherePart() {
-		return where.getWherePart();
+		return where == null ? null : where.getWherePart();
 	}
 
 	public Connection getConnection() {
