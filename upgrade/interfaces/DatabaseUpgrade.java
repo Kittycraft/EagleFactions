@@ -59,7 +59,7 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
         queries.add(query);
     }
 
-    protected Query updateQuery(String tableName){
+    protected Query updateQuery(String tableName) {
         Query query = new UpdateQuery(tableName, DatabaseConnectionOwner.getInstance().getConnection());
         updateQueries.add(query);
         return query;
@@ -70,6 +70,7 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
         try {
             DatabaseConnectionOwner.getInstance().startTransaction();
             upgradeDatabase();
+            upgradeVersionTable();
             execute();
             DatabaseConnectionOwner.getInstance().commitTransaction();
         } catch (SQLException e) {
@@ -85,9 +86,13 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
             PreparedStatement preparedStatement = query.create();
             DatabaseConnectionOwner.getInstance().executeTransactionStatement(preparedStatement);
         }
-        for(Query updateQuery : updateQueries){
+        for (Query updateQuery : updateQueries) {
             PreparedStatement preparedStatement = updateQuery.create();
             DatabaseConnectionOwner.getInstance().executeTransactionStatement(preparedStatement);
         }
+    }
+
+    private void upgradeVersionTable() {
+        updateQuery("mcc_dataversion").value("dataversion", getVersion());
     }
 }

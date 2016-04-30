@@ -51,7 +51,8 @@ public class DatabaseUpgrade2 extends DatabaseUpgrade {
             try {
                 while (clanResultSet.next()) {
                     int clanId = clanResultSet.getInt("clan_id");
-                    updateQuery("mcc_clans").value("bank_id", UUID.randomUUID().toString()).where("clan_id", clanId);
+                    UUID uuid = UUID.randomUUID();
+                    updateQuery("mcc_clans").value("bank_id", uuid.toString()).where("clan_id", clanId);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

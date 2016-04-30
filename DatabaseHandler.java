@@ -46,7 +46,7 @@ public class DatabaseHandler {
 
     public static final int CURRENT_DATA_VERSION = 2;
 
-    private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<ClanPlayerImpl>();
+    private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<>();
 
     private final String CREATE_TABLE_DATAVERSION_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_dataversion` " + "( "
             + "`dataversion` INT(11) NOT NULL, " + "PRIMARY KEY (`dataversion`) " + ") ENGINE=InnoDB;";
