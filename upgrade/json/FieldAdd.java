@@ -65,6 +65,12 @@ public class FieldAdd {
         this.fieldValue = fieldValue;
     }
 
+    public FieldAdd(String fileName, String fieldName, CustomValue fieldValue) {
+        this.fileName = fileName;
+        this.fieldName = fieldName;
+        this.fieldValue = fieldValue;
+    }
+
     public FieldAdd(String fileName, String fieldName) {
         this.fileName = fileName;
         this.fieldName = fieldName;
@@ -82,8 +88,15 @@ public class FieldAdd {
             jsonWriter.value((Number) fieldValue);
         } else if (fieldValue instanceof String) {
             jsonWriter.value((String) fieldValue);
+        } else if (fieldValue instanceof CustomValue) {
+            jsonWriter.value(((CustomValue) fieldValue).getCustomValue());
         } else {
             jsonWriter.nullValue();
         }
+    }
+
+    public interface CustomValue {
+
+        String getCustomValue();
     }
 }

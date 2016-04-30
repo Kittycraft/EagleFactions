@@ -28,6 +28,7 @@ import nl.riebie.mcclans.persistence.upgrade.json.FieldRemove;
 import nl.riebie.mcclans.persistence.upgrade.json.FieldRename;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Kippers on 19/03/2016.
@@ -41,7 +42,14 @@ public class JsonUpgrade2 extends JsonUpgrade {
 
     @Override
     protected List<FieldAdd> getFieldAdditions(List<FieldAdd> fieldAdditions) {
-        fieldAdditions.add(new FieldAdd("clans", "bankId"));
+        FieldAdd.CustomValue bankIdCustomValue = new FieldAdd.CustomValue() {
+            @Override
+            public String getCustomValue() {
+                return UUID.randomUUID().toString();
+            }
+        };
+        
+        fieldAdditions.add(new FieldAdd("clans", "bankId", bankIdCustomValue));
         return fieldAdditions;
     }
 
