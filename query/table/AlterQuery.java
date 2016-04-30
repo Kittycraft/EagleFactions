@@ -61,7 +61,7 @@ public class AlterQuery extends TableQuery {
     @Override
     public PreparedStatement create() {
         try {
-            String query = String.format("ALTER TABLE %s %s %s %s", getTableName(), getAddedColumnQueryPart(),
+            String query = String.format("ALTER TABLE `%s` %s %s %s", getTableName(), getAddedColumnQueryPart(),
                     getDroppedColumnQueryPart(), getAlteredColumnQueryPart());
 
             return getConnection().prepareStatement(query);
@@ -74,7 +74,7 @@ public class AlterQuery extends TableQuery {
     private String getAddedColumnQueryPart() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Entry<String, DataType> keyValuePair : addedColumns.entrySet()) {
-            stringBuilder.append(String.format("ADD %s %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
+            stringBuilder.append(String.format("ADD `%s` %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
         }
         return stringBuilder.toString();
     }
@@ -90,7 +90,7 @@ public class AlterQuery extends TableQuery {
     private String getAlteredColumnQueryPart() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Entry<String, DataType> keyValuePair : alteredColumns.entrySet()) {
-            stringBuilder.append(String.format("MODIFY COLUMN %s %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
+            stringBuilder.append(String.format("MODIFY COLUMN `%s` %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
         }
         return stringBuilder.toString();
     }
