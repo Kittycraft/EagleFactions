@@ -94,10 +94,10 @@ public class Where {
 		return this;
 	}
 
-	public PreparedStatement create() {
+	public WherePart getWherePart() {
 		boolean firstRun = true;
 		String whereString = "";
-		List<QueryValue> queryValues = new ArrayList<QueryValue>();
+		List<QueryValue> queryValues = new ArrayList<>();
 
 		for (Entry<String, QueryValue> keyValuePair : values.entrySet()) {
 			if (!firstRun) {
@@ -109,9 +109,10 @@ public class Where {
 			queryValues.add(keyValuePair.getValue());
 			whereString += keyValuePair.getKey() + "=?";
 		}
-		query.setWherePart(new WherePart(whereString, queryValues));
-		return query.create();
-
+		return new WherePart(whereString, queryValues);
 	}
 
+    public PreparedStatement create() {
+        return query.create();
+    }
 }

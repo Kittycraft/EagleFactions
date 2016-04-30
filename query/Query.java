@@ -31,8 +31,8 @@ public abstract class Query {
 
 	private final String tableName;
 	private final Connection connection;
-	private HashMap<String, QueryValue> values = new HashMap<String, QueryValue>();
-	private WherePart wherePart;
+	private HashMap<String, QueryValue> values = new HashMap<>();
+	private Where where;
 
 	public Query(String tableName, Connection connection) {
 		this.tableName = tableName;
@@ -70,27 +70,33 @@ public abstract class Query {
 	}
 
 	public Where where(String key, String value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	public Where where(String key, int value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	public Where where(String key, double value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	public Where where(String key, long value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	public Where where(String key, boolean value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	public Where where(String key, float value) {
-		return new Where(key, value, this);
+		this.where = new Where(key, value, this);
+		return this.where;
 	}
 
 	protected Map<String, QueryValue> getValues() {
@@ -102,11 +108,7 @@ public abstract class Query {
 	}
 
 	protected WherePart getWherePart() {
-		return wherePart;
-	}
-
-	protected void setWherePart(WherePart wherePart) {
-		this.wherePart = wherePart;
+		return where.getWherePart();
 	}
 
 	public Connection getConnection() {
@@ -114,5 +116,4 @@ public abstract class Query {
 	}
 
 	public abstract PreparedStatement create();
-
 }
