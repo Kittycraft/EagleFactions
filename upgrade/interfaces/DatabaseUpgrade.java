@@ -73,7 +73,7 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
             upgradeVersionTable();
             execute();
             DatabaseConnectionOwner.getInstance().commitTransaction();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             DatabaseConnectionOwner.getInstance().cancelTransaction();
             throw new WrappedDataException(e);
         }
