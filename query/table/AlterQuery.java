@@ -74,7 +74,7 @@ public class AlterQuery extends TableQuery {
     private String getAddedColumnQueryPart() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Entry<String, DataType> keyValuePair : addedColumns.entrySet()) {
-            stringBuilder.append(String.format("ADD `%s` %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
+            stringBuilder.append(String.format("ADD COLUMN `%s` %s,", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));
         }
         return stringBuilder.toString();
     }
