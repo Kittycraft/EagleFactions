@@ -27,8 +27,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.riebie.mcclans.persistence.DatabaseConnection;
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
+import nl.riebie.mcclans.persistence.query.Query;
+import nl.riebie.mcclans.persistence.query.UpdateQuery;
 import nl.riebie.mcclans.persistence.query.table.AlterQuery;
 import nl.riebie.mcclans.persistence.query.table.CreateQuery;
 import nl.riebie.mcclans.persistence.query.table.DropQuery;
@@ -36,7 +39,8 @@ import nl.riebie.mcclans.persistence.query.table.TableQuery;
 
 public abstract class DatabaseUpgrade extends DataUpgrade {
 
-    private List<TableQuery> queries = new ArrayList<TableQuery>();
+    private List<TableQuery> queries = new ArrayList<>();
+    private List<Query> updateQueries = new ArrayList<>();
 
     protected AlterQuery alterTable(String tableName) {
         AlterQuery query = new AlterQuery(tableName, DatabaseConnectionOwner.getInstance().getConnection());
@@ -55,13 +59,19 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
         queries.add(query);
     }
 
+    protected Query updateQuery(String tableName){
+        Query query = new UpdateQuery(tableName, DatabaseConnectionOwner.getInstance().getConnection());
+        updateQueries.add(query);
+        return query;
+    }
+
     @Override
     public void upgrade() {
         try {
             DatabaseConnectionOwner.getInstance().startTransaction();
             upgradeDatabase();
-            DatabaseConnectionOwner.getInstance().commitTransaction();
             execute();
+            DatabaseConnectionOwner.getInstance().commitTransaction();
         } catch (SQLException e) {
             DatabaseConnectionOwner.getInstance().cancelTransaction();
             throw new WrappedDataException(e);
@@ -73,6 +83,10 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
     private void execute() throws SQLException {
         for (TableQuery query : queries) {
             PreparedStatement preparedStatement = query.create();
+            DatabaseConnectionOwner.getInstance().executeTransactionStatement(preparedStatement);
+        }
+        for(Query updateQuery : updateQueries){
+            PreparedStatement preparedStatement = updateQuery.create();
             DatabaseConnectionOwner.getInstance().executeTransactionStatement(preparedStatement);
         }
     }

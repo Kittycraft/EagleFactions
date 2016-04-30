@@ -42,14 +42,7 @@ public class JsonUpgrade2 extends JsonUpgrade {
 
     @Override
     protected List<FieldAdd> getFieldAdditions(List<FieldAdd> fieldAdditions) {
-        FieldAdd.CustomValue bankIdCustomValue = new FieldAdd.CustomValue() {
-            @Override
-            public String getCustomValue() {
-                return UUID.randomUUID().toString();
-            }
-        };
-        
-        fieldAdditions.add(new FieldAdd("clans", "bankId", bankIdCustomValue));
+        fieldAdditions.add(new FieldAdd("clans", "bankId", () -> UUID.randomUUID().toString()));
         return fieldAdditions;
     }
 

@@ -22,10 +22,17 @@
 
 package nl.riebie.mcclans.persistence.upgrade.versions;
 
+import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
+import nl.riebie.mcclans.persistence.QueryGenerator;
 import nl.riebie.mcclans.persistence.query.DataType;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DatabaseUpgrade;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
 public class DatabaseUpgrade2 extends DatabaseUpgrade {
+    private static final String GET_CLANS_QUERY = "SELECT * FROM mcc_clans";
 
     @Override
     public int getVersion() {
@@ -35,6 +42,20 @@ public class DatabaseUpgrade2 extends DatabaseUpgrade {
     @Override
     public void upgradeDatabase() {
         alterTable("mcc_clans").addColumn("bank_id", DataType.STRING);
+        updateClanIdColumn();
     }
 
+    private void updateClanIdColumn() {
+        ResultSet clanResultSet = DatabaseConnectionOwner.getInstance().executeQuery(GET_CLANS_QUERY);
+        if (clanResultSet != null) {
+            try {
+                while (clanResultSet.next()) {
+                    int clanId = clanResultSet.getInt("clan_id");
+                    updateQuery("mcc_clans").value("bank_id", UUID.randomUUID().toString()).where("clan_id", clanId);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
