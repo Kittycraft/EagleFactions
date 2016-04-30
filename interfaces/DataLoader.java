@@ -29,9 +29,7 @@ import nl.riebie.mcclans.clan.RankFactory;
 import nl.riebie.mcclans.clan.RankImpl;
 import nl.riebie.mcclans.config.Config;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
-import nl.riebie.mcclans.persistence.exceptions.DataException;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
-import nl.riebie.mcclans.persistence.implementations.DatabaseLoader;
 import nl.riebie.mcclans.persistence.upgrade.DataUpgradeComparator;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
 import nl.riebie.mcclans.player.ClanPlayerImpl;
@@ -97,12 +95,6 @@ public abstract class DataLoader {
         int dataVersion = getDataVersion();
         MCClans.getPlugin().getLogger().info("Detected data version " + dataVersion);
         if (DatabaseHandler.CURRENT_DATA_VERSION > dataVersion) {
-            if (this instanceof DatabaseLoader) {
-                // TODO add database upgrades
-                throw new DataException("Automatic database version upgrades are not currently supported. Follow the documentation to upgrade your data manually") {
-                };
-            }
-
             MCClans.getPlugin().getLogger().info("Starting data upgrade from version " + dataVersion + " to " + DatabaseHandler.CURRENT_DATA_VERSION + "...");
 
             List<DataUpgrade> dataUpgrades = new ArrayList<>();
