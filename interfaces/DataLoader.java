@@ -189,7 +189,11 @@ public abstract class DataLoader {
     protected void loadedAlly(int clanID, int clanIDAlly) {
         ClanImpl clan = clans.get(clanID);
         ClanImpl ally = clans.get(clanIDAlly);
-        clan.addAlly(ally);
+        if (clan != null && ally != null) {
+            clan.addAlly(ally);
+        } else {
+            MCClans.getPlugin().getLogger().warn("Cannot load ally relation, could not find clan. Clan: " + clanID + " ally: " + clanIDAlly);
+        }
     }
 
     private void setOwners() {
