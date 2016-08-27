@@ -106,12 +106,10 @@ public class DatabaseHandler {
                 int count = resultSet.getInt(1);
                 if (count == 0) {
                     databaseConnectionOwner.executeStatement(INSERT_DATAVERSION_QUERY);
-                    if (Config.getBoolean(Config.DEBUGGING)) {
-                        MCClans.getPlugin().getLogger().info("Inserted dataversion in database");
-                    }
+                    MCClans.getPlugin().getLogger().info("Inserted dataversion in database", false);
                 }
             } else {
-                MCClans.getPlugin().getLogger().warn("Could not read result of count dataversion query");
+                MCClans.getPlugin().getLogger().warn("Could not read result of count dataversion query", true);
             }
         } catch (SQLException e) {
             throw new WrappedDataException(e);

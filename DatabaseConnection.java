@@ -61,10 +61,10 @@ public class DatabaseConnection {
             con = dataSource.getConnection();
             return true;
         } catch (SQLException e) {
-            MCClans.getPlugin().getLogger().error("Failed to retrieve sql data source!", e);
+            MCClans.getPlugin().getLogger().error("Failed to retrieve sql data source! ", e, true);
             return false;
         } catch (UncheckedExecutionException e) {
-            MCClans.getPlugin().getLogger().error("Please check your database settings!", e);
+            MCClans.getPlugin().getLogger().error("Please check your database settings!", e, true);
             return false;
         }
     }

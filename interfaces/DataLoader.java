@@ -92,9 +92,9 @@ public abstract class DataLoader {
 
     private void upgradeIfNeeded() {
         int dataVersion = getDataVersion();
-        MCClans.getPlugin().getLogger().info("Detected data version " + dataVersion);
+        MCClans.getPlugin().getLogger().info("Detected data version " + dataVersion, true);
         if (DatabaseHandler.CURRENT_DATA_VERSION > dataVersion) {
-            MCClans.getPlugin().getLogger().info("Starting data upgrade from version " + dataVersion + " to " + DatabaseHandler.CURRENT_DATA_VERSION + "...");
+            MCClans.getPlugin().getLogger().info("Starting data upgrade from version " + dataVersion + " to " + DatabaseHandler.CURRENT_DATA_VERSION + "...", true);
 
             List<DataUpgrade> dataUpgrades = new ArrayList<>();
             for (DataUpgrade dataUpgrade : getDataUpgrades(new ArrayList<>())) {
@@ -106,7 +106,7 @@ public abstract class DataLoader {
             Collections.sort(dataUpgrades, new DataUpgradeComparator());
             for (DataUpgrade dataUpgrade : dataUpgrades) {
                 dataUpgrade.upgrade();
-                MCClans.getPlugin().getLogger().info("Finished data upgrade to version " + dataUpgrade.getVersion());
+                MCClans.getPlugin().getLogger().info("Finished data upgrade to version " + dataUpgrade.getVersion(), true);
             }
         } else if (DatabaseHandler.CURRENT_DATA_VERSION < dataVersion) {
             throw new DataVersionTooHighException(dataVersion, DatabaseHandler.CURRENT_DATA_VERSION);
@@ -192,7 +192,7 @@ public abstract class DataLoader {
         if (clan != null && ally != null) {
             clan.addAlly(ally);
         } else {
-            MCClans.getPlugin().getLogger().warn("Cannot load ally relation, could not find clan. Clan: " + clanID + " ally: " + clanIDAlly);
+            MCClans.getPlugin().getLogger().warn("Cannot load ally relation, could not find clan. Clan: " + clanID + " ally: " + clanIDAlly, false);
         }
     }
 
