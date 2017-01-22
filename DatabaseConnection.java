@@ -38,26 +38,26 @@ import java.sql.SQLException;
 public class DatabaseConnection {
     private static final String MYSQL_DRIVER_NAME = "mysql";
     private static final String SQLITE_DRIVER_NAME = "sqlite";
+    private static final String H2_DRIVER_NAME = "h2";
 
     private Connection con = null;
 
     public boolean setupConnection(String server, int port, String database, String user, String password) {
-        String driverName;
-
+        String url;
         DBMSType dbmsType = DBMSType.getType(Config.getString(Config.DBMS_TYPE));
         if (dbmsType.equals(DBMSType.MYSQL)) {
-            driverName = MYSQL_DRIVER_NAME;
+            url = "jdbc:" + MYSQL_DRIVER_NAME + "://" + user + ":" + password + "@" + server + ":" + String.valueOf(port) + "/" + database;
         } else if (dbmsType.equals(DBMSType.SQLITE)) {
-            driverName = SQLITE_DRIVER_NAME;
+            url = "jdbc:" + SQLITE_DRIVER_NAME + ":" + database;
+        } else if (dbmsType.equals(DBMSType.H2)) {
+            url = "jdbc:" + H2_DRIVER_NAME + ":" + database;
         } else {
             return false;
         }
 
-        String url = "jdbc:" + driverName + "://" + user + ":" + password + "@" + server + ":" + String.valueOf(port) + "/" + database;
-
         SqlService sql = Sponge.getGame().getServiceManager().provide(SqlService.class).get();
         try {
-            DataSource dataSource = sql.getDataSource(url);
+            DataSource dataSource = sql.getDataSource(MCClans.getPlugin(), url);
             con = dataSource.getConnection();
             return true;
         } catch (SQLException e) {
