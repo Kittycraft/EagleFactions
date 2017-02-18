@@ -128,7 +128,7 @@ public abstract class DataLoader {
                 .ffProtection(ffProtection).creationTime(creationTime).homeSetTimes(homeSetTimes).homeLastSetTimeStamp(homeLastSetTimeStamp).bankId(bankId).build();
         if (homeWorld != null && Sponge.getServer().getWorld(UUID.fromString(homeWorld)).isPresent()) {
             // TODO SPONGE homeYaw, homePitch
-            clan.setHome(new Location<>(Sponge.getServer().getWorld(UUID.fromString(homeWorld)).get(), homeX, homeY, homeZ));
+            clan.setHomeInternal(new Location<>(Sponge.getServer().getWorld(UUID.fromString(homeWorld)).get(), homeX, homeY, homeZ));
         }
 
         clan.addRank(RankFactory.getInstance().createOwner());
