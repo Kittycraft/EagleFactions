@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.logic;
 
 import com.flowpowered.math.vector.Vector3i;
+import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.config.ConfigAccess;
 import io.github.aquerr.eaglefactions.config.IConfig;
 import io.github.aquerr.eaglefactions.config.FactionsConfig;
@@ -8,9 +9,16 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.services.PlayerService;
 import io.github.aquerr.eaglefactions.services.PowerService;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.profile.GameProfileManager;
+import org.spongepowered.api.service.user.UserStorageService;
 
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
@@ -118,7 +126,36 @@ public class FactionLogic
         else return new ArrayList<String>();
     }
 
-    
+    public static List<String> getAllServerPlayersNicknames()
+    {
+        File playersDirectory = new File(EagleFactions.getEagleFactions().getConfigDir().resolve("players").toString());
+        File[] filesList = playersDirectory.listFiles();
+        Set<String> playerNames = new HashSet<>();
+
+        for (File file : filesList)
+        {
+            String fileName = file.getName();
+            int lastDotPosition = fileName.lastIndexOf(".");
+            String uuidAsString = fileName.substring(0, lastDotPosition);
+
+            if(!uuidAsString.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))
+            {
+                continue;
+            }
+
+            UUID playerUUID = UUID.fromString(uuidAsString);
+            Optional<User> optionalUser = PlayerService.getUser(playerUUID);
+
+            if (optionalUser.isPresent())
+            {
+                playerNames.add(optionalUser.get().getName());
+            }
+        }
+
+        return new ArrayList<>(playerNames);
+}
+
+
     public static List<UUID> getPlayers(String factionName)
     {
     	List<UUID> factionPlayers = new ArrayList<>();

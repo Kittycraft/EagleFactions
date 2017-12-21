@@ -10,6 +10,7 @@ import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.entities.RemoveEnemy;
 import io.github.aquerr.eaglefactions.listeners.*;
+import io.github.aquerr.eaglefactions.parsers.EaglePlayerElement;
 import org.slf4j.Logger;
 
 import org.spongepowered.api.Game;
@@ -214,12 +215,19 @@ public class EagleFactions
         .build());
 
         //Player command. Shows info about a player. (its factions etc.)
+//        Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
+//        .description(Text.of("Show info about a player"))
+//        .permission(PluginPermissions.PlayerCommand)
+//        .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
+//        .executor(new PlayerCommand())
+//        .build());
+
         Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
-        .description(Text.of("Show info about a player"))
-        .permission(PluginPermissions.PlayerCommand)
-        .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-        .executor(new PlayerCommand())
-        .build());
+                .description(Text.of("Show info about a player"))
+                .permission(PluginPermissions.PlayerCommand)
+                .arguments(new EaglePlayerElement(Text.of("player")))
+                .executor(new PlayerCommand())
+                .build());
 
         //Build add ally command.
         CommandSpec addAllyCommand = CommandSpec.builder()

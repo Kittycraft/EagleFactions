@@ -35,7 +35,7 @@ public class PlayerService
         return oUser.get().getPlayer();
     }
 
-    private static Optional<User> getUser(UUID playerUUID)
+    public static Optional<User> getUser(UUID playerUUID)
     {
         UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         Optional<User> oUser = userStorageService.get(playerUUID);

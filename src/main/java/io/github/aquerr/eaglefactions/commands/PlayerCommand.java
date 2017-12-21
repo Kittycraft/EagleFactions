@@ -1,5 +1,6 @@
 package io.github.aquerr.eaglefactions.commands;
 
+import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.services.PlayerService;
@@ -30,14 +31,17 @@ public class PlayerCommand implements CommandExecutor
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
     {
+        EagleFactions.getEagleFactions().getLogger().info("Found in context = " + context.getAll("player").toString());
         Optional<Player> optionalPlayer = context.<Player>getOne("player");
 
+        EagleFactions.getEagleFactions().getLogger().info("BLALBLALBLLBALBABLLB");
         //TODO: This command should work even for players that are offline.
         //TODO: Add check if provided player has played on this server.
         //player.hasPlayedBefore() is not a solution for this problem.
 
         if(optionalPlayer.isPresent())
         {
+            EagleFactions.getEagleFactions().getLogger().info("Optional player.get() = " + optionalPlayer.get().toString());
             Player player = optionalPlayer.get();
             showPlayerInfo(source, player);
         }
@@ -45,6 +49,7 @@ public class PlayerCommand implements CommandExecutor
         {
             if(source instanceof Player)
             {
+                EagleFactions.getEagleFactions().getLogger().info("Source is: " + source.toString());
                 Player player = (Player)source;
                 showPlayerInfo(source, player);
             }

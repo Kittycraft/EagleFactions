@@ -31,7 +31,7 @@ public class ChatMessageListener
             Text.Builder formattedMessage = Text.builder();
             Text.Builder chatTypePrefix = Text.builder();
             Text.Builder factionAndRankPrefix = Text.builder();
-            Text.Builder otherPluginsPrefixes = Text.builder();
+            //Text.Builder otherPluginsPrefixes = Text.builder();
 
             //Message = Prefixes + Player Name + Text
             //OriginalMessage = Player Name + Text
