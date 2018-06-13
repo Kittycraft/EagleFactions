@@ -16,43 +16,32 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class LeaveCommand implements CommandExecutor
-{
+public class LeaveCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
-        if(source instanceof Player)
-        {
-            Player player = (Player)source;
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
+        if (source instanceof Player) {
+            Player player = (Player) source;
 
             Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-            if(optionalPlayerFaction.isPresent())
-            {
-                if(!optionalPlayerFaction.get().Leader.equals(player.getUniqueId().toString()))
-                {
+            if (optionalPlayerFaction.isPresent()) {
+                if (!optionalPlayerFaction.get().Leader.equals(player.getUniqueId().toString())) {
                     FactionLogic.leaveFaction(player.getUniqueId(), optionalPlayerFaction.get().Name);
 
                     //TODO: Add listener that will inform players in a faction that someone has left their faction.
-                    player.sendMessage(Text.of(PluginInfo.PluginPrefix,TextColors.GREEN, PluginMessages.YOU_LEFT_FACTION + " ", TextColors.GOLD, optionalPlayerFaction.get().Name));
+                    player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.YOU_LEFT_FACTION + " ", TextColors.GOLD, optionalPlayerFaction.get().Name));
 
                     EagleFactions.AutoClaimList.remove(player.getUniqueId());
 
                     return CommandResult.success();
-                }
-                else
-                {
+                } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_LEAVE_YOUR_FACTION_BECAUSE_YOU_ARE_ITS_LEADER + " " + PluginMessages.DISBAND_YOUR_FACTION_OR_SET_SOMEONE_AS_LEADER));
                 }
-            }
-            else
-            {
+            } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }
-        }
-        else
-        {
-            source.sendMessage (Text.of (PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
+        } else {
+            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
         }
 
         return CommandResult.success();

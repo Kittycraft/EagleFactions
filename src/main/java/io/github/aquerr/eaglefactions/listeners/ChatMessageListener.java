@@ -18,15 +18,12 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class ChatMessageListener
-{
+public class ChatMessageListener {
     @Listener
-    public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player)
-    {
+    public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player) {
         Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-        if(optionalPlayerFaction.isPresent())
-        {
+        if (optionalPlayerFaction.isPresent()) {
             MessageChannel messageChannel = event.getOriginalChannel();
             Faction playerFaction = optionalPlayerFaction.get();
 
@@ -51,12 +48,10 @@ public class ChatMessageListener
 
             //Get ChatType from Eagle Factions
             //and add it to the formattedMessage
-            if (EagleFactions.ChatList.containsKey(player.getUniqueId()))
-            {
+            if (EagleFactions.ChatList.containsKey(player.getUniqueId())) {
                 Text.Builder chatTypePrefix = Text.builder();
 
-                if (EagleFactions.ChatList.get(player.getUniqueId()).equals(ChatEnum.Alliance))
-                {
+                if (EagleFactions.ChatList.get(player.getUniqueId()).equals(ChatEnum.Alliance)) {
                     message.append(Text.of(TextColors.BLUE, event.getRawMessage()));
                     chatTypePrefix.append(getAlliancePrefix());
                     messageChannel.asMutable().clearMembers();
@@ -65,17 +60,14 @@ public class ChatMessageListener
 
                     //TODO: Add option to style prefixes by user form config file.
 
-                    for (String allianceName : playerFaction.Alliances)
-                    {
+                    for (String allianceName : playerFaction.Alliances) {
                         receivers.addAll(FactionLogic.getOnlinePlayers(FactionLogic.getFactionByName(allianceName)));
                     }
 
                     receivers.addAll(FactionLogic.getOnlinePlayers(playerFaction));
 
                     messageChannel = MessageChannel.fixed(receivers);
-                }
-                else if (EagleFactions.ChatList.get(player.getUniqueId()).equals(ChatEnum.Faction))
-                {
+                } else if (EagleFactions.ChatList.get(player.getUniqueId()).equals(ChatEnum.Faction)) {
                     message.append(Text.of(TextColors.GREEN, event.getRawMessage()));
                     chatTypePrefix.append(getFactionPrefix());
                     messageChannel.asMutable().clearMembers();
@@ -89,20 +81,15 @@ public class ChatMessageListener
 
                 //Add chatType to formattedMessage
                 formattedMessage.append(chatTypePrefix.build());
-            }
-            else
-            {
+            } else {
                 //If player is chatting in global chat then directly get raw message from event.
                 message.append(event.getMessage().getChildren().get(1));
             }
 
             //Get faction prefix from Eagle Factions.
-            if(MainLogic.getPrefixOption().equals("tag"))
-            {
-                if(!playerFaction.Tag.toPlainSingle().equals(""))
-                {
-                    if (MainLogic.areColoredTagsAllowed())
-                    {
+            if (MainLogic.getPrefixOption().equals("tag")) {
+                if (!playerFaction.Tag.toPlainSingle().equals("")) {
+                    if (MainLogic.areColoredTagsAllowed()) {
                         //Get faction's tag
                         Text factionTag = Text.builder()
                                 //.append(Text.of("[" ,TextColors.GREEN, playerFaction.Tag, TextColors.RESET, "]"))
@@ -110,9 +97,7 @@ public class ChatMessageListener
                                 .build();
 
                         factionPrefixText.append(factionTag);
-                    }
-                    else
-                    {
+                    } else {
                         //Get faction's tag
                         Text factionTag = Text.builder()
                                 //.append(Text.of("[" ,TextColors.GREEN, playerFaction.Tag, TextColors.RESET, "]"))
@@ -122,9 +107,7 @@ public class ChatMessageListener
                         factionPrefixText.append(factionTag);
                     }
                 }
-            }
-            else if (MainLogic.getPrefixOption().equals("name"))
-            {
+            } else if (MainLogic.getPrefixOption().equals("name")) {
                 //Add faction name
                 Text factionNamePrefix = Text.builder()
                         .append(MainLogic.getFactionPrefixStart(), Text.of(TextColors.GREEN, playerFaction.Name, TextColors.RESET), MainLogic.getFactionPrefixEnd())
@@ -133,11 +116,9 @@ public class ChatMessageListener
                 factionPrefixText.append(factionNamePrefix);
             }
 
-            if(MainLogic.shouldDisplayRank())
-            {
+            if (MainLogic.shouldDisplayRank()) {
                 //Get leader prefix.
-                if(playerFaction.Leader.equals(player.getUniqueId().toString()))
-                {
+                if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
                     Text leaderPrefix = Text.builder()
                             .append(Text.of("[", TextColors.GOLD, "Leader", TextColors.RESET, "]"))
                             .build();
@@ -146,8 +127,7 @@ public class ChatMessageListener
                 }
 
                 //Get officer prefix.
-                if(playerFaction.Officers.contains(player.getUniqueId().toString()))
-                {
+                if (playerFaction.Officers.contains(player.getUniqueId().toString())) {
                     Text officerPrefix = Text.builder()
                             .append(Text.of("[", TextColors.GOLD, "Officer", TextColors.RESET, "]"))
                             .build();
@@ -156,13 +136,10 @@ public class ChatMessageListener
                 }
             }
 
-            if (MainLogic.isFactionPrefixFirstInChat())
-            {
+            if (MainLogic.isFactionPrefixFirstInChat()) {
                 factionAndRankPrefix.append(factionPrefixText.build());
                 factionAndRankPrefix.append(rankPrefixText.build());
-            }
-            else
-            {
+            } else {
                 factionAndRankPrefix.append(rankPrefixText.build());
                 factionAndRankPrefix.append(factionPrefixText.build());
             }
@@ -187,15 +164,13 @@ public class ChatMessageListener
         return;
     }
 
-    private Text getAlliancePrefix()
-    {
+    private Text getAlliancePrefix() {
         return Text.builder()
                 .append(MainLogic.getFactionPrefixStart(), Text.of(TextColors.BLUE, "Alliance", TextColors.RESET), MainLogic.getFactionPrefixEnd())
                 .build();
     }
 
-    private Text getFactionPrefix()
-    {
+    private Text getFactionPrefix() {
         return Text.builder()
                 .append(MainLogic.getFactionPrefixStart(), Text.of(TextColors.GREEN, "Faction", TextColors.RESET), MainLogic.getFactionPrefixEnd())
                 .build();

@@ -27,60 +27,39 @@ import java.util.UUID;
 /**
  * Created by Aquerr on 2017-08-03.
  */
-public class InfoCommand implements CommandExecutor
-{
+public class InfoCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         Optional<String> optionalFactionName = context.<String>getOne("faction name");
 
-        if (optionalFactionName.isPresent())
-        {
+        if (optionalFactionName.isPresent()) {
             String rawFactionName = optionalFactionName.get();
             Faction faction = FactionLogic.getFactionByName(rawFactionName);
 
-            if (faction == null)
-            {
+            if (faction == null) {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THERE_IS_NO_FACTION_CALLED + " ", TextColors.GOLD, rawFactionName + "!"));
-            }
-            else
-            {
-                if(source.hasPermission(PluginPermissions.InfoCommand) || source.hasPermission(PluginPermissions.InfoCommandSelf) || source.hasPermission(PluginPermissions.InfoCommandOthers))
-                {
+            } else {
+                if (source.hasPermission(PluginPermissions.InfoCommand) || source.hasPermission(PluginPermissions.InfoCommandSelf) || source.hasPermission(PluginPermissions.InfoCommandOthers)) {
                     //Check permissions
-                    if((!source.hasPermission(PluginPermissions.InfoCommand) && !source.hasPermission(PluginPermissions.InfoCommandSelf)) && (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent() && FactionLogic.getFactionByPlayerUUID(((Player)source).getUniqueId()).get().Name.equals(faction.Name)))
-                    {
+                    if ((!source.hasPermission(PluginPermissions.InfoCommand) && !source.hasPermission(PluginPermissions.InfoCommandSelf)) && (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent() && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).get().Name.equals(faction.Name))) {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PERMISSIONS_FOR_VEWING_INFO_ABOUT_YOUR_FACTION));
-                    }
-                    else if((!source.hasPermission(PluginPermissions.InfoCommand) && !source.hasPermission(PluginPermissions.InfoCommandOthers)) && (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent() && !FactionLogic.getFactionByPlayerUUID(((Player)source).getUniqueId()).get().Name.equals(faction.Name)))
-                    {
+                    } else if ((!source.hasPermission(PluginPermissions.InfoCommand) && !source.hasPermission(PluginPermissions.InfoCommandOthers)) && (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent() && !FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).get().Name.equals(faction.Name))) {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PERMISSIONS_FOR_VEWING_INFO_ABOUT_OTHER_FACTIONS));
-                    }
-                    else
-                    {
+                    } else {
                         showFactionInfo(source, faction);
                     }
-                }
-                else
-                {
+                } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PERMISSIONS_TO_USE_THIS_COMMAND));
                 }
             }
-        }
-        else if(source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player)source).getUniqueId()).isPresent())
-        {
+        } else if (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent()) {
             //Check permissions
-            if(source.hasPermission(PluginPermissions.InfoCommand) || source.hasPermission(PluginPermissions.InfoCommandSelf))
-            {
-                showFactionInfo(source, FactionLogic.getFactionByPlayerUUID(((Player)source).getUniqueId()).get());
-            }
-            else
-            {
+            if (source.hasPermission(PluginPermissions.InfoCommand) || source.hasPermission(PluginPermissions.InfoCommandSelf)) {
+                showFactionInfo(source, FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).get());
+            } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PERMISSIONS_FOR_VEWING_INFO_ABOUT_YOUR_FACTION));
             }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
             source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f info <faction name>"));
         }
@@ -88,58 +67,47 @@ public class InfoCommand implements CommandExecutor
         return CommandResult.success();
     }
 
-    private void showFactionInfo(CommandSource source, Faction faction)
-    {
+    private void showFactionInfo(CommandSource source, Faction faction) {
         List<Text> factionInfo = new ArrayList<>();
 
         String leaderName = "";
-        if(!faction.Leader.equals("")) leaderName = PlayerManager.getPlayerName(UUID.fromString(faction.Leader)).get();
+        if (!faction.Leader.equals("")) leaderName = PlayerManager.getPlayerName(UUID.fromString(faction.Leader)).get();
 
         String recruitList = "";
-        if(!faction.Recruits.isEmpty())
-        {
-            for (String recruit: faction.Recruits)
-            {
+        if (!faction.Recruits.isEmpty()) {
+            for (String recruit : faction.Recruits) {
                 recruitList += PlayerManager.getPlayerName(UUID.fromString(recruit)).get() + ", ";
             }
             recruitList = recruitList.substring(0, recruitList.length() - 2);
         }
 
         String membersList = "";
-        if(!faction.Members.isEmpty())
-        {
-            for (String member: faction.Members)
-            {
+        if (!faction.Members.isEmpty()) {
+            for (String member : faction.Members) {
                 membersList += PlayerManager.getPlayerName(UUID.fromString(member)).get() + ", ";
             }
             membersList = membersList.substring(0, membersList.length() - 2);
         }
 
         String officersList = "";
-        if(!faction.Officers.isEmpty())
-        {
-            for (String officer: faction.Officers)
-            {
+        if (!faction.Officers.isEmpty()) {
+            for (String officer : faction.Officers) {
                 officersList += PlayerManager.getPlayerName(UUID.fromString(officer)).get() + ", ";
             }
             officersList = officersList.substring(0, officersList.length() - 2);
         }
 
         String alliancesList = "";
-        if(!faction.Alliances.isEmpty())
-        {
-            for (String alliance: faction.Alliances)
-            {
+        if (!faction.Alliances.isEmpty()) {
+            for (String alliance : faction.Alliances) {
                 alliancesList += alliance + ", ";
             }
             alliancesList = alliancesList.substring(0, alliancesList.length() - 2);
         }
 
         String enemiesList = "";
-        if(!faction.Enemies.isEmpty())
-        {
-            for (String enemy: faction.Enemies)
-            {
+        if (!faction.Enemies.isEmpty()) {
+            for (String enemy : faction.Enemies) {
                 enemiesList += enemy + ", ";
             }
             enemiesList = enemiesList.substring(0, enemiesList.length() - 2);

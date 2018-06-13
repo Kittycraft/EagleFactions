@@ -2,44 +2,36 @@ package io.github.aquerr.eaglefactions.entities;
 
 import java.util.UUID;
 
-public class Invite
-{
+public class Invite {
     private String _factionName;
     private UUID _playerUUID;
 
-    public Invite(String factionName, UUID playerUUID)
-    {
+    public Invite(String factionName, UUID playerUUID) {
         this._factionName = factionName;
         this._playerUUID = playerUUID;
     }
 
-    public String getFactionName()
-    {
+    public String getFactionName() {
         return _factionName;
     }
 
-    public UUID getPlayerUUID()
-    {
+    public UUID getPlayerUUID() {
         return _playerUUID;
     }
 
     @Override
-    public boolean equals (Object allyInvite)
-    {
-        if(!(allyInvite instanceof Invite))
-        {
+    public boolean equals(Object allyInvite) {
+        if (!(allyInvite instanceof Invite)) {
             return false;
         }
-        if(allyInvite == this)
-        {
+        if (allyInvite == this) {
             return true;
         }
         return this._factionName.equals(((Invite) allyInvite)._factionName) && this._playerUUID.equals(((Invite) allyInvite)._playerUUID);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return _factionName.length();
     }
 }

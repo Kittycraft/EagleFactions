@@ -6,7 +6,6 @@ import io.github.aquerr.eaglefactions.entities.FactionHome;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Hostile;
@@ -20,53 +19,39 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class EntitySpawnListener
-{
+public class EntitySpawnListener {
     @Listener
-    public void onEntitySpawn(SpawnEntityEvent event)
-    {
-        for (Entity entity: event.getEntities())
-        {
+    public void onEntitySpawn(SpawnEntityEvent event) {
+        for (Entity entity : event.getEntities()) {
             //EntityType for CustomNPC (it isn't count as a monster) => EntityCustomNpc
-            if(entity.toString().contains("EntityCustomNpc")) return;
+            if (entity.toString().contains("EntityCustomNpc")) return;
 
-            if(entity instanceof Hostile)
-            {
-                if (!MainLogic.getMobSpawning())
-                {
-                    if (MainLogic.getSafeZoneWorldNames().contains(entity.getWorld().getName()))
-                    {
+            if (entity instanceof Hostile) {
+                if (!MainLogic.getMobSpawning()) {
+                    if (MainLogic.getSafeZoneWorldNames().contains(entity.getWorld().getName())) {
                         event.setCancelled(true);
                         return;
                     }
 
-                    if(FactionLogic.isClaimed(entity.getWorld().getUniqueId(), entity.getLocation().getChunkPosition()))
-                    {
+                    if (FactionLogic.isClaimed(entity.getWorld().getUniqueId(), entity.getLocation().getChunkPosition())) {
                         event.setCancelled(true);
                         return;
                     }
                 }
-            }
-            else if(entity instanceof Player)
-            {
-                if(MainLogic.shouldSpawnAtHomeAfterDeath())
-                {
-                    Player player = (Player)entity;
+            } else if (entity instanceof Player) {
+                if (MainLogic.shouldSpawnAtHomeAfterDeath()) {
+                    Player player = (Player) entity;
 
                     Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-                    if(optionalPlayerFaction.isPresent())
-                    {
+                    if (optionalPlayerFaction.isPresent()) {
                         FactionHome factionHome = optionalPlayerFaction.get().Home;
-                        if(factionHome != null)
-                        {
+                        if (factionHome != null) {
                             event.setCancelled(true);
                             World world = Sponge.getServer().getWorld(factionHome.WorldUUID).get();
                             player.setLocation(new Location<World>(world, factionHome.BlockPosition));
                             return;
-                        }
-                        else
-                        {
+                        } else {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.COULD_NOT_SPAWN_AT_FACTIONS_HOME_HOME_MAY_NOT_BE_SET));
                         }
                     }

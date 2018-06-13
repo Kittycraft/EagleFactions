@@ -12,32 +12,24 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class AutoMapCommand implements CommandExecutor
-{
+public class AutoMapCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
-        if(source instanceof Player)
-        {
-            Player player = (Player)source;
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
+        if (source instanceof Player) {
+            Player player = (Player) source;
 
-            if(EagleFactions.AutoMapList.contains(player.getUniqueId()))
-            {
+            if (EagleFactions.AutoMapList.contains(player.getUniqueId())) {
                 EagleFactions.AutoMapList.remove(player.getUniqueId());
 
                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoMap", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
                 return CommandResult.success();
-            }
-            else
-            {
+            } else {
                 EagleFactions.AutoMapList.add(player.getUniqueId());
 
                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoMap", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.ON));
                 return CommandResult.success();
             }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
         }
 

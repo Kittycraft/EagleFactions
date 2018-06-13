@@ -16,14 +16,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class PlayerDeathListener
-{
+public class PlayerDeathListener {
     @Listener
-    public void onPlayerDeath(DestructEntityEvent.Death event)
-    {
-        if(event.getTargetEntity() instanceof Player)
-        {
-            Player player = (Player)event.getTargetEntity();
+    public void onPlayerDeath(DestructEntityEvent.Death event) {
+        if (event.getTargetEntity() instanceof Player) {
+            Player player = (Player) event.getTargetEntity();
 
             PowerManager.decreasePower(player.getUniqueId());
 
@@ -32,17 +29,14 @@ public class PlayerDeathListener
 
             Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 
-            if (MainLogic.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().Name.equals("WarZone")))
-            {
+            if (MainLogic.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().Name.equals("WarZone"))) {
                 PlayerManager.setDeathInWarZone(player.getUniqueId(), true);
             }
 
-            if (MainLogic.shouldBlockHomeAfterDeathInOwnFaction())
-            {
+            if (MainLogic.shouldBlockHomeAfterDeathInOwnFaction()) {
                 Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-                if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().Name.equals(optionalPlayerFaction.get().Name))
-                {
+                if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().Name.equals(optionalPlayerFaction.get().Name)) {
                     AttackLogic.blockHome(player.getUniqueId());
                 }
             }

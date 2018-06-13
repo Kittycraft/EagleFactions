@@ -10,40 +10,32 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 
 import java.util.Optional;
 
-public class FireBlockPlaceListener
-{
+public class FireBlockPlaceListener {
     @Listener
-    public void onIgnite(ChangeBlockEvent.Place event)
-    {
-        if (event.getCause().root() instanceof Player)
-        {
-            Player player = (Player)event.getCause().root();
+    public void onIgnite(ChangeBlockEvent.Place event) {
+        if (event.getCause().root() instanceof Player) {
+            Player player = (Player) event.getCause().root();
 
-            if (!EagleFactions.AdminList.contains(player.getUniqueId()))
-            {
-                event.getTransactions().forEach(x->
+            if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
+                event.getTransactions().forEach(x ->
                 {
                     Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
 
                     if (x.getFinal().getState().getType() == BlockTypes.FIRE
                             && optionalChunkFaction.isPresent() && (optionalChunkFaction.get().Name.equals("SafeZone")
-                            || optionalChunkFaction.get().Name.equals("WarZone")))
-                    {
+                            || optionalChunkFaction.get().Name.equals("WarZone"))) {
                         event.setCancelled(true);
                     }
                 });
             }
-        }
-        else
-        {
-            event.getTransactions().forEach(x->
+        } else {
+            event.getTransactions().forEach(x ->
             {
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
 
                 if (x.getFinal().getState().getType() == BlockTypes.FIRE
                         && optionalChunkFaction.isPresent() && (optionalChunkFaction.get().Name.equals("SafeZone")
-                        || optionalChunkFaction.get().Name.equals("WarZone")))
-                {
+                        || optionalChunkFaction.get().Name.equals("WarZone"))) {
                     event.setCancelled(true);
                 }
             });

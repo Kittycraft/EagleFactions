@@ -21,23 +21,17 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class PlayerInteractListener
-{
+public class PlayerInteractListener {
     @Listener
-    public void onPlayerInteract(HandInteractEvent event, @Root Player player)
-    {
-        if(!EagleFactions.AdminList.contains(player.getUniqueId()))
-        {
-            if(event.getInteractionPoint().isPresent())
-            {
+    public void onPlayerInteract(HandInteractEvent event, @Root Player player) {
+        if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
+            if (event.getInteractionPoint().isPresent()) {
                 World world = player.getWorld();
 
-                if (MainLogic.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT))
-                {
+                if (MainLogic.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
                     return;
                 }
-                if (MainLogic.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT))
-                {
+                if (MainLogic.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
                     return;
                 }
 
@@ -48,26 +42,17 @@ public class PlayerInteractListener
                 Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
-                if(optionalChunkFaction.isPresent())
-                {
-                    if(optionalChunkFaction.get().Name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT))
-                    {
+                if (optionalChunkFaction.isPresent()) {
+                    if (optionalChunkFaction.get().Name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
                         return;
-                    }
-                    else if(optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT))
-                    {
+                    } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
                         return;
-                    }
-                    else if (optionalPlayerFaction.isPresent())
-                    {
-                        if (!FlagManager.canInteract(player, optionalPlayerFaction.get(), optionalChunkFaction.get()))
-                        {
+                    } else if (optionalPlayerFaction.isPresent()) {
+                        if (!FlagManager.canInteract(player, optionalPlayerFaction.get(), optionalChunkFaction.get())) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_INTERACT_HERE));
                             event.setCancelled(true);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         event.setCancelled(true);
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_ACCESS_TO_DO_THIS));
                         return;

@@ -5,19 +5,16 @@ import com.flowpowered.math.vector.Vector3i;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class FactionHome
-{
+public class FactionHome {
     public Vector3i BlockPosition;
     public UUID WorldUUID;
 
-    public FactionHome(@Nullable UUID worldUUID, @Nullable Vector3i blockPosition)
-    {
+    public FactionHome(@Nullable UUID worldUUID, @Nullable Vector3i blockPosition) {
         this.BlockPosition = blockPosition;
         this.WorldUUID = worldUUID;
     }
 
-    public FactionHome(String homeString)
-    {
+    public FactionHome(String homeString) {
         String splitter = "\\|";
         String worldUUIDString = homeString.split(splitter)[0];
         String vectorsString = homeString.split(splitter)[1];

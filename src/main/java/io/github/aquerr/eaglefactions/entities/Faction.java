@@ -4,14 +4,14 @@ import io.github.aquerr.eaglefactions.managers.FlagManager;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Aquerr on 2017-07-13.
  */
-public class Faction
-{
+public class Faction {
     public String Name;
     public Text Tag;
     //public BigDecimal Power;
@@ -26,8 +26,7 @@ public class Faction
     public Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> Flags;
 
     //Constructor used while creating a new faction.
-    public Faction(String factionName, String factionTag, String factionLeader)
-    {
+    public Faction(String factionName, String factionTag, String factionLeader) {
         this.Name = factionName;
         this.Tag = Text.of(TextColors.GREEN, factionTag);
         this.Leader = factionLeader;
@@ -43,8 +42,7 @@ public class Faction
     }
 
     //Constructor used while getting a faction from storage.
-    public Faction(String factionName, Text factionTag, String factionLeader, List<String> recruits, List<String> members, List<String> claims, List<String> officers, List<String> alliances, List<String> enemies, FactionHome home, Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags)
-    {
+    public Faction(String factionName, Text factionTag, String factionLeader, List<String> recruits, List<String> members, List<String> claims, List<String> officers, List<String> alliances, List<String> enemies, FactionHome home, Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags) {
         this.Name = factionName;
         this.Tag = factionTag;
         this.Leader = factionLeader;

@@ -15,13 +15,12 @@ import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TopCommand implements CommandExecutor
-{
+public class TopCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         List<Faction> factionsList = new ArrayList<>(FactionLogic.getFactions());
         List<Text> helpList = new ArrayList<>();
         int index = 0;
@@ -30,14 +29,13 @@ public class TopCommand implements CommandExecutor
 
         //This should show only top 10 factions on the server.
 
-        for(Faction faction: factionsList)
-        {
-            if(faction.Name.equalsIgnoreCase("safezone") || faction.Name.equalsIgnoreCase("warzone")) continue;
-            if(index == 11) break;
+        for (Faction faction : factionsList) {
+            if (faction.Name.equalsIgnoreCase("safezone") || faction.Name.equalsIgnoreCase("warzone")) continue;
+            if (index == 11) break;
 
             index++;
             String tag = "";
-            if(faction.Tag != null && !faction.Tag.equals("")) tag = "[" + faction.Tag + "] ";
+            if (faction.Tag != null && !faction.Tag.equals("")) tag = "[" + faction.Tag + "] ";
 
             Text factionHelp = Text.builder()
                     .append(Text.builder()

@@ -13,37 +13,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FactionNameArgument extends CommandElement
-{
-    public FactionNameArgument(@Nullable Text key)
-    {
+public class FactionNameArgument extends CommandElement {
+    public FactionNameArgument(@Nullable Text key) {
         super(key);
     }
 
     @Nullable
     @Override
-    protected String parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException
-    {
-        if (args.hasNext())
-        {
+    protected String parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
+        if (args.hasNext()) {
             return args.next();
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
     @Override
-    public List<String> complete(CommandSource src, CommandArgs args, CommandContext context)
-    {
+    public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
         List<String> factionNames = FactionLogic.getFactionsNames();
         Collections.sort(factionNames);
 
-        if (args.hasNext())
-        {
+        if (args.hasNext()) {
             String charSequence = args.nextIfPresent().get();
-            return factionNames.stream().filter(x->x.contains(charSequence)).collect(Collectors.toList());
+            return factionNames.stream().filter(x -> x.contains(charSequence)).collect(Collectors.toList());
         }
 
         return factionNames;

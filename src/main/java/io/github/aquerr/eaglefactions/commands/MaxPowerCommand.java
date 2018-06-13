@@ -16,36 +16,25 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class MaxPowerCommand implements CommandExecutor
-{
+public class MaxPowerCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         Optional<Player> optionalSelectedPlayer = context.<Player>getOne(Text.of("player"));
         Optional<String> optionalPower = context.<String>getOne(Text.of("power"));
 
-        if (optionalSelectedPlayer.isPresent() && optionalPower.isPresent())
-        {
-            if (source instanceof Player)
-            {
+        if (optionalSelectedPlayer.isPresent() && optionalPower.isPresent()) {
+            if (source instanceof Player) {
                 Player player = (Player) source;
 
-                if (EagleFactions.AdminList.contains(player.getUniqueId()))
-                {
+                if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                     setMaxPower(optionalSelectedPlayer.get(), optionalPower.get());
-                }
-                else
-                {
+                } else {
                     player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_NEED_TO_TOGGLE_FACTION_ADMIN_MODE_TO_DO_THIS));
                 }
-            }
-            else
-            {
+            } else {
                 setMaxPower(optionalSelectedPlayer.get(), optionalPower.get());
             }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
             source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f maxpower <player> <power>"));
         }
@@ -53,8 +42,7 @@ public class MaxPowerCommand implements CommandExecutor
         return CommandResult.success();
     }
 
-    private void setMaxPower(Player player, String power)
-    {
+    private void setMaxPower(Player player, String power) {
         BigDecimal newPower = new BigDecimal(power);
 
         PowerManager.setMaxPower(player.getUniqueId(), newPower);

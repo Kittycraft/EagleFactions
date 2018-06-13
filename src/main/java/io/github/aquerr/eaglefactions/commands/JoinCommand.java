@@ -18,47 +18,34 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class JoinCommand implements CommandExecutor
-{
+public class JoinCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         Optional<String> optionalFactionName = context.<String>getOne("faction name");
 
-        if (optionalFactionName.isPresent())
-        {
-            if(source instanceof Player)
-            {
-                Player player = (Player)source;
+        if (optionalFactionName.isPresent()) {
+            if (source instanceof Player) {
+                Player player = (Player) source;
                 String rawFactionName = optionalFactionName.get();
 
-                if(!FactionLogic.getFactionByPlayerUUID(player.getUniqueId()).isPresent())
-                {
+                if (!FactionLogic.getFactionByPlayerUUID(player.getUniqueId()).isPresent()) {
                     String factionName = FactionLogic.getRealFactionName(rawFactionName);
-                    if (factionName == null)
-                    {
+                    if (factionName == null) {
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THERE_IS_NO_FACTION_CALLED + " ", TextColors.GOLD, rawFactionName + "!"));
                         return CommandResult.success();
-                    }
-                    else
-                    {
+                    } else {
                         //If player has admin mode then force join.
-                        if(EagleFactions.AdminList.contains(player.getUniqueId()))
-                        {
+                        if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                             FactionLogic.joinFaction(player.getUniqueId(), factionName);
                             source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.SUCCESSFULLY_JOINED_FACTION + " ", TextColors.GOLD, factionName));
 
                             return CommandResult.success();
                         }
 
-                        for (Invite invite: EagleFactions.InviteList)
-                        {
-                            if(invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(factionName))
-                            {
-                                try
-                                {
-                                    if(MainLogic.isPlayerLimit())
-                                    {
+                        for (Invite invite : EagleFactions.InviteList) {
+                            if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(factionName)) {
+                                try {
+                                    if (MainLogic.isPlayerLimit()) {
                                         int playerCount = 0;
                                         Faction faction = FactionLogic.getFactionByName(factionName);
                                         playerCount += faction.Leader.equals("") ? 0 : 1;
@@ -66,8 +53,7 @@ public class JoinCommand implements CommandExecutor
                                         playerCount += faction.Members.isEmpty() ? 0 : faction.Members.size();
                                         playerCount += faction.Recruits.isEmpty() ? 0 : faction.Recruits.size();
 
-                                        if(playerCount >= MainLogic.getPlayerLimit())
-                                        {
+                                        if (playerCount >= MainLogic.getPlayerLimit()) {
                                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_JOIN_THIS_FACTION_BECAUSE_IT_REACHED_ITS_PLAYER_LIMIT));
                                             return CommandResult.success();
                                         }
@@ -80,28 +66,20 @@ public class JoinCommand implements CommandExecutor
 
                                     source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.SUCCESSFULLY_JOINED_FACTION + " ", TextColors.GOLD, factionName));
                                     return CommandResult.success();
-                                }
-                                catch (Exception exception)
-                                {
+                                } catch (Exception exception) {
                                     exception.printStackTrace();
                                 }
                             }
                         }
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_HAVENT_BEEN_INVITED_TO_THIS_FACTION));
                     }
-                }
-                else
-                {
+                } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ARE_ALREADY_IN_A_FACTION));
                 }
+            } else {
+                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
             }
-            else
-            {
-                source.sendMessage (Text.of (PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
-            }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
             source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f join <faction name>"));
         }

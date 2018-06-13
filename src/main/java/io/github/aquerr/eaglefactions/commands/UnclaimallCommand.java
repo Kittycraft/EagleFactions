@@ -16,26 +16,20 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class UnclaimallCommand implements CommandExecutor
-{
+public class UnclaimallCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
-        if(source instanceof Player)
-        {
-            Player player = (Player)source;
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
+        if (source instanceof Player) {
+            Player player = (Player) source;
 
             Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
             //Check if player is in the faction.
-            if(optionalPlayerFaction.isPresent())
-            {
+            if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if(playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId()))
-                {
-                    if(playerFaction.Home != null)
-                    {
+                if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
+                    if (playerFaction.Home != null) {
                         FactionLogic.setHome(null, playerFaction, null);
                     }
 
@@ -44,19 +38,13 @@ public class UnclaimallCommand implements CommandExecutor
 
                     return CommandResult.success();
 
-                }
-                else
-                {
+                } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
                 }
-            }
-            else
-            {
+            } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
         }
 

@@ -21,116 +21,78 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class ClaimCommand implements CommandExecutor
-{
+public class ClaimCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
-        if (source instanceof Player)
-        {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
+        if (source instanceof Player) {
             Player player = (Player) source;
             Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-            if (optionalPlayerFaction.isPresent())
-            {
+            if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (FlagManager.canClaim(player, playerFaction))
-                {
+                if (FlagManager.canClaim(player, playerFaction)) {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
                     Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), chunk);
 
-                    if (MainLogic.getClaimableWorldNames().contains(player.getWorld().getName()))
-                    {
-                        if (!optionalChunkFaction.isPresent())
-                        {
-                            if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.Claims.size())
-                            {
-                                if (!EagleFactions.AttackedFactions.containsKey(playerFaction.Name))
-                                {
-                                    if (!playerFaction.Claims.isEmpty())
-                                    {
-                                        if (playerFaction.Name.equals("SafeZone") || playerFaction.Name.equals("WarZone"))
-                                        {
+                    if (MainLogic.getClaimableWorldNames().contains(player.getWorld().getName())) {
+                        if (!optionalChunkFaction.isPresent()) {
+                            if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.Claims.size()) {
+                                if (!EagleFactions.AttackedFactions.containsKey(playerFaction.Name)) {
+                                    if (!playerFaction.Claims.isEmpty()) {
+                                        if (playerFaction.Name.equals("SafeZone") || playerFaction.Name.equals("WarZone")) {
                                             FactionLogic.addClaim(playerFaction, world.getUniqueId(), chunk);
                                             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
 
                                             return CommandResult.success();
-                                        }
-                                        else
-                                        {
-                                            if (MainLogic.requireConnectedClaims())
-                                            {
-                                                if (FactionLogic.isClaimConnected(playerFaction, world.getUniqueId(), chunk))
-                                                {
+                                        } else {
+                                            if (MainLogic.requireConnectedClaims()) {
+                                                if (FactionLogic.isClaimConnected(playerFaction, world.getUniqueId(), chunk)) {
                                                     FactionLogic.startClaiming(player, playerFaction, world.getUniqueId(), chunk);
                                                     return CommandResult.success();
-                                                }
-                                                else
-                                                {
+                                                } else {
                                                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.CLAIMS_NEED_TO_BE_CONNECTED));
                                                 }
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 FactionLogic.startClaiming(player, playerFaction, world.getUniqueId(), chunk);
                                                 return CommandResult.success();
                                             }
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         FactionLogic.startClaiming(player, playerFaction, world.getUniqueId(), chunk);
                                         return CommandResult.success();
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOUR_FACTION_IS_UNDER_ATTACK + " " + PluginMessages.YOU_NEED_TO_WAIT + " ", TextColors.GOLD, PluginMessages.TWO_MINUTES, TextColors.RED, " " + PluginMessages.TO_BE_ABLE_TO_CLAIM_AGAIN));
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOUR_FACTION_DOES_NOT_HAVE_POWER_TO_CLAIM_MORE_LANDS));
                             }
-                        }
-                        else
-                        {
+                        } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                         }
                     }
-                }
-                else if (EagleFactions.AdminList.contains(player.getUniqueId()))
-                {
+                } else if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
-                    if (!FactionLogic.isClaimed(world.getUniqueId(), chunk))
-                    {
+                    if (!FactionLogic.isClaimed(world.getUniqueId(), chunk)) {
                         FactionLogic.addClaim(playerFaction, world.getUniqueId(), chunk);
 
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                         return CommandResult.success();
-                    }
-                    else
-                    {
+                    } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                     }
-                }
-                else
-                {
+                } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_CLAIM_LANDS));
                 }
-            }
-            else
-            {
+            } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }
-        }
-        else
-        {
+        } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
         }
 

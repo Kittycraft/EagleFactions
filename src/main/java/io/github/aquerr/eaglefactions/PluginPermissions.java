@@ -1,7 +1,6 @@
 package io.github.aquerr.eaglefactions;
 
-public abstract class PluginPermissions
-{
+public abstract class PluginPermissions {
     //public static final String AllPermissions = "eaglefactions";
 
     //public static final String PlayerCommands = "eaglefactions.player";

@@ -8,65 +8,50 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class FlagManager
-{
-    public static boolean canBreakBlock(Player player, Faction playerFaction, Faction chunkFaction)
-    {
+public class FlagManager {
+    public static boolean canBreakBlock(Player player, Faction playerFaction, Faction chunkFaction) {
         return checkFlag(player, playerFaction, chunkFaction, FactionFlagTypes.DESTROY);
     }
 
-    public static boolean canPlaceBlock(Player player, Faction playerFaction, Faction chunkFaction)
-    {
+    public static boolean canPlaceBlock(Player player, Faction playerFaction, Faction chunkFaction) {
         return checkFlag(player, playerFaction, chunkFaction, FactionFlagTypes.PLACE);
     }
 
-    public static boolean canInteract(Player player, Faction playerFaction, Faction chunkFaction)
-    {
+    public static boolean canInteract(Player player, Faction playerFaction, Faction chunkFaction) {
         return checkFlag(player, playerFaction, chunkFaction, FactionFlagTypes.USE);
     }
 
-    public static boolean canClaim(Player player, Faction playerFaction)
-    {
+    public static boolean canClaim(Player player, Faction playerFaction) {
         return checkFlag(player, playerFaction, FactionFlagTypes.CLAIM);
     }
 
-    public static boolean canAttack(Player player, Faction playerFaction)
-    {
+    public static boolean canAttack(Player player, Faction playerFaction) {
         return checkFlag(player, playerFaction, FactionFlagTypes.CLAIM);
     }
 
-    public static boolean canInvite(Player player, Faction playerFaction)
-    {
+    public static boolean canInvite(Player player, Faction playerFaction) {
         return checkFlag(player, playerFaction, FactionFlagTypes.INVITE);
     }
 
-    private static boolean checkFlag(Player player, Faction playerFaction, FactionFlagTypes flagTypes)
-    {
+    private static boolean checkFlag(Player player, Faction playerFaction, FactionFlagTypes flagTypes) {
         FactionMemberType memberType = PlayerManager.getFactionMemberType(player, playerFaction);
 
         return playerFaction.Flags.get(memberType).get(flagTypes);
     }
 
-    private static boolean checkFlag(Player player, Faction playerFaction, Faction chunkFaction, FactionFlagTypes flagType)
-    {
-        if (playerFaction.Name.equals(chunkFaction.Name))
-        {
+    private static boolean checkFlag(Player player, Faction playerFaction, Faction chunkFaction, FactionFlagTypes flagType) {
+        if (playerFaction.Name.equals(chunkFaction.Name)) {
             FactionMemberType memberType = PlayerManager.getFactionMemberType(player, playerFaction);
 
             return chunkFaction.Flags.get(memberType).get(flagType);
-        }
-        else if (playerFaction.Alliances.contains(chunkFaction.Name))
-        {
+        } else if (playerFaction.Alliances.contains(chunkFaction.Name)) {
             return chunkFaction.Flags.get(FactionMemberType.ALLY).get(flagType);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    public static Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> getDefaultFactionFlags()
-    {
+    public static Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> getDefaultFactionFlags() {
         Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> map = new LinkedHashMap<>();
         Map<FactionFlagTypes, Boolean> leaderMap = new LinkedHashMap<>();
         Map<FactionFlagTypes, Boolean> officerMap = new LinkedHashMap<>();

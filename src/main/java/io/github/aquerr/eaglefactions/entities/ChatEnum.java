@@ -1,7 +1,6 @@
 package io.github.aquerr.eaglefactions.entities;
 
-public enum ChatEnum
-{
+public enum ChatEnum {
     Global,
     Alliance,
     Faction

@@ -1,6 +1,5 @@
 package io.github.aquerr.eaglefactions.entities;
 
-public enum FactionFlagTypes
-{
+public enum FactionFlagTypes {
     USE, PLACE, DESTROY, CLAIM, ATTACK, INVITE,
 }

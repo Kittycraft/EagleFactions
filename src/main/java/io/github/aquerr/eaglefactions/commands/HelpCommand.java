@@ -19,45 +19,40 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.List;
 import java.util.Map;
 
-public class HelpCommand implements CommandExecutor
-{
+public class HelpCommand implements CommandExecutor {
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         Map<List<String>, CommandSpec> commands = EagleFactions.Subcommands;
         List<Text> helpList = Lists.newArrayList();
 
-        for (List<String> aliases: commands.keySet())
-        {
+        for (List<String> aliases : commands.keySet()) {
             CommandSpec commandSpec = commands.get(aliases);
 
-            if(source instanceof Player)
-            {
-                Player player = (Player)source;
+            if (source instanceof Player) {
+                Player player = (Player) source;
 
-                if(!commandSpec.testPermission(player))
-                {
+                if (!commandSpec.testPermission(player)) {
                     continue;
                 }
             }
 
             Text commandHelp = Text.builder()
                     .append(Text.builder()
-                            .append(Text.of(TextColors.AQUA, "/f " + aliases.toString().replace("[","").replace("]","")))
+                            .append(Text.of(TextColors.AQUA, "/f " + aliases.toString().replace("[", "").replace("]", "")))
                             .build())
                     .append(Text.builder()
                             .append(Text.of(TextColors.WHITE, " - " + commandSpec.getShortDescription(source).get().toPlain() + "\n"))
                             .build())
                     .append(Text.builder()
-                            .append(Text.of(TextColors.GRAY, PluginMessages.USAGE + " /f " + aliases.toString().replace("[","").replace("]","") + " " + commandSpec.getUsage(source).toPlain()))
+                            .append(Text.of(TextColors.GRAY, PluginMessages.USAGE + " /f " + aliases.toString().replace("[", "").replace("]", "") + " " + commandSpec.getUsage(source).toPlain()))
                             .build())
                     .build();
 
-                   // .append(Text.builder()
-                   //         .append(Text.of(TextColors.GRAY, " - " + commandSpec.getShortDescription(source).get().toPlain()))
-                   //         .build())
+            // .append(Text.builder()
+            //         .append(Text.of(TextColors.GRAY, " - " + commandSpec.getShortDescription(source).get().toPlain()))
+            //         .build())
 //
-                  //  .build();
+            //  .build();
 
             helpList.add(commandHelp);
         }

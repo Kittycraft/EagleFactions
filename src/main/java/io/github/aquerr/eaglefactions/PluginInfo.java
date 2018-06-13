@@ -7,8 +7,7 @@ import org.spongepowered.api.text.format.TextColors;
  * Created by Aquerr on 2017-07-10.
  */
 
-public abstract class PluginInfo
-{
+public abstract class PluginInfo {
     public static final String Id = "eaglefactions";
     public static final String Name = "Eagle Factions";
     public static final String Version = "0.9.16";
