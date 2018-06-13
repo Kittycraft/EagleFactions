@@ -2,7 +2,23 @@
 
 # Eagle Factions
 
-Current version: 0.9.16
+## Goals
+ * Finish up TODOs left in the code
+ * Add factions permissions and **Custom ranks in factions**
+   * Maybe add advanced mode which is effectively pex (Always allow /f leave though)
+ * Fix massive corruption issues
+ * Make tags optional and make color dependent on relations
+ * Make code conform to Intellij Ideas hellish style suggestions
+ * Clean up command layout (wtf is /f info)
+ * More standard raiding restrictions
+   * Maybe add deal with the devil type situations (ex: double power but no protection while members are online)
+ * Make join back a thing!
+   * Maybe /f templeave for member+ and still be able to rejoin without losing faction data like rank or titles. Also make it easier to do if your the only one online.
+ * Make friendly fire a permission, not a flag (what could possibly go wrong)
+ * Add faction titles
+ * Reformat /f info/f/show to include additional information
+ * Anything else that does not take much work which I happen to think of while in the shower!
+
 
 ## General
 Eagle Faction is a factions/war plugin for SpongeForge. You can simply create factions and claim territories by using "power". Yes! Power! Just like in the original factions plugin made for Bukkit (and Spigot).
@@ -23,7 +39,7 @@ Check our [Wiki](https://github.com/Aquerr/EagleFactions/wiki) to get to know ho
 * Power system
 * Claiming territories/lands
 * Friendly Fire in faction can be disabled by its leaders.
-* Option for disabling friendly fire between aliances.
+* Option for disabling friendly fire between alliances.
 * Unclaim other factions lands if their power is low.
 * Prefixes Factions Tags
 * Internal Faction Chat

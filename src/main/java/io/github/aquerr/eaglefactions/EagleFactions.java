@@ -24,7 +24,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.nio.file.Path;
@@ -122,7 +121,7 @@ public class EagleFactions {
                 .build());
 
         //Create faction command.
-        Subcommands.put(Arrays.asList("c", "create"), CommandSpec.builder()
+        Subcommands.put(Arrays.asList("create"), CommandSpec.builder()
                 .description(Text.of("Create Faction Command"))
                 .permission(PluginPermissions.CreateCommand)
                 .arguments(GenericArguments.optional(GenericArguments.string(Text.of("tag"))),
@@ -183,13 +182,13 @@ public class EagleFactions {
                 .build());
 
         //Info command. Shows info about a faction.
-        Subcommands.put(Arrays.asList("i", "info"), CommandSpec.builder()
+        Subcommands.put(Arrays.asList("i", "info", "f", "show"), CommandSpec.builder()
                 .description(Text.of("Show info about a faction"))
                 .arguments(new FactionNameArgument(Text.of("faction name")))
                 .executor(new InfoCommand())
                 .build());
 
-        //Player command. Shows info about a player. (its factions etc.)
+        //Player command. Shows info about a player. (their faction etc.)
         Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
                 .description(Text.of("Show info about a player"))
                 .permission(PluginPermissions.PlayerCommand)
@@ -364,7 +363,7 @@ public class EagleFactions {
                 .build());
 
         //Chat Command
-        Subcommands.put(Collections.singletonList("chat"), CommandSpec.builder()
+        Subcommands.put(Arrays.asList("chat", "c"), CommandSpec.builder()
                 .description(Text.of("Chat command"))
                 .permission(PluginPermissions.ChatCommand)
                 .arguments(GenericArguments.optional(GenericArguments.enumValue(Text.of("chat"), ChatEnum.class)))
@@ -393,13 +392,14 @@ public class EagleFactions {
                 .executor(new FlagsCommand())
                 .build());
 
+        //TODO: tag color depends on relation!
         //TagColor Command
-        Subcommands.put(Collections.singletonList("tagcolor"), CommandSpec.builder()
-                .description(Text.of("Change faction's tag color"))
-                .permission(PluginPermissions.TagColorCommand)
-                .arguments(GenericArguments.optional(GenericArguments.catalogedElement(Text.of("color"), TextColor.class)))
-                .executor(new TagColorCommand())
-                .build());
+//        Subcommands.put(Collections.singletonList("tagcolor"), CommandSpec.builder()
+//                .description(Text.of("Change faction's tag color"))
+//                .permission(PluginPermissions.TagColorCommand)
+//                .arguments(GenericArguments.optional(GenericArguments.catalogedElement(Text.of("color"), TextColor.class)))
+//                .executor(new TagColorCommand())
+//                .build());
 
         //Build all commands
         CommandSpec commandEagleFactions = CommandSpec.builder()

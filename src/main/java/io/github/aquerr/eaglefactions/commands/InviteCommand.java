@@ -23,9 +23,10 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class InviteCommand implements CommandExecutor {
+
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalInvitedPlayer = context.<Player>getOne("player");
+        Optional<Player> optionalInvitedPlayer = context.getOne("player");
 
         if (optionalInvitedPlayer.isPresent()) {
             if (source instanceof Player) {
@@ -64,12 +65,9 @@ public class InviteCommand implements CommandExecutor {
 
                                 Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
 
-                                taskBuilder.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (EagleFactions.InviteList.contains(invite) && EagleFactions.InviteList != null) {
-                                            EagleFactions.InviteList.remove(invite);
-                                        }
+                                taskBuilder.execute(() -> {
+                                    if (EagleFactions.InviteList.contains(invite) && EagleFactions.InviteList != null) {
+                                        EagleFactions.InviteList.remove(invite);
                                     }
                                 }).delay(2, TimeUnit.MINUTES).name("EagleFaction - Remove Invite").submit(EagleFactions.getEagleFactions());
 
