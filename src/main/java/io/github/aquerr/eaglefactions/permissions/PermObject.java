@@ -35,5 +35,20 @@ public class PermObject {
         return false;
     }
 
+    public void addGroup(String groupName){
+        if(!inherit.contains(groupName)) {
+            inherit.add(groupName);
+        }
+    }
+
+    public void removeGroup(String groupName){
+        if(inherit.contains(groupName)) {
+            inherit.remove(groupName);
+        }
+    }
+
+    public void clearGroups(){
+        inherit.clear();
+    }
 
 }

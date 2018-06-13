@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RemoveEnemy;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -50,7 +51,9 @@ public class RemoveEnemyCommand implements CommandExecutor {
                             return CommandResult.success();
                         }
 
-                        if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                        //  if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                        //  if (playerFaction.containsMember(player.getUniqueId().toString()) && playerFaction.getMember(player.getUniqueId().toString()).hasNode(PluginPermissions.RemoveEnemyCommand, playerFaction)) {
+                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
                             if (playerFaction.Enemies.contains(enemyFaction.Name)) {
                                 RemoveEnemy checkRemove = new RemoveEnemy(enemyFaction.Name, playerFaction.Name);
                                 if (EagleFactions.RemoveEnemyList.contains(checkRemove)) {
@@ -61,7 +64,7 @@ public class RemoveEnemyCommand implements CommandExecutor {
                                     RemoveEnemy removeEnemy = new RemoveEnemy(playerFaction.Name, enemyFaction.Name);
                                     EagleFactions.RemoveEnemyList.add(removeEnemy);
 
-                                    Player enemyFactionLeader = PlayerManager.getPlayer(UUID.fromString(enemyFaction.Leader)).get();
+                                    Player enemyFactionLeader = PlayerManager.getPlayer(UUID.fromString(enemyFaction.Leader.name)).get();
 
                                     enemyFactionLeader.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.FACTION + " ", TextColors.GOLD, playerFaction.Name, TextColors.WHITE, " " + PluginMessages.WANTS_TO_END_THE + " ", TextColors.RED, PluginMessages.WAR + " ", TextColors.WHITE, PluginMessages.WITH_YOUR_FACTION, TextColors.GREEN, " " + PluginMessages.YOU_HAVE_TWO_MINUTES_TO_ACCEPT_IT +
                                             " " + PluginMessages.TYPE + " ", TextColors.GOLD, "/f enemy remove " + playerFaction.Name, TextColors.WHITE, " " + PluginMessages.TO_ACCEPT_IT));

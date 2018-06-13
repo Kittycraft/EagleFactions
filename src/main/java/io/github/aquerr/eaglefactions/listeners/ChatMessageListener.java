@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ChatMessageListener {
+
     @Listener
     public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player) {
         Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
