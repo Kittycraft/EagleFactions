@@ -13,9 +13,12 @@ public class Group {
         perms = new PermObject();
     }
 
-    public Group(String name, int priority){
+    public Group(String name, int priority, String... basicPerms){
         this(name);
         this.priority = priority;
+        for(String s : basicPerms){
+            perms.addNode(s);
+        }
     }
 
 }

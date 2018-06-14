@@ -51,4 +51,14 @@ public class PermObject {
         inherit.clear();
     }
 
+    public void addNode(String node){
+        nodes.add(node);
+    }
+
+    public void removeNode(String node){
+        if(inherit.contains(node)) {
+            inherit.remove(node);
+        }
+    }
+
 }

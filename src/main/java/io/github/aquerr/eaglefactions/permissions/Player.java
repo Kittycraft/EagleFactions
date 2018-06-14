@@ -10,6 +10,13 @@ public class Player extends PermObject {
         this.name = name;
     }
 
+    public Player(String name, String... groups) {
+        this.name = name;
+        for(String group : groups){
+            addGroup(group);
+        }
+    }
+
     public int getPriority(Faction context) {
         int best = Integer.MAX_VALUE;
         for (String s : inherit) {

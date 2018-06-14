@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.entities;
 
 import io.github.aquerr.eaglefactions.managers.FlagManager;
 import io.github.aquerr.eaglefactions.permissions.Group;
-import io.github.aquerr.eaglefactions.permissions.PermObject;
 import io.github.aquerr.eaglefactions.permissions.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -45,11 +44,20 @@ public class Faction {
         this.Home = null;
         this.Flags = FlagManager.getDefaultFactionFlags();
 
-        //TODO: setup basic perms
-        this.groups.put("leader", null);
-        this.groups.put("officer", null);
-        this.groups.put("member", null);
-        this.groups.put("recruit", null);
+        //TODO: Setup basic perms
+        groups.put("leader", new Group("leader", 1, "*"));
+        groups.put("officer", new Group("officer", 10, "eaglefactions.player.ally*",
+                "eaglefactions.player.enemy*", "eaglefactions.player.kick", "eaglefactions.player.invite",
+                "eaglefactions.player.*claim", "eaglefactions.player.member", "eaglefactions.player.sethome",
+                "eaglefactions.player.attack"));
+        groups.put("member", new Group("member", 20, "eaglefactions.player.home"));
+        groups.put("recruit", new Group("recruit", 30, "eaglefactions.player.chat",
+                "eaglefactions.player.top", "eaglefactions.player.list", "eaglefactions.player.help",
+                "eaglefactions.player.info*", "eaglefactions.player.*map"));
+
+        groups.get("leader").perms.addGroup("officer");
+        groups.get("officer").perms.addGroup("member");
+        groups.get("member").perms.addGroup("recruit");
 
         factionLeader.addGroup("leader");
     }
@@ -89,7 +97,7 @@ public class Faction {
         return false;
     }
 
-    public boolean isAllowed(String player, String perm){
+    public boolean isAllowed(String player, String perm) {
         for (Player p : Members) {
             if (p.name.equals(player)) {
                 return p.hasNode(perm, this);

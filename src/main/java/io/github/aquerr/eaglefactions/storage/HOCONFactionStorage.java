@@ -285,12 +285,12 @@ public class HOCONFactionStorage implements IStorage {
     }
 
     private Map<String, Group> getFactionGroups(String factionName) {
-        Object groupsObject = configNode.getNode("factions", factionName, "members").getValue();
+        Object groupsObject = configNode.getNode("factions", factionName, "groups").getValue();
 
         if (groupsObject != null) {
             return (Map<String, Group>) groupsObject;
         } else {
-            configNode.getNode("factions", factionName, "members").setValue(new HashMap<>());
+            configNode.getNode("factions", factionName, "groups").setValue(new HashMap<String, Group>());
             saveChanges();
             return new HashMap<>();
         }
@@ -317,7 +317,7 @@ public class HOCONFactionStorage implements IStorage {
         if (leaderObject != null) {
             return (Player) leaderObject;
         } else {
-            configNode.getNode("factions", factionName, "leader").setValue("");
+            configNode.getNode("factions", factionName, "leader").setValue(new Player("", "leader"));
             saveChanges();
             return new Player("");
         }

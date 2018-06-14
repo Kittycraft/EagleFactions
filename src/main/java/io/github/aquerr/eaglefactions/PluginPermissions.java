@@ -47,7 +47,6 @@ public abstract class PluginPermissions {
     public static final String MapCommand = "eaglefactions.player.map";
     public static final String AutoMapCommand = "eaglefactions.player.automap";
 
-    public static final String CoordsCommand = "eaglefactions.player.coords";
     public static final String AttackCommand = "eaglefactions.player.attack";
     public static final String FlagsCommand = "eaglefactions.player.flags";
     public static final String TagColorCommand = "eaglefactions.player.tagcolor";
