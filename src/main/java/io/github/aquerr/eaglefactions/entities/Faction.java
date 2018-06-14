@@ -55,7 +55,7 @@ public class Faction {
     }
 
     //Constructor used while getting a faction from storage.
-    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, List<String> alliances, List<String> enemies, FactionHome home, Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags) {
+    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, List<String> alliances, List<String> enemies, FactionHome home, Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags, Map<String, Group> groups) {
         this.Name = factionName;
         this.Tag = factionTag;
         this.Leader = factionLeader;
@@ -68,6 +68,7 @@ public class Faction {
         this.Enemies = enemies;
         this.Home = home;
         this.Flags = flags;
+        this.groups = groups;
     }
 
     public Player getMember(String name) {

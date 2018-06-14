@@ -6,6 +6,7 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionFlagTypes;
 import io.github.aquerr.eaglefactions.entities.FactionHome;
 import io.github.aquerr.eaglefactions.entities.FactionMemberType;
+import io.github.aquerr.eaglefactions.permissions.Group;
 import io.github.aquerr.eaglefactions.permissions.Player;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -72,6 +73,7 @@ public class HOCONFactionStorage implements IStorage {
             configNode.getNode("factions", faction.Name, "alliances").setValue(faction.Alliances);
             configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
             configNode.getNode("factions", faction.Name, "flags").setValue(faction.Flags);
+            configNode.getNode("factions", faction.Name, "groups").setValue(faction.groups);
 
             if (faction.Home == null) {
                 configNode.getNode("factions", faction.Name, "home").setValue(faction.Home);
@@ -133,8 +135,9 @@ public class HOCONFactionStorage implements IStorage {
         List<String> enemies = getFactionEnemies(factionName);
         List<String> claims = getFactionClaims(factionName);
         Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags = getFactionFlags(factionName);
+        Map<String, Group> groups = getFactionGroups(factionName);
 
-        Faction faction = new Faction(factionName, tag, leader, members, claims, alliances, enemies, home, flags);
+        Faction faction = new Faction(factionName, tag, leader, members, claims, alliances, enemies, home, flags, groups);
 
         //TODO: Refactor this code so that the power can be sent to the faction constructor like other parameters.
         //faction.Power = PowerManager.getFactionPower(faction); //Get power from all players in faction.
@@ -278,6 +281,18 @@ public class HOCONFactionStorage implements IStorage {
             configNode.getNode("factions", factionName, "members").setValue(new ArrayList<>());
             saveChanges();
             return new ArrayList<>();
+        }
+    }
+
+    private Map<String, Group> getFactionGroups(String factionName) {
+        Object groupsObject = configNode.getNode("factions", factionName, "members").getValue();
+
+        if (groupsObject != null) {
+            return (Map<String, Group>) groupsObject;
+        } else {
+            configNode.getNode("factions", factionName, "members").setValue(new HashMap<>());
+            saveChanges();
+            return new HashMap<>();
         }
     }
 
