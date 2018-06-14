@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -50,7 +51,8 @@ public class RemoveAllyCommand implements CommandExecutor {
                             return CommandResult.success();
                         }
 
-                        if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                        //if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveAllyCommand)) {
                             if (playerFaction.Alliances.contains(removedFaction)) {
                                 FactionLogic.removeAlly(playerFaction.Name, removedFaction);
                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.YOU_DISBANDED_YOUR_ALLIANCE_WITH + " ", TextColors.GOLD, removedFaction, TextColors.GREEN, "!"));

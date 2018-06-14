@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -51,8 +52,8 @@ public class AddEnemyCommand implements CommandExecutor {
                         }
                         return CommandResult.success();
                     }
-
-                    if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddEnemyCommand)) {
+                   // if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         if (FactionLogic.getFactionsNames().contains(enemyFactionName)) {
                             if (!playerFaction.Alliances.contains(enemyFactionName)) {
                                 if (!playerFaction.Enemies.contains(enemyFactionName)) {
@@ -61,7 +62,7 @@ public class AddEnemyCommand implements CommandExecutor {
                                     player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_FACTION_IS_NOW + " ", TextColors.RED, PluginMessages.ENEMIES + " ", TextColors.WHITE, PluginMessages.WITH + " " + enemyFactionName));
 
                                     //TODO: Check if player is online
-                                    Player enemyFactionLeader = PlayerManager.getPlayer(UUID.fromString(FactionLogic.getLeader(enemyFactionName))).get();
+                                    Player enemyFactionLeader = PlayerManager.getPlayer(UUID.fromString(FactionLogic.getLeader(enemyFactionName).name)).get();
                                     enemyFactionLeader.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.FACTION + " ", TextColors.GOLD, playerFaction.Name, TextColors.WHITE, " " + PluginMessages.HAS_DECLARED_YOU_A_WAR + "!"));
 
                                     return CommandResult.success();

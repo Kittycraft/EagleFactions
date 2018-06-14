@@ -118,23 +118,7 @@ public class ChatMessageListener {
             }
 
             if (MainLogic.shouldDisplayRank()) {
-                //Get leader prefix.
-                if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
-                    Text leaderPrefix = Text.builder()
-                            .append(Text.of("[", TextColors.GOLD, "Leader", TextColors.RESET, "]"))
-                            .build();
-
-                    rankPrefixText.append(leaderPrefix);
-                }
-
-                //Get officer prefix.
-                if (playerFaction.Officers.contains(player.getUniqueId().toString())) {
-                    Text officerPrefix = Text.builder()
-                            .append(Text.of("[", TextColors.GOLD, "Officer", TextColors.RESET, "]"))
-                            .build();
-
-                    rankPrefixText.append(officerPrefix);
-                }
+                rankPrefixText.append(Text.of("[", TextColors.GOLD, playerFaction.getMember(player.getUniqueId().toString()).getPrimaryGroup(), TextColors.RESET, "]"));
             }
 
             if (MainLogic.isFactionPrefixFirstInChat()) {

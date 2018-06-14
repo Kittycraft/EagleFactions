@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -28,7 +29,9 @@ public class UnclaimallCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
+
+                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AutoClaimCommand) || EagleFactions.AdminList.contains(player.getUniqueId())) {
+                  //  if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
                     if (playerFaction.Home != null) {
                         FactionLogic.setHome(null, playerFaction, null);
                     }

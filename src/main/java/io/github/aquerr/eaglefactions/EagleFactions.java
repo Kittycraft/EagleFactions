@@ -323,13 +323,6 @@ public class EagleFactions {
                 .executor(new AdminCommand())
                 .build());
 
-        //Add Coords Command
-        Subcommands.put(Collections.singletonList("coords"), CommandSpec.builder()
-                .description(Text.of("Show your teammates coords"))
-                .permission(PluginPermissions.CoordsCommand)
-                .executor(new CoordsCommand())
-                .build());
-
         //Add SetPower Command
         Subcommands.put(Collections.singletonList("setpower"), CommandSpec.builder()
                 .description(Text.of("Set player's power"))

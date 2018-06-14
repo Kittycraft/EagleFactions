@@ -6,6 +6,7 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionFlagTypes;
 import io.github.aquerr.eaglefactions.entities.FactionHome;
 import io.github.aquerr.eaglefactions.entities.FactionMemberType;
+import io.github.aquerr.eaglefactions.permissions.Player;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -66,9 +67,7 @@ public class HOCONFactionStorage implements IStorage {
         try {
             configNode.getNode("factions", faction.Name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
             configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader);
-            configNode.getNode("factions", faction.Name, "officers").setValue(faction.Officers);
             configNode.getNode("factions", faction.Name, "members").setValue(faction.Members);
-            configNode.getNode("factions", faction.Name, "recruits").setValue(faction.Recruits);
             configNode.getNode("factions", faction.Name, "enemies").setValue(faction.Enemies);
             configNode.getNode("factions", faction.Name, "alliances").setValue(faction.Alliances);
             configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
@@ -127,17 +126,15 @@ public class HOCONFactionStorage implements IStorage {
 
     private Faction createFactionObject(String factionName) {
         Text tag = getFactionTag(factionName);
-        String leader = getFactionLeader(factionName);
+        Player leader = getFactionLeader(factionName);
         FactionHome home = getFactionHome(factionName);
-        List<String> officers = getFactionOfficers(factionName);
-        List<String> members = getFactionMembers(factionName);
-        List<String> recruits = getFactionRecruits(factionName);
+        List<Player> members = getFactionMembers(factionName);
         List<String> alliances = getFactionAlliances(factionName);
         List<String> enemies = getFactionEnemies(factionName);
         List<String> claims = getFactionClaims(factionName);
         Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags = getFactionFlags(factionName);
 
-        Faction faction = new Faction(factionName, tag, leader, recruits, members, claims, officers, alliances, enemies, home, flags);
+        Faction faction = new Faction(factionName, tag, leader, members, claims, alliances, enemies, home, flags);
 
         //TODO: Refactor this code so that the power can be sent to the faction constructor like other parameters.
         //faction.Power = PowerManager.getFactionPower(faction); //Get power from all players in faction.
@@ -272,25 +269,13 @@ public class HOCONFactionStorage implements IStorage {
         }
     }
 
-    private List<String> getFactionMembers(String factionName) {
+    private List<Player> getFactionMembers(String factionName) {
         Object membersObject = configNode.getNode("factions", factionName, "members").getValue();
 
         if (membersObject != null) {
-            return (List<String>) membersObject;
+            return (List<Player>) membersObject;
         } else {
             configNode.getNode("factions", factionName, "members").setValue(new ArrayList<>());
-            saveChanges();
-            return new ArrayList<>();
-        }
-    }
-
-    private List<String> getFactionRecruits(String factionName) {
-        Object recruitsObject = configNode.getNode("factions", factionName, "recruits").getValue();
-
-        if (recruitsObject != null) {
-            return (List<String>) recruitsObject;
-        } else {
-            configNode.getNode("factions", factionName, "recruits").setValue(new ArrayList<>());
             saveChanges();
             return new ArrayList<>();
         }
@@ -311,27 +296,15 @@ public class HOCONFactionStorage implements IStorage {
         }
     }
 
-    private List<String> getFactionOfficers(String factionName) {
-        Object officersObject = configNode.getNode("factions", factionName, "officers").getValue();
-
-        if (officersObject != null) {
-            return (List<String>) officersObject;
-        } else {
-            configNode.getNode("factions", factionName, "officers").setValue(new ArrayList<>());
-            saveChanges();
-            return new ArrayList<>();
-        }
-    }
-
-    private String getFactionLeader(String factionName) {
+    private Player getFactionLeader(String factionName) {
         Object leaderObject = configNode.getNode("factions", factionName, "leader").getValue();
 
         if (leaderObject != null) {
-            return String.valueOf(leaderObject);
+            return (Player) leaderObject;
         } else {
             configNode.getNode("factions", factionName, "leader").setValue("");
             saveChanges();
-            return "";
+            return new Player("");
         }
     }
 

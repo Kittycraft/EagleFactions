@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.entities;
 
 import io.github.aquerr.eaglefactions.managers.FlagManager;
+import io.github.aquerr.eaglefactions.permissions.Group;
 import io.github.aquerr.eaglefactions.permissions.PermObject;
 import io.github.aquerr.eaglefactions.permissions.Player;
 import org.spongepowered.api.text.Text;
@@ -26,7 +27,7 @@ public class Faction {
     public List<String> Claims;
     public FactionHome Home;
     public Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> Flags;
-    public Map<String, PermObject> groups;
+    public Map<String, Group> groups;
 
     //Constructor used while creating a new faction.
     public Faction(String factionName, String factionTag, Player factionLeader) {

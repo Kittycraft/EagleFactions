@@ -5,7 +5,6 @@ import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -22,7 +21,6 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by Aquerr on 2017-08-03.
@@ -70,32 +68,10 @@ public class InfoCommand implements CommandExecutor {
     private void showFactionInfo(CommandSource source, Faction faction) {
         List<Text> factionInfo = new ArrayList<>();
 
-        String leaderName = "";
-        if (!faction.Leader.equals("")) leaderName = PlayerManager.getPlayerName(UUID.fromString(faction.Leader)).get();
-
-        String recruitList = "";
-        if (!faction.Recruits.isEmpty()) {
-            for (String recruit : faction.Recruits) {
-                recruitList += PlayerManager.getPlayerName(UUID.fromString(recruit)).get() + ", ";
-            }
-            recruitList = recruitList.substring(0, recruitList.length() - 2);
-        }
-
-        String membersList = "";
-        if (!faction.Members.isEmpty()) {
-            for (String member : faction.Members) {
-                membersList += PlayerManager.getPlayerName(UUID.fromString(member)).get() + ", ";
-            }
-            membersList = membersList.substring(0, membersList.length() - 2);
-        }
-
-        String officersList = "";
-        if (!faction.Officers.isEmpty()) {
-            for (String officer : faction.Officers) {
-                officersList += PlayerManager.getPlayerName(UUID.fromString(officer)).get() + ", ";
-            }
-            officersList = officersList.substring(0, officersList.length() - 2);
-        }
+        Text.Builder text = Text.of("").toBuilder();
+        String dash = "-----------------------------------------------";
+        text.append(Text.of(TextColors.GOLD, dash.substring(0, 100 - faction.Name.length() / 2),
+                ".[ ", TextColors.GREEN, faction.Name, TextColors.GOLD, " ].", dash.substring(0, 100 - faction.Name.length() / 2), "\nDescription: ", TextColors.YELLOW, "Not supported \u2764\n"));
 
         String alliancesList = "";
         if (!faction.Alliances.isEmpty()) {
@@ -113,21 +89,37 @@ public class InfoCommand implements CommandExecutor {
             enemiesList = enemiesList.substring(0, enemiesList.length() - 2);
         }
 
+        text.append(Text.of(TextColors.GOLD, "Land / Power / Maxpower: ", TextColors.YELLOW, faction.Claims.size() + " / " + PowerManager.getFactionPower(faction) + " / " + PowerManager.getFactionMaxPower(faction) + "\n"))
+                .append(Text.of(TextColors.GOLD, "Allies: ", TextColors.GREEN, alliancesList + "\n"))
+                .append(Text.of(TextColors.GOLD, "Enemies: ", TextColors.RED, enemiesList + "\n"));
 
-        Text info = Text.builder()
-                .append(Text.of(TextColors.AQUA, PluginMessages.NAME + ": ", TextColors.GOLD, faction.Name + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.TAG + ": "), faction.Tag.toBuilder().color(TextColors.GOLD).build(), Text.of("\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.LEADER + ": ", TextColors.GOLD, leaderName + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.OFFICERS + ": ", TextColors.GOLD, officersList + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.ALLIANCES + ": ", TextColors.BLUE, alliancesList + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.ENEMIES + ": ", TextColors.RED, enemiesList + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.MEMBERS + ": ", TextColors.GREEN, membersList + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.RECRUITS + ": ", TextColors.GREEN, recruitList + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.POWER + ": ", TextColors.GOLD, PowerManager.getFactionPower(faction) + "/" + PowerManager.getFactionMaxPower(faction) + "\n"))
-                .append(Text.of(TextColors.AQUA, PluginMessages.CLAIMS + ": ", TextColors.GOLD, String.valueOf(faction.Claims.size()) + "/" + String.valueOf(PowerManager.getFactionPower(faction).intValue())))
-                .build();
+//        String leaderName = "";
+//        if (!faction.Leader.equals("")) leaderName = PlayerManager.getPlayerName(UUID.fromString(faction.Leader.name)).get();
+//
+//        String membersList = "";
+//        if (!faction.Members.isEmpty()) {
+//            for (String member : faction.Members) {
+//                membersList += PlayerManager.getPlayerName(UUID.fromString(member)).get() + ", ";
+//            }
+//            membersList = membersList.substring(0, membersList.length() - 2);
+//        }
+//
+//        Text info = Text.builder()
+//                .append(Text.of(TextColors.AQUA, PluginMessages.NAME + ": ", TextColors.GOLD, faction.Name + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.TAG + ": "), faction.Tag.toBuilder().color(TextColors.GOLD).build(), Text.of("\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.LEADER + ": ", TextColors.GOLD, leaderName + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.OFFICERS + ": ", TextColors.GOLD, officersList + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.ALLIANCES + ": ", TextColors.BLUE, alliancesList + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.ENEMIES + ": ", TextColors.RED, enemiesList + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.MEMBERS + ": ", TextColors.GREEN, membersList + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.RECRUITS + ": ", TextColors.GREEN, recruitList + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.POWER + ": ", TextColors.GOLD, PowerManager.getFactionPower(faction) + "/" + PowerManager.getFactionMaxPower(faction) + "\n"))
+//                .append(Text.of(TextColors.AQUA, PluginMessages.CLAIMS + ": ", TextColors.GOLD, String.valueOf(faction.Claims.size()) + "/" + String.valueOf(PowerManager.getFactionPower(faction).intValue())))
+//                .build();
 
-        factionInfo.add(info);
+        //TODO: Stop being lazy and finish the info -Kitty
+
+        factionInfo.add(text.build());
 
         PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
         PaginationList.Builder paginationBuilder = paginationService.builder().title(Text.of(TextColors.GREEN, PluginMessages.FACTION_INFO)).contents(factionInfo);

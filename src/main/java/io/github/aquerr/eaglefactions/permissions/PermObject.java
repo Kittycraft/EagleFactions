@@ -8,17 +8,17 @@ import java.util.List;
 
 public class PermObject {
 
-    private transient static final PermObject empty = new PermObject();
+    public transient static final Group empty = new Group("", Integer.MAX_VALUE);
 
     private final List<String> nodes = new ArrayList<>();
-    private final List<String> inherit = new LinkedList<>();
+    protected final List<String> inherit = new LinkedList<>();
 
     public boolean hasNode(String node, Faction parent) {
         if(containsPersonalNode(node) && !containsPersonalNode("-" + node)){
             return true;
         }
         for(String groupName : inherit) {
-            PermObject group = parent.groups.getOrDefault(groupName, empty);
+            PermObject group = parent.groups.getOrDefault(groupName, empty).perms;
             if (group.containsPersonalNode(node) && !group.containsPersonalNode("-" + node)) {
                 return true;
             }

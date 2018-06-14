@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class KickCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalSelectedPlayer = context.<Player>getOne(Text.of("player"));
+        Optional<Player> optionalSelectedPlayer = context.getOne(Text.of("player"));
 
         if (optionalSelectedPlayer.isPresent()) {
             if (source instanceof Player) {
@@ -28,13 +29,17 @@ public class KickCommand implements CommandExecutor {
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
-                    if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+
+                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.KickCommand)) {
+                        //if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         Player selectedPlayer = optionalSelectedPlayer.get();
                         Optional<Faction> optionalSelectedPlayerFaction = FactionLogic.getFactionByPlayerUUID(selectedPlayer.getUniqueId());
 
                         if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.equals(selectedPlayer.getUniqueId().toString())) {
-                                if (!playerFaction.Officers.contains(selectedPlayer.getUniqueId().toString()) || playerFaction.Leader.equals(player.getUniqueId().toString())) {
+
+                                //if (!playerFaction.Officers.contains(selectedPlayer.getUniqueId().toString()) || playerFaction.Leader.equals(player.getUniqueId().toString())) {
+                                if (playerFaction.getMember(player.getUniqueId().toString()).getPriority(playerFaction) > playerFaction.getMember(selectedPlayer.getUniqueId().toString()).getPriority(playerFaction)) {
                                     FactionLogic.kickPlayer(selectedPlayer.getUniqueId(), playerFaction.Name);
 
                                     //TODO: Add listener that will inform players in a faction that someone has left their faction.

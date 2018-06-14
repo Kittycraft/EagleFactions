@@ -39,13 +39,7 @@ public class InviteCommand implements CommandExecutor {
 
                     if (FlagManager.canInvite(senderPlayer, senderFaction)) {
                         if (MainLogic.isPlayerLimit()) {
-                            int playerCount = 0;
-                            playerCount += senderFaction.Leader.equals("") ? 0 : 1;
-                            playerCount += senderFaction.Officers.isEmpty() ? 0 : senderFaction.Officers.size();
-                            playerCount += senderFaction.Members.isEmpty() ? 0 : senderFaction.Members.size();
-                            playerCount += senderFaction.Recruits.isEmpty() ? 0 : senderFaction.Recruits.size();
-
-                            if (playerCount >= MainLogic.getPlayerLimit()) {
+                            if (senderFaction.Members.size() >= MainLogic.getPlayerLimit()) {
                                 senderPlayer.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_INVITE_MORE_PLAYERS_TO_YOUR_FACTION + " " + PluginMessages.FACTIONS_PLAYER_LIMIT_HAS_BEEN_REACHED));
                                 return CommandResult.success();
                             }

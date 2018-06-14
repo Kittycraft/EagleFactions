@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.AllyInvite;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -58,14 +59,14 @@ public class AddAllyCommand implements CommandExecutor {
                         }
                         return CommandResult.success();
                     }
-
-                    if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
+                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddAllyCommand)) {
+                   // if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         if (!playerFaction.Enemies.contains(invitedFactionName)) {
                             if (!playerFaction.Alliances.contains(invitedFactionName)) {
                                 AllyInvite checkInvite = new AllyInvite(invitedFactionName, playerFaction.Name);
 
                                 //TODO: Check if player is online
-                                Player invitedFactionLeader = PlayerManager.getPlayer(UUID.fromString(playerFaction.Leader)).get();
+                                Player invitedFactionLeader = PlayerManager.getPlayer(UUID.fromString(playerFaction.Leader.name)).get();
 
                                 if (EagleFactions.AllayInviteList.contains(checkInvite)) {
                                     FactionLogic.addAlly(playerFaction.Name, invitedFactionName);

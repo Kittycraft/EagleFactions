@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions.managers;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.permissions.Player;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -95,28 +96,12 @@ public class PowerManager {
         }
 
         BigDecimal factionPower = BigDecimal.ZERO;
-        if (faction.Leader != null && !faction.Leader.equals("")) {
-            factionPower = factionPower.add(getPlayerPower(UUID.fromString(faction.Leader)));
-        }
-        if (faction.Officers != null && !faction.Officers.isEmpty()) {
-            for (String officer : faction.Officers) {
-                BigDecimal officerPower = getPlayerPower(UUID.fromString(officer));
-                factionPower = factionPower.add(officerPower);
-            }
-        }
         if (faction.Members != null && !faction.Members.isEmpty()) {
-            for (String member : faction.Members) {
-                BigDecimal memberPower = getPlayerPower(UUID.fromString(member));
+            for (Player member : faction.Members) {
+                BigDecimal memberPower = getPlayerPower(UUID.fromString(member.name));
                 factionPower = factionPower.add(memberPower);
             }
         }
-        if (faction.Recruits != null && !faction.Recruits.isEmpty()) {
-            for (String recruit : faction.Recruits) {
-                BigDecimal recruitPower = getPlayerPower(UUID.fromString(recruit));
-                factionPower = factionPower.add(recruitPower);
-            }
-        }
-
         return factionPower;
     }
 
@@ -131,25 +116,9 @@ public class PowerManager {
 
         BigDecimal factionMaxPower = BigDecimal.ZERO;
 
-        if (faction.Leader != null && !faction.Leader.equals("")) {
-            factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(faction.Leader)));
-        }
-
-        if (faction.Officers != null && !faction.Officers.isEmpty()) {
-            for (String officer : faction.Officers) {
-                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(officer)));
-            }
-        }
-
         if (faction.Members != null && !faction.Members.isEmpty()) {
-            for (String member : faction.Members) {
-                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(member)));
-            }
-        }
-
-        if (faction.Recruits != null && !faction.Recruits.isEmpty()) {
-            for (String recruit : faction.Recruits) {
-                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(recruit)));
+            for (Player member : faction.Members) {
+                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(member.name)));
             }
         }
 

@@ -567,6 +567,34 @@ public class FactionLogic {
         factionsStorage.addOrUpdateFaction(faction);
     }
 
+    public static void setMember(String playerUUID, String factionName) {
+        Faction faction = getFactionByName(factionName);
+        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        player.clearGroups();
+        player.addGroup("member");
+
+        factionsStorage.addOrUpdateFaction(faction);
+    }
+
+    public static void setOfficer(String playerUUID, String factionName) {
+        Faction faction = getFactionByName(factionName);
+        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        player.clearGroups();
+        player.addGroup("officer");
+
+        factionsStorage.addOrUpdateFaction(faction);
+    }
+
+    public static void setRecruit(String playerUUID, String factionName) {
+        Faction faction = getFactionByName(factionName);
+        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        player.clearGroups();
+        player.addGroup("recruit");
+
+        factionsStorage.addOrUpdateFaction(faction);
+    }
+
+
     public static void addMemberAndRemoveRecruit(String playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
 
