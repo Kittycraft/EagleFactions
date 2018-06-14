@@ -39,7 +39,7 @@ public class SetHomeCommand implements CommandExecutor {
                     return CommandResult.success();
                 }
 
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.SetHomeCommand)) {
+//                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.SetHomeCommand)) {
                     Optional<Faction> chunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
 
                     if (chunkFaction.isPresent() && chunkFaction.get().Name.equals(playerFaction.Name)) {
@@ -50,9 +50,9 @@ public class SetHomeCommand implements CommandExecutor {
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_LAND_BELONGS_TO_SOMEONE_ELSE));
                     }
-                } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                }
+//                } else {
+//                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }

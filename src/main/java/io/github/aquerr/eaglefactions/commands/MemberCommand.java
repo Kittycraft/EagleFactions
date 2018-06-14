@@ -20,7 +20,7 @@ import java.util.Optional;
 public class MemberCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalNewMemberPlayer = context.<Player>getOne("player");
+        Optional<Player> optionalNewMemberPlayer = context.getOne("player");
 
         if (optionalNewMemberPlayer.isPresent()) {
             if (source instanceof Player) {
@@ -46,7 +46,7 @@ public class MemberCommand implements CommandExecutor {
                         return CommandResult.success();
                     }
 
-                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
+//                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
                         if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.name.equals(newMemberPlayer.getUniqueId().toString())) {
                                 FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
@@ -58,9 +58,9 @@ public class MemberCommand implements CommandExecutor {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
                         }
 
-                    } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
-                    }
+//                    } else {
+//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
+//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

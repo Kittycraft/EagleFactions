@@ -37,11 +37,11 @@ public class TagColorCommand implements CommandExecutor {
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
-                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.TagColorCommand) || EagleFactions.AdminList.contains(player.getUniqueId())) {
+                    if (playerFaction.containsMember(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
                         FactionLogic.changeTagColor(playerFaction, optionalColor.get());
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.TAG_COLOR_HAS_BEEN_CHANGED));
                     } else {
-                        player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+                        player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in this target faction."));
                     }
                 } else {
                     player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));

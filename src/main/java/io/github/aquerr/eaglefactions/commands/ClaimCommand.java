@@ -31,7 +31,7 @@ public class ClaimCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.ClaimCommand)) {
+                if (!EagleFactions.AdminList.contains(player.getUniqueId()))  {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
@@ -74,7 +74,7 @@ public class ClaimCommand implements CommandExecutor {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                         }
                     }
-                } else if (EagleFactions.AdminList.contains(player.getUniqueId())) {
+                } else {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
@@ -86,8 +86,6 @@ public class ClaimCommand implements CommandExecutor {
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                     }
-                } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_CLAIM_LANDS));
                 }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));

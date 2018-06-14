@@ -35,7 +35,11 @@ public class PermObject {
 
     private boolean containsPersonalNode(String node) {
         for (String s : nodes) {
-            if (node.matches("^" + s.replaceAll("\\.", "\\.").replaceAll("\\*", "[A-Za-z0-9\\.]*") + "$")) {
+            if(s.startsWith("-r ")){
+                if(node.matches(s.substring(3, s.length()))){
+                    return true;
+                }
+            }else if (node.matches("^" + s.replaceAll("\\.", "\\.").replaceAll("\\*", "[A-Za-z0-9\\.]*") + "$")) {
                 return true;
             }
         }

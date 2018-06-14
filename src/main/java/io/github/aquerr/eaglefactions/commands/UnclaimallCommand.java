@@ -30,8 +30,7 @@ public class UnclaimallCommand implements CommandExecutor {
                 Faction playerFaction = optionalPlayerFaction.get();
 
 
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AutoClaimCommand) || EagleFactions.AdminList.contains(player.getUniqueId())) {
-                  //  if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
+                if (playerFaction.containsMember(player.getUniqueId().toString()) || EagleFactions.AdminList.contains(player.getUniqueId())) {
                     if (playerFaction.Home != null) {
                         FactionLogic.setHome(null, playerFaction, null);
                     }
@@ -42,7 +41,7 @@ public class UnclaimallCommand implements CommandExecutor {
                     return CommandResult.success();
 
                 } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in the target faction!"));
                 }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));

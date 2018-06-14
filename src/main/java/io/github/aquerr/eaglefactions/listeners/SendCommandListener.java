@@ -2,6 +2,8 @@ package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -10,6 +12,8 @@ import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+
+import java.util.Optional;
 
 public class SendCommandListener {
     @Listener(order = Order.EARLY)
@@ -20,5 +24,22 @@ public class SendCommandListener {
             event.setCancelled(true);
             return;
         }
+
+        //Analyze command with perms
+
+        //Always leave a way out
+        if(event.getCommand().matches("^(f)|(factions)|(faction)$") && event.getArguments().equals("leave")){
+            return;
+        }
+
+        Optional<Faction> faction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        if (faction.isPresent()) {
+            String node = event.getCommand() + " " + event.getArguments();
+            if (!EagleFactions.AdminList.contains(player.getUniqueId()) && !faction.get().getMember(player.getUniqueId().toString()).hasNode(node, faction.get())) {
+                event.setCancelled(true);
+                player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED, " is always available)"));
+            }
+        }
+
     }
 }

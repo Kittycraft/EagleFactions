@@ -53,7 +53,7 @@ public class RemoveEnemyCommand implements CommandExecutor {
 
                         //  if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         //  if (playerFaction.containsMember(player.getUniqueId().toString()) && playerFaction.getMember(player.getUniqueId().toString()).hasNode(PluginPermissions.RemoveEnemyCommand, playerFaction)) {
-                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
+//                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
                             if (playerFaction.Enemies.contains(enemyFaction.Name)) {
                                 RemoveEnemy checkRemove = new RemoveEnemy(enemyFaction.Name, playerFaction.Name);
                                 if (EagleFactions.RemoveEnemyList.contains(checkRemove)) {
@@ -87,9 +87,9 @@ public class RemoveEnemyCommand implements CommandExecutor {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ARE_NOT_IN_THE_WAR_WITH_THIS_FACTION));
                             }
 
-                        } else {
-                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                        }
+//                        } else {
+//                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                        }
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                     }

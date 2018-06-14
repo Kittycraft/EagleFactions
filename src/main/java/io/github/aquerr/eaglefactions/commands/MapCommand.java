@@ -129,9 +129,7 @@ public class MapCommand implements CommandExecutor {
                         }
                     }
                 } else {
-                    if (!MainLogic.isDelayedClaimingToggled() &&
-                            (EagleFactions.AdminList.contains(player.getUniqueId()) ||
-                                    (optionalPlayerFaction.isPresent() && optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), PluginPermissions.MapCommand)))) {
+                    if (!MainLogic.isDelayedClaimingToggled()) {
                         textBuilder.append(notCapturedMark.toBuilder().onClick(TextActions.executeCallback(claimByMap(player, chunk))).build());
                     } else {
                         textBuilder.append(notCapturedMark).build();
@@ -184,7 +182,7 @@ public class MapCommand implements CommandExecutor {
 
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.MapCommand)) {
+//                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.MapCommand)) {
                     //We need to check if because player can click on the claim that is already claimed (in the previous map in the chat)
                     if (!FactionLogic.isClaimed(world.getUniqueId(), chunk)) {
                         if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.Claims.size()) {
@@ -229,7 +227,7 @@ public class MapCommand implements CommandExecutor {
 
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND_HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.UNCLAIMED, TextColors.WHITE, "!"));
                     }
-                }
+//                }
             } else {
                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }

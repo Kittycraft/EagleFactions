@@ -59,7 +59,7 @@ public class AddAllyCommand implements CommandExecutor {
                         }
                         return CommandResult.success();
                     }
-                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddAllyCommand)) {
+//                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddAllyCommand)) {
                    // if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         if (!playerFaction.Enemies.contains(invitedFactionName)) {
                             if (!playerFaction.Alliances.contains(invitedFactionName)) {
@@ -107,9 +107,9 @@ public class AddAllyCommand implements CommandExecutor {
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ARE_IN_WAR_WITH_THIS_FACTION + " " + PluginMessages.SEND_THIS_FACTION_A_PEACE_REQUEST_FIRST_BEFORE_INVITING_THEM_TO_ALLIES));
                         }
-                    } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                    }
+//                    } else {
+//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

@@ -46,7 +46,7 @@ public class PlayerBlockPlaceListener {
                         return;
                     } else if (optionalPlayerFaction.isPresent()) {
                         //TODO: Find out if allies give permission for building (Reference: optionalChunkFaction.get())
-                        if (!optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), PluginPermissions.Build)) {
+                        if (!optionalPlayerFaction.get().isAlloweda(player.getUniqueId().toString(), "build")) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_DESTROY_BLOCKS_HERE));
                             event.setCancelled(true);
                         }

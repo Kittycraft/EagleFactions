@@ -52,7 +52,7 @@ public class RemoveAllyCommand implements CommandExecutor {
                         }
 
                         //if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
-                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveAllyCommand)) {
+//                        if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveAllyCommand)) {
                             if (playerFaction.Alliances.contains(removedFaction)) {
                                 FactionLogic.removeAlly(playerFaction.Name, removedFaction);
                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.YOU_DISBANDED_YOUR_ALLIANCE_WITH + " ", TextColors.GOLD, removedFaction, TextColors.GREEN, "!"));
@@ -60,9 +60,9 @@ public class RemoveAllyCommand implements CommandExecutor {
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOUR_FACTION_IS_NOT_IN_THE_ALLIANCE_WITH + " ", TextColors.GOLD, removedFaction + "!"));
                             }
-                        } else {
-                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                        }
+//                        } else {
+//                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                        }
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                     }

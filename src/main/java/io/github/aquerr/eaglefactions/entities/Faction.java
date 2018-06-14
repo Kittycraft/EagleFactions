@@ -67,10 +67,8 @@ public class Faction {
         this.Tag = factionTag;
         this.Leader = factionLeader;
         //this.Power = new BigDecimal("0.0");
-        //this.Recruits = recruits;
         this.Members = members;
         this.Claims = claims;
-        // this.Officers = officers;
         this.Alliances = alliances;
         this.Enemies = enemies;
         this.Home = home;
@@ -95,7 +93,7 @@ public class Faction {
         return false;
     }
 
-    public boolean isAllowed(String player, String perm) {
+    public boolean isAlloweda(String player, String perm) {
         for (Player p : Members) {
             if (p.name.equals(player)) {
                 return p.hasNode(perm, this);

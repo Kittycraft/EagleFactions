@@ -52,7 +52,7 @@ public class AddEnemyCommand implements CommandExecutor {
                         }
                         return CommandResult.success();
                     }
-                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddEnemyCommand)) {
+//                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AddEnemyCommand)) {
                    // if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         if (FactionLogic.getFactionsNames().contains(enemyFactionName)) {
                             if (!playerFaction.Alliances.contains(enemyFactionName)) {
@@ -75,9 +75,9 @@ public class AddEnemyCommand implements CommandExecutor {
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THERE_IS_NO_FACTION_CALLED + " ", TextColors.GOLD, enemyFactionName + "!"));
                         }
-                    } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                    }
+//                    } else {
+//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

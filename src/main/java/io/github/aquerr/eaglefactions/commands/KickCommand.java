@@ -30,7 +30,7 @@ public class KickCommand implements CommandExecutor {
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
 
-                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.KickCommand)) {
+//                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.KickCommand)) {
                         Player selectedPlayer = optionalSelectedPlayer.get();
                         Optional<Faction> optionalSelectedPlayerFaction = FactionLogic.getFactionByPlayerUUID(selectedPlayer.getUniqueId());
 
@@ -57,9 +57,9 @@ public class KickCommand implements CommandExecutor {
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
                         }
-                    } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
-                    }
+//                    } else {
+//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

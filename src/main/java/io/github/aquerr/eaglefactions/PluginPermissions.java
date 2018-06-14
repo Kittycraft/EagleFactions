@@ -3,7 +3,6 @@ package io.github.aquerr.eaglefactions;
 public abstract class PluginPermissions {
     //In game event permissions
     public static final String Build = "eaglefactions.player.build";
-    public static final String Use = "eaglefactions.player.use";
     public static final String Interact = "eaglefactions.player.interact";
 
 

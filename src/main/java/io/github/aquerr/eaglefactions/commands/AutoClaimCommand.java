@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -28,20 +27,7 @@ public class AutoClaimCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.AutoClaimCommand)) {
-                //if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
-                    if (EagleFactions.AutoClaimList.contains(player.getUniqueId())) {
-                        EagleFactions.AutoClaimList.remove(player.getUniqueId());
-                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoClaim", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
-
-                        return CommandResult.success();
-                    } else {
-                        EagleFactions.AutoClaimList.add(player.getUniqueId());
-                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoClaim", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.ON));
-
-                        return CommandResult.success();
-                    }
-                } else if (EagleFactions.AdminList.contains(player.getUniqueId())) {
+                if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
                     if (EagleFactions.AutoClaimList.contains(player.getUniqueId())) {
                         EagleFactions.AutoClaimList.remove(player.getUniqueId());
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoClaim", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
@@ -54,7 +40,17 @@ public class AutoClaimCommand implements CommandExecutor {
                         return CommandResult.success();
                     }
                 } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_OR_OFFICER_TO_DO_THIS));
+                    if (EagleFactions.AutoClaimList.contains(player.getUniqueId())) {
+                        EagleFactions.AutoClaimList.remove(player.getUniqueId());
+                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoClaim", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
+
+                        return CommandResult.success();
+                    } else {
+                        EagleFactions.AutoClaimList.add(player.getUniqueId());
+                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoClaim", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.ON));
+
+                        return CommandResult.success();
+                    }
                 }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));

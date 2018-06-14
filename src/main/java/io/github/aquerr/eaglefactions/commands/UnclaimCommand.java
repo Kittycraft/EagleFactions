@@ -59,7 +59,7 @@ public class UnclaimCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.UnclaimCommand)) {
+//                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.UnclaimCommand)) {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
@@ -88,9 +88,9 @@ public class UnclaimCommand implements CommandExecutor {
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                     }
-                } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_UNCLAIM_LANDS));
-                }
+//                } else {
+//                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_UNCLAIM_LANDS));
+//                }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }
