@@ -48,7 +48,7 @@ public class PlayerInteractListener {
                         return;
                     } else if (optionalPlayerFaction.isPresent()) {
                         //TODO: Find out if allies give permission for interacting (Reference: optionalChunkFaction.get())
-                        if (!optionalPlayerFaction.get().isAlloweda(player.getUniqueId().toString(), "interact")) {
+                        if (!optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), "interact")) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_INTERACT_HERE));
                             event.setCancelled(true);
                         }

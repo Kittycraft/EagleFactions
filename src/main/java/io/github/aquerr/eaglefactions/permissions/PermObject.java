@@ -39,7 +39,7 @@ public class PermObject {
                 if(node.matches(s.substring(3, s.length()))){
                     return true;
                 }
-            }else if (node.matches("^" + s.replaceAll("\\.", "\\.").replaceAll("\\*", "[A-Za-z0-9\\.]*") + "$")) {
+            }else if (node.matches("^" + s.replaceAll("\\.", "\\.").replaceAll("\\*", ".*") + ".*$")) {
                 return true;
             }
         }
@@ -63,7 +63,7 @@ public class PermObject {
     }
 
     public void addNode(String node){
-        nodes.add(node);
+        nodes.add(node.replaceFirst("^((f )|(faction )|(factions ))", "((f )|(faction )|(factions ))"));
     }
 
     public void removeNode(String node){

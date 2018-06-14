@@ -3,7 +3,6 @@ package io.github.aquerr.eaglefactions.listeners;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -50,7 +49,7 @@ public class BlockBreakListener {
                             return;
                         } else if (optionalPlayerFaction.isPresent()) {
                             //TODO: Find out if allies give permission for building (Reference: optionalChunkFaction.get())
-                            if (!optionalPlayerFaction.get().isAlloweda(player.getUniqueId().toString(), "build")) {
+                            if (!optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), "build")) {
                                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_DESTROY_BLOCKS_HERE));
                                 event.setCancelled(true);
                                 return;

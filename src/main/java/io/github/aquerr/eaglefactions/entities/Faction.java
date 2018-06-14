@@ -32,12 +32,9 @@ public class Faction {
         this.Name = factionName;
         this.Tag = Text.of(TextColors.GREEN, factionTag);
         this.Leader = factionLeader;
-        //this.Power = new BigDecimal("0.0");
-//        this.Recruits = new ArrayList<>();
         this.Members = new ArrayList<>();
         this.Members.add(factionLeader);
         this.Claims = new ArrayList<>();
-//        this.Officers = new ArrayList<>();
         this.Alliances = new ArrayList<>();
         this.Enemies = new ArrayList<>();
         this.groups = new HashMap<>();
@@ -45,14 +42,11 @@ public class Faction {
 
         //TODO: Setup basic perms
         groups.put("leader", new Group("leader", 1, "*"));
-        groups.put("officer", new Group("officer", 10, "eaglefactions.player.ally*",
-                "eaglefactions.player.enemy*", "eaglefactions.player.kick", "eaglefactions.player.invite",
-                "eaglefactions.player.*claim", "eaglefactions.player.member", "eaglefactions.player.sethome",
-                "eaglefactions.player.attack"));
-        groups.put("member", new Group("member", 20, "eaglefactions.player.home"));
-        groups.put("recruit", new Group("recruit", 30, "eaglefactions.player.chat",
-                "eaglefactions.player.top", "eaglefactions.player.list", "eaglefactions.player.help",
-                "eaglefactions.player.info*", "eaglefactions.player.*map"));
+        groups.put("officer", new Group("officer", 10, "f ally",
+                "f enemy", "f kick", "f invite", "f *claim", "f member", "f sethome"));
+        groups.put("member", new Group("member", 20, "f home", "build", "interact"));
+        groups.put("recruit", new Group("recruit", 30, "f ((chat)|(c))",
+                "f top", "f list", "f help", "f ((info)|(i)|(f)|(faction)|(show))", "f *map"));
 
         groups.get("leader").perms.addGroup("officer");
         groups.get("officer").perms.addGroup("member");
@@ -66,7 +60,6 @@ public class Faction {
         this.Name = factionName;
         this.Tag = factionTag;
         this.Leader = factionLeader;
-        //this.Power = new BigDecimal("0.0");
         this.Members = members;
         this.Claims = claims;
         this.Alliances = alliances;
@@ -93,7 +86,7 @@ public class Faction {
         return false;
     }
 
-    public boolean isAlloweda(String player, String perm) {
+    public boolean isAllowed(String player, String perm) {
         for (Player p : Members) {
             if (p.name.equals(player)) {
                 return p.hasNode(perm, this);
