@@ -1,12 +1,12 @@
 package io.github.aquerr.eaglefactions.entities;
 
-import io.github.aquerr.eaglefactions.managers.FlagManager;
 import io.github.aquerr.eaglefactions.permissions.Group;
 import io.github.aquerr.eaglefactions.permissions.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +25,6 @@ public class Faction {
     //    public List<String> Officers;
     public List<String> Claims;
     public FactionHome Home;
-    public Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> Flags;
     public Map<String, Group> groups;
 
     //Constructor used while creating a new faction.
@@ -41,8 +40,8 @@ public class Faction {
 //        this.Officers = new ArrayList<>();
         this.Alliances = new ArrayList<>();
         this.Enemies = new ArrayList<>();
+        this.groups = new HashMap<>();
         this.Home = null;
-        this.Flags = FlagManager.getDefaultFactionFlags();
 
         //TODO: Setup basic perms
         groups.put("leader", new Group("leader", 1, "*"));
@@ -63,7 +62,7 @@ public class Faction {
     }
 
     //Constructor used while getting a faction from storage.
-    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, List<String> alliances, List<String> enemies, FactionHome home, Map<FactionMemberType, Map<FactionFlagTypes, Boolean>> flags, Map<String, Group> groups) {
+    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, List<String> alliances, List<String> enemies, FactionHome home, Map<String, Group> groups) {
         this.Name = factionName;
         this.Tag = factionTag;
         this.Leader = factionLeader;
@@ -75,7 +74,6 @@ public class Faction {
         this.Alliances = alliances;
         this.Enemies = enemies;
         this.Home = home;
-        this.Flags = flags;
         this.groups = groups;
     }
 

@@ -1,20 +1,23 @@
 package io.github.aquerr.eaglefactions.listeners;
 
+import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.AttackLogic;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerDeathListener {
     @Listener
@@ -37,7 +40,24 @@ public class PlayerDeathListener {
                 Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
                 if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().Name.equals(optionalPlayerFaction.get().Name)) {
-                    AttackLogic.blockHome(player.getUniqueId());
+                    if (EagleFactions.BlockedHome.containsKey(player.getUniqueId())) {
+                        EagleFactions.BlockedHome.replace(player.getUniqueId(), MainLogic.getHomeBlockTimeAfterDeath());
+                    } else {
+                        EagleFactions.BlockedHome.put(player.getUniqueId(), MainLogic.getHomeBlockTimeAfterDeath());
+                        Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
+                        taskBuilder.interval(1, TimeUnit.SECONDS).execute(task -> {
+                            if (EagleFactions.BlockedHome.containsKey(player.getUniqueId())) {
+                                int seconds = EagleFactions.BlockedHome.get(player.getUniqueId());
+
+                                if (seconds <= 0) {
+                                    EagleFactions.BlockedHome.remove(player.getUniqueId());
+                                    task.cancel();
+                                } else {
+                                    EagleFactions.BlockedHome.replace(player.getUniqueId(), seconds, seconds - 1);
+                                }
+                            }
+                        }).submit(EagleFactions.getEagleFactions());
+                    }
                 }
             }
         }

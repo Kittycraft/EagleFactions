@@ -46,13 +46,6 @@ public class JoinCommand implements CommandExecutor {
                             if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(factionName)) {
                                 try {
                                     if (MainLogic.isPlayerLimit()) {
-//                                        int playerCount = 0;
-//                                        Faction faction = FactionLogic.getFactionByName(factionName);
-//                                        playerCount += faction.Leader.equals("") ? 0 : 1;
-//                                        playerCount += faction.Officers.isEmpty() ? 0 : faction.Officers.size();
-//                                        playerCount += faction.Members.isEmpty() ? 0 : faction.Members.size();
-//                                        playerCount += faction.Recruits.isEmpty() ? 0 : faction.Recruits.size();
-
                                         if (FactionLogic.getFactionByName(factionName).Members.size() >= MainLogic.getPlayerLimit()) {
                                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_JOIN_THIS_FACTION_BECAUSE_IT_REACHED_ITS_PLAYER_LIMIT));
                                             return CommandResult.success();

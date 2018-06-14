@@ -2,12 +2,12 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.FlagManager;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -37,7 +37,7 @@ public class InviteCommand implements CommandExecutor {
                 if (optionalSenderFaction.isPresent()) {
                     Faction senderFaction = optionalSenderFaction.get();
 
-                    if (FlagManager.canInvite(senderPlayer, senderFaction)) {
+                    if (senderFaction.isAllowed(senderPlayer.getUniqueId().toString(), PluginPermissions.InviteCommand)) {
                         if (MainLogic.isPlayerLimit()) {
                             if (senderFaction.Members.size() >= MainLogic.getPlayerLimit()) {
                                 senderPlayer.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_INVITE_MORE_PLAYERS_TO_YOUR_FACTION + " " + PluginMessages.FACTIONS_PLAYER_LIMIT_HAS_BEEN_REACHED));

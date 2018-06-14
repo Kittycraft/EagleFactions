@@ -48,6 +48,6 @@ public class Player extends PermObject {
 
     @Override
     public boolean equals(Object obj) {
-        throw new Error("Attempted to call .equals on Player object!");
+        return name.equals(obj);
     }
 }

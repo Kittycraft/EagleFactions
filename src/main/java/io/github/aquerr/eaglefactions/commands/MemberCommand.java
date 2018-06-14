@@ -34,15 +34,7 @@ public class MemberCommand implements CommandExecutor {
                     if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                         if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.name.equals(newMemberPlayer.getUniqueId().toString())) {
-//                                if (playerFaction.Officers.contains(newMemberPlayer.getUniqueId().toString())) {
-//                                    FactionLogic.removeOfficerAndSetAsMember(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
-//                                    source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_REMOVED + " ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, " " + PluginMessages.FROM_YOUR + " ", TextColors.BLUE, PluginMessages.OFFICERS, TextColors.WHITE, "!"));
-//                                } else if (playerFaction.Recruits.contains(newMemberPlayer.getUniqueId().toString())) {
-//                                    FactionLogic.addMemberAndRemoveRecruit(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
-//                                    source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_PROMOTED + " ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, " " + PluginMessages.TO + " ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
-//                                }
-                               // FactionLogic.
-                                FactionLogic.setMember(newMemberPlayer.toString(), playerFaction.Name);
+                                FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_MEMBER));
@@ -53,20 +45,11 @@ public class MemberCommand implements CommandExecutor {
 
                         return CommandResult.success();
                     }
-                    FactionLogic.setMember(newMemberPlayer.toString(), playerFaction.Name);
 
-               //     if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
                     if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.RemoveEnemyCommand)) {
                         if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.name.equals(newMemberPlayer.getUniqueId().toString())) {
-//                                if (playerFaction.Officers.contains(newMemberPlayer.getUniqueId().toString())) {
-//                                    FactionLogic.removeOfficerAndSetAsMember(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
-//                                    source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_REMOVED + " ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, " " + PluginMessages.FROM_YOUR + " ", TextColors.BLUE, PluginMessages.OFFICERS, TextColors.WHITE, "!"));
-//                                } else if (playerFaction.Recruits.contains(newMemberPlayer.getUniqueId().toString())) {
-//                                    FactionLogic.addMemberAndRemoveRecruit(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
-//                                    source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_PROMOTED + " ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, " " + PluginMessages.TO + " ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
-//                                }
-                                FactionLogic.setMember(newMemberPlayer.toString(), playerFaction.Name);
+                                FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.Name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_MEMBER));
@@ -76,7 +59,7 @@ public class MemberCommand implements CommandExecutor {
                         }
 
                     } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_THE_FACTIONS_LEADER_TO_DO_THIS));
+                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
                     }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));

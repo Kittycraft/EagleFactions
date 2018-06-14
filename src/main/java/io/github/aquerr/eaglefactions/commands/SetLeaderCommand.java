@@ -41,9 +41,7 @@ public class SetLeaderCommand implements CommandExecutor {
                             }
 
                             return CommandResult.success();
-                        }
-
-                        if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
+                        }else if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
                             if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
                                 FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.Name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_SET + " ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " as your new ", TextColors.BLUE, "Leader", TextColors.WHITE, "!"));
@@ -52,6 +50,8 @@ public class SetLeaderCommand implements CommandExecutor {
                             }
 
                             return CommandResult.success();
+                        } else {
+                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
                         }
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));

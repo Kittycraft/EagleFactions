@@ -9,7 +9,6 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.FlagManager;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.living.humanoid.HandInteractEvent;
@@ -48,7 +47,8 @@ public class PlayerInteractListener {
                     } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
                         return;
                     } else if (optionalPlayerFaction.isPresent()) {
-                        if (!FlagManager.canInteract(player, optionalPlayerFaction.get(), optionalChunkFaction.get())) {
+                        //TODO: Find out if allies give permission for interacting (Reference: optionalChunkFaction.get())
+                        if (!optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), PluginPermissions.Interact)) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_INTERACT_HERE));
                             event.setCancelled(true);
                         }

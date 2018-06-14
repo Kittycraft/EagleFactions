@@ -59,7 +59,7 @@ public class InfoCommand implements CommandExecutor {
             }
         } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f info <faction name>"));
+            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f f <faction name>"));
         }
 
         return CommandResult.success();
@@ -70,8 +70,8 @@ public class InfoCommand implements CommandExecutor {
 
         Text.Builder text = Text.of("").toBuilder();
         String dash = "-----------------------------------------------";
-        text.append(Text.of(TextColors.GOLD, dash.substring(0, 100 - faction.Name.length() / 2),
-                ".[ ", TextColors.GREEN, faction.Name, TextColors.GOLD, " ].", dash.substring(0, 100 - faction.Name.length() / 2), "\nDescription: ", TextColors.YELLOW, "Not supported \u2764\n"));
+        text.append(Text.of(TextColors.GOLD, dash.substring(0, 25 - faction.Name.length() / 2),
+                ".[ ", TextColors.GREEN, faction.Name, TextColors.GOLD, " ].", dash.substring(0, 25 - faction.Name.length() / 2), "\nDescription: ", TextColors.YELLOW, "Not supported \u2764\n"));
 
         String alliancesList = "";
         if (!faction.Alliances.isEmpty()) {

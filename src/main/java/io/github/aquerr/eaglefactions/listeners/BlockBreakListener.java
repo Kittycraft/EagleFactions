@@ -3,11 +3,11 @@ package io.github.aquerr.eaglefactions.listeners;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.FlagManager;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
@@ -49,7 +49,8 @@ public class BlockBreakListener {
                         } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission("eaglefactions.warzone.build")) {
                             return;
                         } else if (optionalPlayerFaction.isPresent()) {
-                            if (!FlagManager.canBreakBlock(player, optionalPlayerFaction.get(), optionalChunkFaction.get())) {
+                            //TODO: Find out if allies give permission for building (Reference: optionalChunkFaction.get())
+                            if (!optionalPlayerFaction.get().isAllowed(player.getUniqueId().toString(), PluginPermissions.Build)) {
                                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_PRIVILEGES_TO_DESTROY_BLOCKS_HERE));
                                 event.setCancelled(true);
                                 return;

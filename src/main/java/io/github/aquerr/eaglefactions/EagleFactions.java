@@ -182,7 +182,7 @@ public class EagleFactions {
                 .build());
 
         //Info command. Shows info about a faction.
-        Subcommands.put(Arrays.asList("i", "info", "f", "show"), CommandSpec.builder()
+        Subcommands.put(Arrays.asList("i", "info", "f", "show", "faction"), CommandSpec.builder()
                 .description(Text.of("Show info about a faction"))
                 .arguments(new FactionNameArgument(Text.of("faction name")))
                 .executor(new InfoCommand())
@@ -341,13 +341,6 @@ public class EagleFactions {
                 .executor(new MaxPowerCommand())
                 .build());
 
-        //Add Attack Command
-        Subcommands.put(Collections.singletonList("attack"), CommandSpec.builder()
-                .description(Text.of("Destroy a claim"))
-                .permission(PluginPermissions.AttackCommand)
-                .executor(new AttackCommand())
-                .build());
-
         //Reload Command
         Subcommands.put(Collections.singletonList("reload"), CommandSpec.builder()
                 .description(Text.of("Reload config file"))
@@ -378,14 +371,7 @@ public class EagleFactions {
                 .executor(new SetLeaderCommand())
                 .build());
 
-        //Flags Command
-        Subcommands.put(Collections.singletonList("flags"), CommandSpec.builder()
-                .description(Text.of("Set flags/privileges for members in faction."))
-                .permission(PluginPermissions.FlagsCommand)
-                .executor(new FlagsCommand())
-                .build());
-
-        //TODO: tag color depends on relation!
+        //TODO: Tag color depends on relation!
         //TagColor Command
 //        Subcommands.put(Collections.singletonList("tagcolor"), CommandSpec.builder()
 //                .description(Text.of("Change faction's tag color"))

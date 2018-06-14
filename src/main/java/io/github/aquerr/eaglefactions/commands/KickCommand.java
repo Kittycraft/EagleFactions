@@ -31,14 +31,11 @@ public class KickCommand implements CommandExecutor {
                     Faction playerFaction = optionalPlayerFaction.get();
 
                     if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.KickCommand)) {
-                        //if (playerFaction.Leader.equals(player.getUniqueId().toString()) || playerFaction.Officers.contains(player.getUniqueId().toString())) {
                         Player selectedPlayer = optionalSelectedPlayer.get();
                         Optional<Faction> optionalSelectedPlayerFaction = FactionLogic.getFactionByPlayerUUID(selectedPlayer.getUniqueId());
 
                         if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.equals(selectedPlayer.getUniqueId().toString())) {
-
-                                //if (!playerFaction.Officers.contains(selectedPlayer.getUniqueId().toString()) || playerFaction.Leader.equals(player.getUniqueId().toString())) {
                                 if (playerFaction.getMember(player.getUniqueId().toString()).getPriority(playerFaction) > playerFaction.getMember(selectedPlayer.getUniqueId().toString()).getPriority(playerFaction)) {
                                     FactionLogic.kickPlayer(selectedPlayer.getUniqueId(), playerFaction.Name);
 

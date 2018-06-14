@@ -1,11 +1,13 @@
 package io.github.aquerr.eaglefactions;
 
 public abstract class PluginPermissions {
-    //public static final String AllPermissions = "eaglefactions";
+    //In game event permissions
+    public static final String Build = "eaglefactions.player.build";
+    public static final String Use = "eaglefactions.player.use";
+    public static final String Interact = "eaglefactions.player.interact";
 
-    //public static final String PlayerCommands = "eaglefactions.player";
-    //public static final String AdminCommands = "eaglefactions.admin";
 
+    //General permissions
     public static final String AllyCommands = "eaglefactions.player.ally";
     public static final String AddAllyCommand = "eaglefactions.player.ally.add";
     public static final String RemoveAllyCommand = "eaglefactions.player.ally.remove";

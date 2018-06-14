@@ -3,11 +3,11 @@ package io.github.aquerr.eaglefactions.commands;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
-import io.github.aquerr.eaglefactions.managers.FlagManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -31,7 +31,7 @@ public class ClaimCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-                if (FlagManager.canClaim(player, playerFaction)) {
+                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.ClaimCommand)) {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
