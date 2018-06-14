@@ -1,5 +1,7 @@
 package io.github.aquerr.eaglefactions.permissions;
 
+import java.util.List;
+
 public class Group {
 
     public final String name;
@@ -19,6 +21,13 @@ public class Group {
         for(String s : basicPerms){
             perms.addNode(s);
         }
+    }
+
+    public Group(String name, String prefix, int priority, List<String> inherit, List<String> nodes){
+        this.name = name;
+        this.prefix = prefix;
+        this.priority = priority;
+        this.perms = new PermObject(inherit, nodes);
     }
 
 }

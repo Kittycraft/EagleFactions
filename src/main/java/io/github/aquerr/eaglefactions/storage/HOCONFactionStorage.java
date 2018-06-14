@@ -67,13 +67,30 @@ public class HOCONFactionStorage implements IStorage {
     public boolean addOrUpdateFaction(Faction faction) {
         try {
             configNode.getNode("factions", faction.Name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
-            configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader);
-            configNode.getNode("factions", faction.Name, "members").setValue(faction.Members);
+            configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader.name);
+            //configNode.getNode("factions", faction.Name, "members").setValue(faction.Members);
             configNode.getNode("factions", faction.Name, "enemies").setValue(faction.Enemies);
             configNode.getNode("factions", faction.Name, "alliances").setValue(faction.Alliances);
             configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
             configNode.getNode("factions", faction.Name, "flags").setValue(faction.Flags);
-            configNode.getNode("factions", faction.Name, "groups").setValue(faction.groups);
+            //configNode.getNode("factions", faction.Name, "groups").setValue(faction.groups);
+            List<String> groups = new ArrayList<>();
+            faction.groups.forEach((a, b) -> {
+                groups.add(a);
+                configNode.getNode("factions", faction.Name, "group", a, "inherit").setValue(b.perms.inherit);
+                configNode.getNode("factions", faction.Name, "group", a, "nodes").setValue(b.perms.nodes);
+                configNode.getNode("factions", faction.Name, "group", a, "priority").setValue(b.priority);
+                configNode.getNode("factions", faction.Name, "group", a, "prefix").setValue(b.prefix);
+            });
+            configNode.getNode("factions", faction.Name, "groups").setValue(groups);
+
+            List<String> members = new ArrayList<>();
+            for(Player p : faction.Members){
+                members.add(p.name);
+                configNode.getNode("factions", faction.Name, "member", p.name, "inherit").setValue(p.inherit);
+                configNode.getNode("factions", faction.Name, "member", p.name, "nodes").setValue(p.nodes);
+            }
+            configNode.getNode("factions", faction.Name, "members").setValue(members);
 
             if (faction.Home == null) {
                 configNode.getNode("factions", faction.Name, "home").setValue(faction.Home);
@@ -266,7 +283,7 @@ public class HOCONFactionStorage implements IStorage {
         if (alliancesObject != null) {
             return (List<String>) alliancesObject;
         } else {
-            configNode.getNode("factions", factionName, "alliances").setValue(new ArrayList<>());
+            configNode.getNode("factions", factionName, "alliances").setValue(new ArrayList<String>());
             saveChanges();
             return new ArrayList<>();
         }
@@ -274,26 +291,76 @@ public class HOCONFactionStorage implements IStorage {
 
     private List<Player> getFactionMembers(String factionName) {
         Object membersObject = configNode.getNode("factions", factionName, "members").getValue();
-
+        List<String> members;
         if (membersObject != null) {
-            return (List<Player>) membersObject;
+            members = (List<String>) membersObject;
         } else {
-            configNode.getNode("factions", factionName, "members").setValue(new ArrayList<>());
+            configNode.getNode("factions", factionName, "members").setValue(new ArrayList<String>());
             saveChanges();
-            return new ArrayList<>();
+            members = new ArrayList<>();
         }
+
+        List<Player> memberList = new ArrayList<>();
+        for (String player : members) {
+            Object inherit = configNode.getNode("factions", factionName, "member", player, "inherit").getValue();
+            Object nodes = configNode.getNode("factions", factionName, "member", player, "nodes").getValue();
+            if (inherit == null) {
+                configNode.getNode("factions", factionName, "member", player, "inherit").setValue(new ArrayList<String>());
+                saveChanges();
+                inherit = new ArrayList<String>();
+            }
+            if (nodes == null) {
+                configNode.getNode("factions", factionName, "member", player, "nodes").setValue(new ArrayList<String>());
+                saveChanges();
+                nodes = new ArrayList<String>();
+            }
+            memberList.add(new Player(player, (List<String>) inherit, (List<String>) nodes));
+        }
+
+        return memberList;
     }
 
     private Map<String, Group> getFactionGroups(String factionName) {
-        Object groupsObject = configNode.getNode("factions", factionName, "groups").getValue();
-
-        if (groupsObject != null) {
-            return (Map<String, Group>) groupsObject;
+        Object groupNameList = configNode.getNode("factions", factionName, "groups").getValue();
+        List<String> groups;
+        if (groupNameList != null) {
+            groups = (List<String>) groupNameList;
         } else {
-            configNode.getNode("factions", factionName, "groups").setValue(new HashMap<String, Group>());
+            configNode.getNode("factions", factionName, "groups").setValue(new ArrayList<String>());
             saveChanges();
-            return new HashMap<>();
+            groups = new ArrayList<>();
         }
+
+        Map<String, Group> groupMap = new HashMap<>();
+        for (String group : groups) {
+            Object inherit = configNode.getNode("factions", factionName, "group", group, "inherit").getValue();
+            Object nodes = configNode.getNode("factions", factionName, "group", group, "nodes").getValue();
+            Object priority = configNode.getNode("factions", factionName, "group", group, "priority").getValue();
+            Object prefix = configNode.getNode("factions", factionName, "group", group, "prefix").getValue();
+            if (inherit == null) {
+                configNode.getNode("factions", factionName, "group", group, "inherit").setValue(new ArrayList<String>());
+                saveChanges();
+                inherit = new ArrayList<String>();
+            }
+            if (nodes == null) {
+                configNode.getNode("factions", factionName, "group", group, "nodes").setValue(new ArrayList<String>());
+                saveChanges();
+                nodes = new ArrayList<String>();
+            }
+            if (priority == null) {
+                configNode.getNode("factions", factionName, "group", group, "priority").setValue(0);
+                saveChanges();
+                priority = 0;
+            }
+            if (prefix == null) {
+                configNode.getNode("factions", factionName, "group", group, "prefix").setValue("SAVE-ERROR");
+                saveChanges();
+                prefix = "SAVE-ERROR";
+            }
+            groupMap.put(group, new Group(group, (String) prefix, (int) priority, (List<String>) inherit, (List<String>) nodes));
+        }
+
+        return groupMap;
     }
 
     private FactionHome getFactionHome(String factionName) {
@@ -312,15 +379,20 @@ public class HOCONFactionStorage implements IStorage {
     }
 
     private Player getFactionLeader(String factionName) {
-        Object leaderObject = configNode.getNode("factions", factionName, "leader").getValue();
+        Object name = configNode.getNode("factions", factionName, "leader").getValue();
 
-        if (leaderObject != null) {
-            return (Player) leaderObject;
-        } else {
-            configNode.getNode("factions", factionName, "leader").setValue(new Player("", "leader"));
-            saveChanges();
-            return new Player("");
+        if (name != null) {
+            List<Player> members = getFactionMembers(factionName);
+            for (Player p : members) {
+                if (p.name.equals(name)) {
+                    return p;
+                }
+            }
         }
+        configNode.getNode("factions", factionName, "leader").setValue("");
+        saveChanges();
+        return null;
+
     }
 
     private Text getFactionTag(String factionName) {

@@ -10,8 +10,15 @@ public class PermObject {
 
     public transient static final Group empty = new Group("", Integer.MAX_VALUE);
 
-    private final List<String> nodes = new ArrayList<>();
-    protected final List<String> inherit = new LinkedList<>();
+    public List<String> nodes = new ArrayList<>();
+    public List<String> inherit = new LinkedList<>();
+
+    public PermObject(){}
+
+    PermObject(List<String> inherit, List<String> nodes){
+        this.inherit = inherit;
+        this.nodes = nodes;
+    }
 
     public boolean hasNode(String node, Faction parent) {
         if(containsPersonalNode(node) && !containsPersonalNode("-" + node)){

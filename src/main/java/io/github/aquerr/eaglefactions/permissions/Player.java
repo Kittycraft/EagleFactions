@@ -2,6 +2,8 @@ package io.github.aquerr.eaglefactions.permissions;
 
 import io.github.aquerr.eaglefactions.entities.Faction;
 
+import java.util.List;
+
 public class Player extends PermObject {
 
     public final String name;
@@ -15,6 +17,11 @@ public class Player extends PermObject {
         for(String group : groups){
             addGroup(group);
         }
+    }
+
+    public Player(String name, List<String> inherit, List<String> nodes) {
+        super(inherit, nodes);
+        this.name = name;
     }
 
     public int getPriority(Faction context) {
