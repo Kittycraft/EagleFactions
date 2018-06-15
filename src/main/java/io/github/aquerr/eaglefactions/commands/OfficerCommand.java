@@ -36,7 +36,6 @@ public class OfficerCommand implements CommandExecutor {
                             if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
                                 FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.Name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
-                                //TODO: Add promotion from recruit rank.
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_OFFICER));
                             }
@@ -47,7 +46,6 @@ public class OfficerCommand implements CommandExecutor {
                         return CommandResult.success();
                     }
 
-//                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.OfficerCommand)) {
                         if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().Name.equals(playerFaction.Name)) {
                             if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
                                 FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.Name);
@@ -58,10 +56,6 @@ public class OfficerCommand implements CommandExecutor {
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
                         }
-
-//                    } else {
-//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
-//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

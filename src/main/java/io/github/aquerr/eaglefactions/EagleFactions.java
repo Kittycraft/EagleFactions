@@ -332,15 +332,6 @@ public class EagleFactions {
                 .executor(new SetPowerCommand())
                 .build());
 
-        //Add MaxPower Command
-        Subcommands.put(Collections.singletonList("maxpower"), CommandSpec.builder()
-                .description(Text.of("Set player's maxpower"))
-                .permission(PluginPermissions.MaxPowerCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))),
-                        GenericArguments.optional(GenericArguments.string(Text.of("power"))))
-                .executor(new MaxPowerCommand())
-                .build());
-
         //Reload Command
         Subcommands.put(Collections.singletonList("reload"), CommandSpec.builder()
                 .description(Text.of("Reload config file"))
@@ -372,13 +363,6 @@ public class EagleFactions {
                 .build());
 
         //TODO: Tag color depends on relation!
-        //TagColor Command
-//        Subcommands.put(Collections.singletonList("tagcolor"), CommandSpec.builder()
-//                .description(Text.of("Change faction's tag color"))
-//                .permission(PluginPermissions.TagColorCommand)
-//                .arguments(GenericArguments.optional(GenericArguments.catalogedElement(Text.of("color"), TextColor.class)))
-//                .executor(new TagColorCommand())
-//                .build());
 
         //Build all commands
         CommandSpec commandEagleFactions = CommandSpec.builder()
