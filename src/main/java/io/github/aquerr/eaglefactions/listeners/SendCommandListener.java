@@ -28,14 +28,14 @@ public class SendCommandListener {
         //Analyze command with perms
 
         //Always leave a way out
-        if(event.getCommand().matches("^(f)|(factions)|(faction)$") && event.getArguments().equals("leave")){
+        if (event.getCommand().matches("^(f)|(factions)|(faction)$") && (event.getArguments().equals("leave") || event.getArguments().equals("disband"))) {
             return;
         }
 
         Optional<Faction> faction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
         if (faction.isPresent()) {
             String node = event.getCommand() + " " + event.getArguments();
-            if (!EagleFactions.AdminList.contains(player.getUniqueId()) && !faction.get().getMember(player.getUniqueId().toString()).hasNode(node, faction.get())) {
+            if (!EagleFactions.AdminList.contains(player.getUniqueId()) && !faction.get().getMember(player.getUniqueId().toString()).hasNode(node.toLowerCase(), faction.get())) {
                 event.setCancelled(true);
                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED, " is always available)"));
             }

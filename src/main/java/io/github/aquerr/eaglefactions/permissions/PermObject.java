@@ -13,7 +13,9 @@ public class PermObject {
     public List<String> nodes = new ArrayList<>();
     public List<String> inherit = new LinkedList<>();
 
-    public PermObject(){}
+    public PermObject(){
+        nodes.add("-r ^(?!-)(?!(f($|( .*)|(action($|( .*)|(s($|( .*)))))))|(build)|(interact)).*");
+    }
 
     PermObject(List<String> inherit, List<String> nodes){
         this.inherit = inherit;
@@ -63,7 +65,7 @@ public class PermObject {
     }
 
     public void addNode(String node){
-        nodes.add(node.replaceFirst("^((f )|(faction )|(factions ))", "((f )|(faction )|(factions ))"));
+        nodes.add(node.replaceFirst("^((f )|(faction )|(factions ))", "((f )|(faction )|(factions ))").toLowerCase());
     }
 
     public void removeNode(String node){

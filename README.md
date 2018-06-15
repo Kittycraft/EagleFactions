@@ -1,6 +1,10 @@
 ![alt text](http://i.imgur.com/Lh7W1Mo.png)
 
-# Eagle Factions
+# Eagle Factions Remake
+This is a factions plugin more similar to massivecraft factions built off of the existing Eagle Factions.
+##Things to change that I don't like
+ * /f f while not in a faction claims you have the wrong syntax
+ * Needs /f unstuck
 
 ## Goals
  * Finish up TODOs left in the code
@@ -8,7 +12,7 @@
    * Maybe add advanced mode which is effectively pex (Always allow /f leave though)
  * Fix massive corruption issues
  * Make tags optional and make color dependent on relations
- * Make code conform to Intellij Ideas hellish style suggestions
+ * Make code conform to Intellij Idea's hellish style suggestions
  * Clean up command layout (wtf is /f info)
  * More standard raiding restrictions
    * Maybe add deal with the devil type situations (ex: double power but no protection while members are online)
@@ -45,7 +49,6 @@ Check our [Wiki](https://github.com/Aquerr/EagleFactions/wiki) to get to know ho
 * Internal Faction Chat
 * Custom ranks in factions **(not implemented yet)**
 * PVP-Logger
-* Plugin Messages' Translations
 * Fully configurable
 
 ## Translations

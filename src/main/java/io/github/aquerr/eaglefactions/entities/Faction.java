@@ -41,12 +41,12 @@ public class Faction {
         this.Home = null;
 
         //TODO: Setup basic perms
-        groups.put("leader", new Group("leader", 1, "*"));
+        groups.put("leader", new Group("leader", 1, "[^-]"));
         groups.put("officer", new Group("officer", 10, "f ally",
                 "f enemy", "f kick", "f invite", "f *claim", "f member", "f sethome"));
         groups.put("member", new Group("member", 20, "f home", "build", "interact"));
         groups.put("recruit", new Group("recruit", 30, "f ((chat)|(c))",
-                "f top", "f list", "f help", "f ((info)|(i)|(f)|(faction)|(show))", "f *map"));
+                "f top", "f list", "f help", "f ((info)|(i)|(f)|(faction)|(show))", "f *map", "f"));
 
         groups.get("leader").perms.addGroup("officer");
         groups.get("officer").perms.addGroup("member");

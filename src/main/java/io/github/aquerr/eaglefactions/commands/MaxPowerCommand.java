@@ -19,8 +19,8 @@ import java.util.Optional;
 public class MaxPowerCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalSelectedPlayer = context.<Player>getOne(Text.of("player"));
-        Optional<String> optionalPower = context.<String>getOne(Text.of("power"));
+        Optional<Player> optionalSelectedPlayer = context.getOne(Text.of("player"));
+        Optional<String> optionalPower = context.getOne(Text.of("power"));
 
         if (optionalSelectedPlayer.isPresent() && optionalPower.isPresent()) {
             if (source instanceof Player) {
