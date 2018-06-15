@@ -2,7 +2,15 @@
 
 # Eagle Factions Remake
 This is a factions plugin more similar to massivecraft factions built off of the existing Eagle Factions.
-##Things to change that I don't like
+#####Top Priority (will be worked on tomorrow)
+ * Completely re-write ally/enemy system
+ * Remove references to PluginMessages.java (***No one really used the translation feature and its a pain to maintain***)
+ * Add commands for permissions
+ * Add permissions for allies
+ * Add user friendly /f promote and /f demote
+ * Write permissions documentation
+
+#####Personal Notes on stuff that needs to be fixed
  * /f f while not in a faction claims you have the wrong syntax
  * Needs /f unstuck
 
@@ -13,14 +21,12 @@ This is a factions plugin more similar to massivecraft factions built off of the
  * Fix massive corruption issues
  * Make tags optional and make color dependent on relations
  * Make code conform to Intellij Idea's hellish style suggestions
- * Clean up command layout (wtf is /f info)
  * More standard raiding restrictions
    * Maybe add deal with the devil type situations (ex: double power but no protection while members are online)
  * Make join back a thing!
    * Maybe /f templeave for member+ and still be able to rejoin without losing faction data like rank or titles. Also make it easier to do if your the only one online.
  * Make friendly fire a permission, not a flag (what could possibly go wrong)
  * Add faction titles
- * Reformat /f info/f/show to include additional information
  * Anything else that does not take much work which I happen to think of while in the shower!
 
 
@@ -50,14 +56,6 @@ Check our [Wiki](https://github.com/Aquerr/EagleFactions/wiki) to get to know ho
 * Custom ranks in factions **(not implemented yet)**
 * PVP-Logger
 * Fully configurable
-
-## Translations
-
-Eagle Factions provides option for changing its language.
-
-You can see all available translations [here](https://github.com/Aquerr/EagleFactions/tree/1.12.2/api-7.0.0/src/main/resources/messages).
-
-If there is no translation for your language you can make your own and add it as a pull request.
 
 ## Links
 
