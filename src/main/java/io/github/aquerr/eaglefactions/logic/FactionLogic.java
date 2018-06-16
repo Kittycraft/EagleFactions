@@ -1,13 +1,17 @@
 package io.github.aquerr.eaglefactions.logic;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.google.inject.Inject;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionHome;
+import io.github.aquerr.eaglefactions.entities.FactionRelation;
+import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.storage.HOCONFactionStorage;
 import io.github.aquerr.eaglefactions.storage.IStorage;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.player.Player;
@@ -26,11 +30,14 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import static io.github.aquerr.eaglefactions.entities.RelationType.*;
+
 /**
  * Created by Aquerr on 2017-07-12.
  */
 public class FactionLogic {
     private static IStorage factionsStorage;
+    private static List<FactionRelation> relations;
 
     public static void setup(Path configDir) {
         //TODO: Change which storage should be used to prevent mass data corruption. (MySQL etc.)
@@ -72,6 +79,13 @@ public class FactionLogic {
         return null;
     }
 
+    public static List<FactionRelation> getRelations() {
+        if (relations == null) {
+            return relations = factionsStorage.getFactionRelations();
+        }
+        return relations;
+    }
+
     public static io.github.aquerr.eaglefactions.permissions.Player getLeader(String factionName) {
         Faction faction = getFactionByName(factionName);
 
@@ -92,6 +106,50 @@ public class FactionLogic {
         }
 
         return factionPlayers;
+    }
+
+    public static TextColor getRelationColor(String factionA, String factionB){
+        switch (getRelation(factionA, factionB)){
+            case ALLY: return TextColors.GREEN;
+            case SAME: return TextColors.GREEN;
+            case ENEMY: return TextColors.RED;
+            case TRUCE: return TextColors.GREEN;
+                default: return TextColors.GRAY;
+        }
+    }
+
+    public static RelationType getRelation(String factionA, String factionB){
+        if(factionA.equals(factionB)){
+            return SAME;
+        }
+        List<FactionRelation> relations = getRelations();
+        RelationType a = NEUTRAL, b = NEUTRAL;
+        for(FactionRelation relation : relations){
+            if(relation.factionA.equals(factionA) && relation.factionB.equals(factionB)){
+                a = relation.type;
+            }else if(relation.factionB.equals(factionA) && relation.factionA.equals(factionB)){
+                b = relation.type;
+            }
+        }
+        if(a == ENEMY || b == ENEMY){
+            return ENEMY;
+        }else if (a != NEUTRAL && b != NEUTRAL){
+            if(a == ALLY && b == ALLY){
+                return ALLY;
+            }
+            return TRUCE;
+        }
+        return NEUTRAL;
+    }
+
+    public static void informFaction(Faction faction, Text text){
+        getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
+    }
+
+    public static void saveRelations(){
+        if(relations != null){
+            factionsStorage.updateRelations(relations);
+        }
     }
 
     public static List<String> getFactionsNames() {
@@ -402,9 +460,22 @@ public class FactionLogic {
         } else return false;
     }
 
-    public static void changeTagColor(Faction faction, TextColor textColor) {
-        faction.Tag = Text.of(textColor, faction.Tag.toPlainSingle());
-        factionsStorage.addOrUpdateFaction(faction);
+    @Inject
+    private static Server server;
+
+    public static Optional<Faction> getFactionByIdentifier(Optional<String> identifier) {
+        if (identifier.isPresent()) {
+            Faction faction = getFactionByName(identifier.get());
+            if (faction != null) {
+                return Optional.of(faction);
+            }
+            Optional<Player> player = server.getPlayer(identifier.get());
+            if (player.isPresent()) {
+                return getFactionByPlayerUUID(player.get().getUniqueId());
+            }
+        }
+        return Optional.empty();
+
     }
 
     public static void setMember(String playerUUID, String factionName) {
@@ -426,6 +497,7 @@ public class FactionLogic {
         factionsStorage.addOrUpdateFaction(faction);
     }
 
+    //TODO: Recruit command because why not
     public static void setRecruit(String playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
         io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);

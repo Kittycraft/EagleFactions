@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionHome;
+import io.github.aquerr.eaglefactions.entities.FactionRelation;
 import io.github.aquerr.eaglefactions.permissions.Group;
 import io.github.aquerr.eaglefactions.permissions.Player;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -66,11 +67,9 @@ public class HOCONFactionStorage implements IStorage {
         try {
             configNode.getNode("factions", faction.Name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
             configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader.name);
-            //configNode.getNode("factions", faction.Name, "members").setValue(faction.Members);
             configNode.getNode("factions", faction.Name, "enemies").setValue(faction.Enemies);
             configNode.getNode("factions", faction.Name, "alliances").setValue(faction.Alliances);
             configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
-            //configNode.getNode("factions", faction.Name, "groups").setValue(faction.groups);
             List<String> groups = new ArrayList<>();
             faction.groups.forEach((a, b) -> {
                 groups.add(a);
@@ -337,6 +336,34 @@ public class HOCONFactionStorage implements IStorage {
         }
 
         return FactionsCache.getFactionsList();
+    }
+
+    @Override
+    public void updateRelations(List<FactionRelation> relations){
+        List<String> saveData = new ArrayList<>();
+        for(FactionRelation relation : relations){
+            saveData.add(relation.toString());
+        }
+        configNode.getNode("relations").getValue(saveData);
+        saveChanges();
+    }
+
+    @Override
+    public List<FactionRelation> getFactionRelations(){
+        List<FactionRelation> relations = new ArrayList<>();
+        Object relationList = configNode.getNode("relations").getValue();
+        if (relationList != null) {
+            for(String s : (List<String>) relationList){
+                try {
+                    relations.add(new FactionRelation(s));
+                } catch (Exception ignored) {}
+            }
+            return relations;
+        } else {
+            configNode.getNode("relations").setValue(new ArrayList<>());
+            saveChanges();
+            return relations;
+        }
     }
 
     @Override

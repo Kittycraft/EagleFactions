@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.storage;
 
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionRelation;
 
 import java.util.List;
 
@@ -12,6 +13,10 @@ public interface IStorage {
     Faction getFaction(String factionName);
 
     List<Faction> getFactions();
+
+    List<FactionRelation> getFactionRelations();
+
+    void updateRelations(List<FactionRelation> relations);
 
     void load();
 }

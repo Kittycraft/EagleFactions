@@ -1,7 +1,5 @@
 package io.github.aquerr.eaglefactions.managers;
 
-import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.entities.FactionMemberType;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -10,7 +8,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,15 +97,5 @@ public class PlayerManager {
         }
 
         return false;
-    }
-
-    public static @Nullable
-    FactionMemberType getFactionMemberType(Player factionPlayer, Faction faction) {
-        if (faction.containsMember(factionPlayer.getUniqueId().toString())) {
-            return FactionMemberType.MEMBER;
-        } else if (faction.Alliances.contains(factionPlayer.getUniqueId().toString())) {
-            return FactionMemberType.ALLY;
-        }
-        return null;
     }
 }
