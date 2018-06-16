@@ -108,6 +108,15 @@ public class FactionLogic {
         return factionPlayers;
     }
 
+    public static RelationType getOneWayRelation(String factionA, String factionB){
+        for(FactionRelation relation : relations){
+            if(relation.factionA.equals(factionA) && relation.factionB.equals(factionB)){
+                return relation.type;
+            }
+        }
+        return NEUTRAL;
+    }
+
     public static TextColor getRelationColor(String factionA, String factionB){
         switch (getRelation(factionA, factionB)){
             case ALLY: return TextColors.GREEN;
