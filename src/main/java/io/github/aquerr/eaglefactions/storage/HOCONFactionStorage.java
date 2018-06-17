@@ -67,8 +67,6 @@ public class HOCONFactionStorage implements IStorage {
         try {
             configNode.getNode("factions", faction.Name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
             configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader.name);
-            configNode.getNode("factions", faction.Name, "enemies").setValue(faction.Enemies);
-            configNode.getNode("factions", faction.Name, "alliances").setValue(faction.Alliances);
             configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
             List<String> groups = new ArrayList<>();
             faction.groups.forEach((a, b) -> {
@@ -81,7 +79,7 @@ public class HOCONFactionStorage implements IStorage {
             configNode.getNode("factions", faction.Name, "groups").setValue(groups);
 
             List<String> members = new ArrayList<>();
-            for(Player p : faction.Members){
+            for (Player p : faction.Members) {
                 members.add(p.name);
                 configNode.getNode("factions", faction.Name, "member", p.name, "inherit").setValue(p.inherit);
                 configNode.getNode("factions", faction.Name, "member", p.name, "nodes").setValue(p.nodes);
@@ -144,12 +142,10 @@ public class HOCONFactionStorage implements IStorage {
         Player leader = getFactionLeader(factionName);
         FactionHome home = getFactionHome(factionName);
         List<Player> members = getFactionMembers(factionName);
-        List<String> alliances = getFactionAlliances(factionName);
-        List<String> enemies = getFactionEnemies(factionName);
         List<String> claims = getFactionClaims(factionName);
         Map<String, Group> groups = getFactionGroups(factionName);
 
-        Faction faction = new Faction(factionName, tag, leader, members, claims, alliances, enemies, home, groups);
+        Faction faction = new Faction(factionName, tag, leader, members, claims, home, groups);
 
         //TODO: Refactor this code so that the power can be sent to the faction constructor like other parameters.
         //faction.Power = PowerManager.getFactionPower(faction); //Get power from all players in faction.
@@ -164,30 +160,6 @@ public class HOCONFactionStorage implements IStorage {
             return (List<String>) claimsObject;
         } else {
             configNode.getNode("factions", factionName, "claims").setValue(new ArrayList<>());
-            saveChanges();
-            return new ArrayList<>();
-        }
-    }
-
-    private List<String> getFactionEnemies(String factionName) {
-        Object enemiesObject = configNode.getNode("factions", factionName, "enemies").getValue();
-
-        if (enemiesObject != null) {
-            return (List<String>) enemiesObject;
-        } else {
-            configNode.getNode("factions", factionName, "enemies").setValue(new ArrayList<>());
-            saveChanges();
-            return new ArrayList<>();
-        }
-    }
-
-    private List<String> getFactionAlliances(String factionName) {
-        Object alliancesObject = configNode.getNode("factions", factionName, "alliances").getValue();
-
-        if (alliancesObject != null) {
-            return (List<String>) alliancesObject;
-        } else {
-            configNode.getNode("factions", factionName, "alliances").setValue(new ArrayList<String>());
             saveChanges();
             return new ArrayList<>();
         }
@@ -339,9 +311,9 @@ public class HOCONFactionStorage implements IStorage {
     }
 
     @Override
-    public void updateRelations(List<FactionRelation> relations){
+    public void updateRelations(List<FactionRelation> relations) {
         List<String> saveData = new ArrayList<>();
-        for(FactionRelation relation : relations){
+        for (FactionRelation relation : relations) {
             saveData.add(relation.toString());
         }
         configNode.getNode("relations").getValue(saveData);
@@ -349,14 +321,15 @@ public class HOCONFactionStorage implements IStorage {
     }
 
     @Override
-    public List<FactionRelation> getFactionRelations(){
+    public List<FactionRelation> getFactionRelations() {
         List<FactionRelation> relations = new ArrayList<>();
         Object relationList = configNode.getNode("relations").getValue();
         if (relationList != null) {
-            for(String s : (List<String>) relationList){
+            for (String s : (List<String>) relationList) {
                 try {
                     relations.add(new FactionRelation(s));
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
             return relations;
         } else {

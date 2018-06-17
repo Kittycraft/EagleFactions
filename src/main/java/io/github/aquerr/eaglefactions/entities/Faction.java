@@ -16,13 +16,8 @@ import java.util.Map;
 public class Faction {
     public String Name;
     public Text Tag;
-    //public BigDecimal Power;
-//    public List<String> Recruits;
     public List<Player> Members;
-    public List<String> Alliances;
-    public List<String> Enemies;
     public Player Leader;
-    //    public List<String> Officers;
     public List<String> Claims;
     public FactionHome Home;
     public Map<String, Group> groups;
@@ -35,8 +30,6 @@ public class Faction {
         this.Members = new ArrayList<>();
         this.Members.add(factionLeader);
         this.Claims = new ArrayList<>();
-        this.Alliances = new ArrayList<>();
-        this.Enemies = new ArrayList<>();
         this.groups = new HashMap<>();
         this.Home = null;
 
@@ -56,14 +49,12 @@ public class Faction {
     }
 
     //Constructor used while getting a faction from storage.
-    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, List<String> alliances, List<String> enemies, FactionHome home, Map<String, Group> groups) {
+    public Faction(String factionName, Text factionTag, Player factionLeader, List<Player> members, List<String> claims, FactionHome home, Map<String, Group> groups) {
         this.Name = factionName;
         this.Tag = factionTag;
         this.Leader = factionLeader;
         this.Members = members;
         this.Claims = claims;
-        this.Alliances = alliances;
-        this.Enemies = enemies;
         this.Home = home;
         this.groups = groups;
     }

@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions.listeners;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import org.spongepowered.api.entity.living.player.Player;
@@ -34,15 +35,7 @@ public class ChatMessageListener {
             Text.Builder otherPrefixesAndPlayer = Text.builder();
             Text.Builder factionPrefixText = Text.builder();
             Text.Builder rankPrefixText = Text.builder();
-            //Text.Builder playerText = Text.builder();
             Text.Builder message = Text.builder();
-
-            //Message = Prefixes + Player Name + Text
-            //OriginalMessage = Player Name + Text
-            //RawMessage = Text
-
-            //Get player name
-            //playerText.append(event.getOriginalMessage().getChildren().get(0));
 
             //Get Other Plugin Prefixes and Nickname from message.
             otherPrefixesAndPlayer.append(event.getMessage().getChildren().get(0));
@@ -61,8 +54,8 @@ public class ChatMessageListener {
 
                     //TODO: Add option to style prefixes by user form config file.
 
-                    for (String allianceName : playerFaction.Alliances) {
-                        receivers.addAll(FactionLogic.getOnlinePlayers(FactionLogic.getFactionByName(allianceName)));
+                    for (Faction alliance : FactionLogic.getRelationGroup(playerFaction.Name, RelationType.ALLY)) {
+                        receivers.addAll(FactionLogic.getOnlinePlayers(alliance));
                     }
 
                     receivers.addAll(FactionLogic.getOnlinePlayers(playerFaction));
@@ -133,8 +126,6 @@ public class ChatMessageListener {
             formattedMessage.append(factionAndRankPrefix.build());
             //Add Other Plugins Prefixes
             formattedMessage.append(otherPrefixesAndPlayer.build());
-            //Add player name
-            //formattedMessage.append(playerText.build());
             //Add message
             formattedMessage.append(message.build());
 

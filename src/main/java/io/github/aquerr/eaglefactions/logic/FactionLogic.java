@@ -108,42 +108,57 @@ public class FactionLogic {
         return factionPlayers;
     }
 
-    public static RelationType getOneWayRelation(String factionA, String factionB){
-        for(FactionRelation relation : relations){
-            if(relation.factionA.equals(factionA) && relation.factionB.equals(factionB)){
+    public static RelationType getOneWayRelation(String factionA, String factionB) {
+        for (FactionRelation relation : relations) {
+            if (relation.factionA.equals(factionA) && relation.factionB.equals(factionB)) {
                 return relation.type;
             }
         }
         return NEUTRAL;
     }
 
-    public static TextColor getRelationColor(String factionA, String factionB){
-        switch (getRelation(factionA, factionB)){
-            case ALLY: return TextColors.GREEN;
-            case SAME: return TextColors.GREEN;
-            case ENEMY: return TextColors.RED;
-            case TRUCE: return TextColors.GREEN;
-                default: return TextColors.GRAY;
+    public static List<Faction> getRelationGroup(String faction, RelationType type){
+        List<Faction> all = getFactions(), end = new ArrayList<>();
+        for(Faction f : all){
+            if(getRelation(faction, f.Name) == type){
+                end.add(f);
+            }
+        }
+        return end;
+    }
+
+    public static TextColor getRelationColor(String factionA, String factionB) {
+        switch (getRelation(factionA, factionB)) {
+            case ALLY:
+                return TextColors.GREEN;
+            case SAME:
+                return TextColors.GREEN;
+            case ENEMY:
+                return TextColors.RED;
+            case TRUCE:
+                return TextColors.GREEN;
+            default:
+                return TextColors.GRAY;
         }
     }
 
-    public static RelationType getRelation(String factionA, String factionB){
-        if(factionA.equals(factionB)){
+    public static RelationType getRelation(String factionA, String factionB) {
+        if (factionA.equals(factionB)) {
             return SAME;
         }
         List<FactionRelation> relations = getRelations();
         RelationType a = NEUTRAL, b = NEUTRAL;
-        for(FactionRelation relation : relations){
-            if(relation.factionA.equals(factionA) && relation.factionB.equals(factionB)){
+        for (FactionRelation relation : relations) {
+            if (relation.factionA.equals(factionA) && relation.factionB.equals(factionB)) {
                 a = relation.type;
-            }else if(relation.factionB.equals(factionA) && relation.factionA.equals(factionB)){
+            } else if (relation.factionB.equals(factionA) && relation.factionA.equals(factionB)) {
                 b = relation.type;
             }
         }
-        if(a == ENEMY || b == ENEMY){
+        if (a == ENEMY || b == ENEMY) {
             return ENEMY;
-        }else if (a != NEUTRAL && b != NEUTRAL){
-            if(a == ALLY && b == ALLY){
+        } else if (a != NEUTRAL && b != NEUTRAL) {
+            if (a == ALLY && b == ALLY) {
                 return ALLY;
             }
             return TRUCE;
@@ -151,12 +166,12 @@ public class FactionLogic {
         return NEUTRAL;
     }
 
-    public static void informFaction(Faction faction, Text text){
+    public static void informFaction(Faction faction, Text text) {
         getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
     }
 
-    public static void saveRelations(){
-        if(relations != null){
+    public static void saveRelations() {
+        if (relations != null) {
             factionsStorage.updateRelations(relations);
         }
     }
@@ -205,51 +220,6 @@ public class FactionLogic {
         Faction faction = getFactionByName(factionName);
         faction.Members.remove(faction.getMember(playerUUID.toString()));
         factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static void addAlly(String playerFactionName, String invitedFactionName) {
-        Faction playerFaction = getFactionByName(playerFactionName);
-        Faction invitedFaction = getFactionByName(invitedFactionName);
-
-        playerFaction.Alliances.add(invitedFactionName);
-        invitedFaction.Alliances.add(playerFactionName);
-
-        factionsStorage.addOrUpdateFaction(playerFaction);
-        factionsStorage.addOrUpdateFaction(invitedFaction);
-    }
-
-
-    public static void removeAlly(String playerFactionName, String removedFactionName) {
-        Faction playerFaction = getFactionByName(playerFactionName);
-        Faction removedFaction = getFactionByName(removedFactionName);
-
-        playerFaction.Alliances.remove(removedFactionName);
-        removedFaction.Alliances.remove(playerFactionName);
-
-        factionsStorage.addOrUpdateFaction(playerFaction);
-        factionsStorage.addOrUpdateFaction(removedFaction);
-    }
-
-    public static void addEnemy(String playerFactionName, String enemyFactionName) {
-        Faction playerFaction = getFactionByName(playerFactionName);
-        Faction enemyFaction = getFactionByName(enemyFactionName);
-
-        playerFaction.Enemies.add(enemyFactionName);
-        enemyFaction.Enemies.add(playerFactionName);
-
-        factionsStorage.addOrUpdateFaction(playerFaction);
-        factionsStorage.addOrUpdateFaction(enemyFaction);
-    }
-
-    public static void removeEnemy(String playerFactionName, String enemyFactionName) {
-        Faction playerFaction = getFactionByName(playerFactionName);
-        Faction enemyFaction = getFactionByName(enemyFactionName);
-
-        playerFaction.Enemies.remove(enemyFactionName);
-        enemyFaction.Enemies.remove(playerFactionName);
-
-        factionsStorage.addOrUpdateFaction(playerFaction);
-        factionsStorage.addOrUpdateFaction(enemyFaction);
     }
 
     public static void setLeader(UUID newLeaderUUID, String playerFactionName) {

@@ -5,6 +5,7 @@ import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+//TODO: Re-write symbol logic
 public class MapCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
@@ -62,7 +64,6 @@ public class MapCommand implements CommandExecutor {
         String normalFactions = "";
         String allianceFactions = "";
         String enemyFactions = "";
-        //String playerFaction = "";
 
         //Map resolution
         int mapWidth = 20;
@@ -93,13 +94,12 @@ public class MapCommand implements CommandExecutor {
 
                         if (optionalChunkFaction.get().Name.equals(playerFaction.Name)) {
                             textBuilder.append(factionMark.toBuilder().onClick(TextActions.executeCallback(claimByMap(player, chunk))).build());
-//                            playerFaction = optionalChunkFaction.get();
-                        } else if (playerFaction.Alliances.contains(optionalChunkFaction.get().Name)) {
+                        } else if (FactionLogic.getRelation(playerFaction.Name, optionalChunkFaction.get().Name) == RelationType.ALLY) {
                             textBuilder.append(allianceMark);
                             if (!allianceFactions.contains(optionalChunkFaction.get().Name)) {
                                 allianceFactions += optionalChunkFaction.get().Name + ", ";
                             }
-                        } else if (playerFaction.Enemies.contains(optionalChunkFaction.get().Name)) {
+                        } else if (FactionLogic.getRelation(playerFaction.Name, optionalChunkFaction.get().Name) == RelationType.ENEMY) {
                             textBuilder.append(enemyMark);
                             if (!enemyFactions.contains(optionalChunkFaction.get().Name)) {
                                 enemyFactions += optionalChunkFaction.get().Name + ", ";
@@ -182,7 +182,6 @@ public class MapCommand implements CommandExecutor {
 
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
-//                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.MapCommand)) {
                     //We need to check if because player can click on the claim that is already claimed (in the previous map in the chat)
                     if (!FactionLogic.isClaimed(world.getUniqueId(), chunk)) {
                         if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.Claims.size()) {
@@ -227,7 +226,6 @@ public class MapCommand implements CommandExecutor {
 
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND_HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.UNCLAIMED, TextColors.WHITE, "!"));
                     }
-//                }
             } else {
                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }
