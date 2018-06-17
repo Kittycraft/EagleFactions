@@ -2,6 +2,8 @@ package io.github.aquerr.eaglefactions;
 
 import com.google.inject.Inject;
 import io.github.aquerr.eaglefactions.commands.*;
+import io.github.aquerr.eaglefactions.commands.permission.PermAction;
+import io.github.aquerr.eaglefactions.commands.permission.PermScope;
 import io.github.aquerr.eaglefactions.commands.relation.AllyCommand;
 import io.github.aquerr.eaglefactions.commands.relation.EnemyCommand;
 import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
@@ -189,6 +191,7 @@ public class EagleFactions {
         Subcommands.put(Arrays.asList("i", "info", "f", "show", "faction"), CommandSpec.builder()
                 .description(Text.of("Show info about a faction"))
                 .arguments(new FactionNameArgument(Text.of("faction name")))
+                .permission(PluginPermissions.InfoCommand)
                 .executor(new InfoCommand())
                 .build());
 
@@ -230,15 +233,6 @@ public class EagleFactions {
                 .arguments(new FactionNameArgument(Text.of("faction name")))
                 .executor(new TruceCommand())
                 .build());
-
-//        For personal reference
-//        CommandSpec addAllyCommand = CommandSpec.builder()
-//                .description(Text.of("Invite faction to the alliance"))
-//                .permission(PluginPermissions.AddAllyCommand)
-//                .arguments(new FactionNameArgument(Text.of("faction name")))
-//                .executor(new AddAllyCommand())
-//                .build();
-
 
         //Officer command. Add or remove officers.
         Subcommands.put(Collections.singletonList("officer"), CommandSpec.builder()
@@ -351,10 +345,17 @@ public class EagleFactions {
                 .build());
 
         //Setleader Command
-        Subcommands.put(Collections.singletonList("setleader"), CommandSpec.builder()
+        Subcommands.put(Arrays.asList("setleader", "leader"), CommandSpec.builder()
                 .description(Text.of("Set someone as leader (removes you as a leader if you are one)"))
                 .permission(PluginPermissions.SetLeaderCommand)
                 .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
+                .executor(new SetLeaderCommand())
+                .build());
+
+        Subcommands.put(Arrays.asList("p", "perm", "permission", "permissions"),CommandSpec.builder()
+                .description(Text.of("Shows and edits your faction's permission"))
+                .arguments(GenericArguments.choices(Text.of("scope"), PermScope.choices), GenericArguments.string(Text.of("group")), GenericArguments.choices(Text.of("action"), PermAction.choices), GenericArguments.remainingJoinedStrings(Text.of("node")))
+                .permission(PluginPermissions.PermissionCommand)
                 .executor(new SetLeaderCommand())
                 .build());
 

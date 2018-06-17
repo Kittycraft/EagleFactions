@@ -3,12 +3,12 @@
 # Eagle Factions Remake
 This is a factions plugin more similar to massivecraft factions built off of the existing Eagle Factions.
 #####Top Priority (will be worked on tomorrow)
- * Completely re-write ally/enemy system
- * Remove references to PluginMessages.java (***No one really used the translation feature and its a pain to maintain***)
  * Add commands for permissions
  * Add permissions for allies
  * Add user friendly /f promote and /f demote
  * Write permissions documentation
+ * Remove references to PluginMessages.java (***No one really used the translation feature and its a pain to maintain***)
+
 
 #####Personal Notes on stuff that needs to be fixed
  * /f f while not in a faction claims you have the wrong syntax

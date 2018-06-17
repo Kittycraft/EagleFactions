@@ -33,7 +33,6 @@ public class Faction {
         this.groups = new HashMap<>();
         this.Home = null;
 
-        //TODO: Setup basic perms
         groups.put("leader", new Group("leader", 1, "[^-]"));
         groups.put("officer", new Group("officer", 10, "f ally",
                 "f enemy", "f kick", "f invite", "f *claim", "f member", "f sethome"));
