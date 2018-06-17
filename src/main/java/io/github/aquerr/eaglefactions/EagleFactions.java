@@ -2,6 +2,10 @@ package io.github.aquerr.eaglefactions;
 
 import com.google.inject.Inject;
 import io.github.aquerr.eaglefactions.commands.*;
+import io.github.aquerr.eaglefactions.commands.relation.AllyCommand;
+import io.github.aquerr.eaglefactions.commands.relation.EnemyCommand;
+import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
+import io.github.aquerr.eaglefactions.commands.relation.TruceCommand;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.AllyInvite;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
@@ -213,53 +217,28 @@ public class EagleFactions {
                 .executor(new EnemyCommand())
                 .build());
 
-//        //Build add ally command.
+        Subcommands.put(Arrays.asList("neutral"), CommandSpec.builder()
+                .description(Text.of("Request to be neutral with another faction"))
+                .permission(PluginPermissions.EnemyCommands)
+                .arguments(new FactionNameArgument(Text.of("faction name")))
+                .executor(new NeutralCommand())
+                .build());
+
+        Subcommands.put(Arrays.asList("t", "truce"), CommandSpec.builder()
+                .description(Text.of("Send or accept a truce request"))
+                .permission(PluginPermissions.EnemyCommands)
+                .arguments(new FactionNameArgument(Text.of("faction name")))
+                .executor(new TruceCommand())
+                .build());
+
+//        For personal reference
 //        CommandSpec addAllyCommand = CommandSpec.builder()
 //                .description(Text.of("Invite faction to the alliance"))
 //                .permission(PluginPermissions.AddAllyCommand)
 //                .arguments(new FactionNameArgument(Text.of("faction name")))
 //                .executor(new AddAllyCommand())
 //                .build();
-//
-//        //Build remove ally command.
-//        CommandSpec removeAllyCommand = CommandSpec.builder()
-//                .description(Text.of("Remove faction from the alliance"))
-//                .permission(PluginPermissions.RemoveAllyCommand)
-//                .arguments(new FactionNameArgument(Text.of("faction name")))
-//                .executor(new RemoveAllyCommand())
-//                .build();
-//
-//        //Build alliance commands.
-//        Subcommands.put(Collections.singletonList("ally"), CommandSpec.builder()
-//                .description(Text.of("Invite faction to the alliance"))
-//                .permission(PluginPermissions.AllyCommands)
-//                .child(addAllyCommand, "a", "add")
-//                .child(removeAllyCommand, "r", "remove")
-//                .build());
-//
-//        //Build add enemy command.
-//        CommandSpec addEnemyCommand = CommandSpec.builder()
-//                .description(Text.of("Set faction as enemy"))
-//                .permission(PluginPermissions.AddEnemyCommand)
-//                .arguments(new FactionNameArgument(Text.of("faction name")))
-//                .executor(new AddEnemyCommand())
-//                .build();
-//
-//        //Build remove enemy command.
-//        CommandSpec removeEnemyCommand = CommandSpec.builder()
-//                .description(Text.of("Remove faction from the enemies"))
-//                .permission(PluginPermissions.RemoveEnemyCommand)
-//                .arguments(new FactionNameArgument(Text.of("faction name")))
-//                .executor(new RemoveEnemyCommand())
-//                .build();
-//
-//        //Build enemy commands.
-//        Subcommands.put(Collections.singletonList("enemy"), CommandSpec.builder()
-//                .description(Text.of("Declare someone a war"))
-//                .permission(PluginPermissions.EnemyCommands)
-//                .child(addEnemyCommand, "a", "add")
-//                .child(removeEnemyCommand, "r", "remove")
-//                .build());
+
 
         //Officer command. Add or remove officers.
         Subcommands.put(Collections.singletonList("officer"), CommandSpec.builder()
