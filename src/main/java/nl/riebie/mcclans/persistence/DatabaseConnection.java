@@ -47,9 +47,7 @@ public class DatabaseConnection {
         DBMSType dbmsType = DBMSType.getType(Config.getString(Config.DBMS_TYPE));
         if (dbmsType.equals(DBMSType.MYSQL)) {
             url = "jdbc:" + MYSQL_DRIVER_NAME + "://" + user + ":" + password + "@" + server + ":" + String.valueOf(port) + "/" + database;
-        } else if (dbmsType.equals(DBMSType.SQLITE)) {
-            url = "jdbc:" + SQLITE_DRIVER_NAME + ":" + database;
-        } else if (dbmsType.equals(DBMSType.H2)) {
+        }else if (dbmsType.equals(DBMSType.H2)) {
             url = "jdbc:" + H2_DRIVER_NAME + ":" + database;
         } else {
             return false;
