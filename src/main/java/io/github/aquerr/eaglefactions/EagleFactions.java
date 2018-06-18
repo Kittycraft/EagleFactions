@@ -1,14 +1,8 @@
 package io.github.aquerr.eaglefactions;
 
 import com.google.inject.Inject;
-import io.github.aquerr.eaglefactions.commands.*;
-import io.github.aquerr.eaglefactions.commands.permission.PermAction;
-import io.github.aquerr.eaglefactions.commands.permission.PermCommand;
-import io.github.aquerr.eaglefactions.commands.permission.PermScope;
-import io.github.aquerr.eaglefactions.commands.relation.AllyCommand;
-import io.github.aquerr.eaglefactions.commands.relation.EnemyCommand;
-import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
-import io.github.aquerr.eaglefactions.commands.relation.TruceCommand;
+import io.github.aquerr.eaglefactions.commands.HelpCommand;
+import io.github.aquerr.eaglefactions.commands.SubcommandFactory;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Invite;
@@ -18,11 +12,9 @@ import io.github.aquerr.eaglefactions.logic.MessageLoader;
 import io.github.aquerr.eaglefactions.logic.PVPLogger;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
-import io.github.aquerr.eaglefactions.parsers.FactionNameArgument;
 import io.github.aquerr.eaglefactions.version.VersionChecker;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -36,7 +28,6 @@ import java.util.*;
 
 @Plugin(id = PluginInfo.Id, name = PluginInfo.Name, version = PluginInfo.Version, description = PluginInfo.Description, authors = PluginInfo.Author)
 public class EagleFactions {
-    public static Map<List<String>, CommandSpec> Subcommands = new HashMap<>();
     public static List<Invite> InviteList = new ArrayList<>();
     public static List<UUID> AutoClaimList = new ArrayList<>();
     public static List<UUID> AutoMapList = new ArrayList<>();
@@ -72,11 +63,25 @@ public class EagleFactions {
 
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.AQUA, "Configs loaded..."));
 
-        InitializeCommands();
+        //Build all commands
+        CommandSpec commandEagleFactions = CommandSpec.builder()
+                .description(Text.of("Help Command"))
+                .executor(new HelpCommand())
+                .children(SubcommandFactory.getSubcommands())
+                .build();
+
+        //Register commands
+        Sponge.getCommandManager().register(this, commandEagleFactions, "factions", "faction", "f");
 
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.AQUA, "Commands loaded..."));
 
-        RegisterListeners();
+        //Register listeners
+        Arrays.asList(new EntityDamageListener(),new PlayerJoinListener(), new PlayerDeathListener(),
+                new PlayerBlockPlaceListener(), new BlockBreakListener(),new PlayerInteractListener(),
+                new PlayerMoveListener(), new ChatMessageListener(), new EntitySpawnListener(),
+                new FireBlockPlaceListener(), new PlayerDisconnectListener(), new MobTargetListener(),
+                new SendCommandListener())
+                .forEach(e -> Sponge.getEventManager().registerListeners(this, e));
 
         //Display some info text in the console.
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.GREEN, "=========================================="));
@@ -106,278 +111,6 @@ public class EagleFactions {
         _pvpLogger = new PVPLogger();
     }
 
-    private void InitializeCommands() {
-        //Help command should display all possible commands in plugin.
-        Subcommands.put(Collections.singletonList("help"), CommandSpec.builder()
-                .description(Text.of("Help"))
-                .permission(PluginPermissions.HelpCommand)
-                .executor(new HelpCommand())
-                .build());
-
-        //Create faction command.
-        Subcommands.put(Arrays.asList("create"), CommandSpec.builder()
-                .description(Text.of("Create Faction Command"))
-                .permission(PluginPermissions.CreateCommand)
-                .arguments(GenericArguments.optional(GenericArguments.string(Text.of("tag"))),
-                        GenericArguments.optional(GenericArguments.string(Text.of("faction name"))))
-                .executor(new CreateCommand())
-                .build());
-
-        //Disband faction command.
-        Subcommands.put(Collections.singletonList("disband"), CommandSpec.builder()
-                .description(Text.of("Disband Faction Command"))
-                .permission(PluginPermissions.DisbandCommand)
-                .executor(new DisbandCommand())
-                .build());
-
-        //List all factions.
-        Subcommands.put(Collections.singletonList("list"), CommandSpec.builder()
-                .description(Text.of("List all factions"))
-                .permission(PluginPermissions.ListCommand)
-                .executor(new ListCommand())
-                .build());
-
-        //Invite a player to the faction.
-        Subcommands.put(Collections.singletonList("invite"), CommandSpec.builder()
-                .description(Text.of("Invites a player to the faction"))
-                .permission(PluginPermissions.InviteCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .executor(new InviteCommand())
-                .build());
-
-        //Kick a player from the faction.
-        Subcommands.put(Collections.singletonList("kick"), CommandSpec.builder()
-                .description(Text.of("Kicks a player from the faction"))
-                .permission(PluginPermissions.KickCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .executor(new KickCommand())
-                .build());
-
-        //Join faction command
-        Subcommands.put(Arrays.asList("j", "join"), CommandSpec.builder()
-                .description(Text.of("Join a specific faction"))
-                .permission(PluginPermissions.JoinCommand)
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .executor(new JoinCommand())
-                .build());
-
-        //Leave faction command
-        Subcommands.put(Collections.singletonList("leave"), CommandSpec.builder()
-                .description(Text.of("Leave a faction"))
-                .permission(PluginPermissions.LeaveCommand)
-                .executor(new LeaveCommand())
-                .build());
-
-        //Version command
-        Subcommands.put(Arrays.asList("v", "version"), CommandSpec.builder()
-                .description(Text.of("Shows plugin version"))
-                .permission(PluginPermissions.VersionCommand)
-                .executor(new VersionCommand())
-                .build());
-
-        //Info command. Shows info about a faction.
-        Subcommands.put(Arrays.asList("i", "info", "f", "show", "faction"), CommandSpec.builder()
-                .description(Text.of("Show info about a faction"))
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .permission(PluginPermissions.InfoCommand)
-                .executor(new InfoCommand())
-                .build());
-
-        //TODO: Reformat how /f p looks
-        //Player command. Shows info about a player. (their faction etc.)
-        Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
-                .description(Text.of("Show info about a player"))
-                .permission(PluginPermissions.PlayerCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .executor(new PlayerCommand())
-                .build());
-
-
-        //New ally command
-        Subcommands.put(Arrays.asList("a", "ally"), CommandSpec.builder()
-                .description(Text.of("Send or accept an alliance request"))
-                .permission(PluginPermissions.AllyCommands)
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .executor(new AllyCommand())
-                .build());
-
-        //New enemy command
-        Subcommands.put(Arrays.asList("e", "enemy"), CommandSpec.builder()
-                .description(Text.of("Enemy another faction"))
-                .permission(PluginPermissions.EnemyCommands)
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .executor(new EnemyCommand())
-                .build());
-
-        Subcommands.put(Arrays.asList("neutral"), CommandSpec.builder()
-                .description(Text.of("Request to be neutral with another faction"))
-                .permission(PluginPermissions.EnemyCommands)
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .executor(new NeutralCommand())
-                .build());
-
-        Subcommands.put(Arrays.asList("t", "truce"), CommandSpec.builder()
-                .description(Text.of("Send or accept a truce request"))
-                .permission(PluginPermissions.EnemyCommands)
-                .arguments(new FactionNameArgument(Text.of("faction name")))
-                .executor(new TruceCommand())
-                .build());
-
-        //Officer command. Add or remove officers.
-        Subcommands.put(Collections.singletonList("officer"), CommandSpec.builder()
-                .description(Text.of("Add or Remove officer"))
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .permission(PluginPermissions.OfficerCommand)
-                .executor(new OfficerCommand())
-                .build());
-
-        //Member command.
-        Subcommands.put(Collections.singletonList("member"), CommandSpec.builder()
-                .description(Text.of("Add or remove member"))
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .permission(PluginPermissions.MemberCommand)
-                .executor(new MemberCommand())
-                .build());
-
-        //Claim command.
-        Subcommands.put(Collections.singletonList("claim"), CommandSpec.builder()
-                .description(Text.of("Claim a land for your faction"))
-                .permission(PluginPermissions.ClaimCommand)
-                .executor(new ClaimCommand())
-                .build());
-
-        //Unclaim command.
-        Subcommands.put(Collections.singletonList("unclaim"), CommandSpec.builder()
-                .description(Text.of("Unclaim a land captured by your faction."))
-                .permission(PluginPermissions.UnclaimCommand)
-                .executor(new UnclaimCommand())
-                .build());
-
-        //Add Unclaimall Command
-        Subcommands.put(Collections.singletonList("unclaimall"), CommandSpec.builder()
-                .description(Text.of("Remove all claims"))
-                .permission(PluginPermissions.UnclaimAllCommand)
-                .executor(new UnclaimallCommand())
-                .build());
-
-        //Map command
-        Subcommands.put(Collections.singletonList("map"), CommandSpec.builder()
-                .description(Text.of("Turn on/off factions map"))
-                .permission(PluginPermissions.MapCommand)
-                .executor(new MapCommand())
-                .build());
-
-        //Sethome command
-        Subcommands.put(Collections.singletonList("sethome"), CommandSpec.builder()
-                .description(Text.of("Set faction's home"))
-                .permission(PluginPermissions.SetHomeCommand)
-                .executor(new SetHomeCommand())
-                .build());
-
-        //Home command
-        Subcommands.put(Collections.singletonList("home"), CommandSpec.builder()
-                .description(Text.of("Teleport to faction's home"))
-                .permission(PluginPermissions.HomeCommand)
-                .executor(new HomeCommand())
-                .build());
-
-        //Add autoclaim command.
-        Subcommands.put(Collections.singletonList("autoclaim"), CommandSpec.builder()
-                .description(Text.of("Autoclaim Command"))
-                .permission(PluginPermissions.AutoClaimCommand)
-                .executor(new AutoClaimCommand())
-                .build());
-
-        //Add automap command
-        Subcommands.put(Collections.singletonList("automap"), CommandSpec.builder()
-                .description(Text.of("Automap command"))
-                .permission(PluginPermissions.AutoMapCommand)
-                .executor(new AutoMapCommand())
-                .build());
-
-        //Add admin command
-        Subcommands.put(Collections.singletonList("admin"), CommandSpec.builder()
-                .description(Text.of("Toggle admin mode"))
-                .permission(PluginPermissions.AdminCommand)
-                .executor(new AdminCommand())
-                .build());
-
-        //Add SetPower Command
-        Subcommands.put(Collections.singletonList("setpower"), CommandSpec.builder()
-                .description(Text.of("Set player's power"))
-                .permission(PluginPermissions.SetPowerCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))),
-                        GenericArguments.optional(GenericArguments.string(Text.of("power"))))
-                .executor(new SetPowerCommand())
-                .build());
-
-        //Reload Command
-        Subcommands.put(Collections.singletonList("reload"), CommandSpec.builder()
-                .description(Text.of("Reload config file"))
-                .permission(PluginPermissions.ReloadCommand)
-                .executor(new ReloadCommand())
-                .build());
-
-        //Chat Command
-        Subcommands.put(Arrays.asList("chat", "c"), CommandSpec.builder()
-                .description(Text.of("Chat command"))
-                .permission(PluginPermissions.ChatCommand)
-                .arguments(GenericArguments.optional(GenericArguments.enumValue(Text.of("chat"), ChatEnum.class)))
-                .executor(new ChatCommand())
-                .build());
-
-        //Top Command
-        Subcommands.put(Collections.singletonList("top"), CommandSpec.builder()
-                .description(Text.of("Top Command"))
-                .permission(PluginPermissions.TopCommand)
-                .executor(new TopCommand())
-                .build());
-
-        //Setleader Command
-        Subcommands.put(Arrays.asList("setleader", "leader"), CommandSpec.builder()
-                .description(Text.of("Set someone as leader (removes you as a leader if you are one)"))
-                .permission(PluginPermissions.SetLeaderCommand)
-                .arguments(GenericArguments.optional(GenericArguments.player(Text.of("player"))))
-                .executor(new SetLeaderCommand())
-                .build());
-
-        Subcommands.put(Arrays.asList("p", "perm", "permission", "permissions"),CommandSpec.builder()
-                .description(Text.of("Shows and edits your faction's permission"))
-                .arguments(GenericArguments.optional(GenericArguments.seq(GenericArguments.choices(Text.of("scope"), PermScope.choices), GenericArguments.optional(GenericArguments.seq(GenericArguments.string(Text.of("group")),
-                        GenericArguments.optional(GenericArguments.seq(GenericArguments.choices(Text.of("action"), PermAction.choices), GenericArguments.optional(GenericArguments.remainingJoinedStrings(Text.of("node"))))))))))
-                .permission(PluginPermissions.PermissionCommand)
-                .executor(new PermCommand())
-                .build());
-
-        //TODO: Tag color depends on relation!
-
-        //Build all commands
-        CommandSpec commandEagleFactions = CommandSpec.builder()
-                .description(Text.of("Help Command"))
-                .executor(new HelpCommand())
-                .children(Subcommands)
-                .build();
-
-        //Register commands
-        Sponge.getCommandManager().register(this, commandEagleFactions, "factions", "faction", "f");
-    }
-
-    private void RegisterListeners() {
-        Sponge.getEventManager().registerListeners(this, new EntityDamageListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerJoinListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerDeathListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerBlockPlaceListener());
-        Sponge.getEventManager().registerListeners(this, new BlockBreakListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerInteractListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerMoveListener());
-        Sponge.getEventManager().registerListeners(this, new ChatMessageListener());
-        Sponge.getEventManager().registerListeners(this, new EntitySpawnListener());
-        Sponge.getEventManager().registerListeners(this, new FireBlockPlaceListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerDisconnectListener());
-        Sponge.getEventManager().registerListeners(this, new MobTargetListener());
-
-        Sponge.getEventManager().registerListeners(this, new SendCommandListener());
-    }
 
     public Configuration getConfiguration() {
         return this.configuration;
