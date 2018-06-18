@@ -10,13 +10,13 @@ public class Group {
     public int priority = 100;
 
     public Group(String name){
-        this.name = name;
-        prefix = name;
-        perms = new PermObject();
+       this(name, 15, new String[]{});
     }
 
     public Group(String name, int priority, String... basicPerms){
-        this(name);
+        this.name = name;
+        prefix = name;
+        perms = new PermObject();
         this.priority = priority;
         for(String s : basicPerms){
             perms.addNode(s);

@@ -11,6 +11,7 @@ import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.storage.HOCONFactionStorage;
 import io.github.aquerr.eaglefactions.storage.IStorage;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
@@ -287,6 +288,10 @@ public class FactionLogic {
         return false;
     }
 
+    public static void saveFaction(Faction faction){
+        factionsStorage.addOrUpdateFaction(faction);
+    }
+
     public static void setHome(@Nullable UUID worldUUID, Faction faction, @Nullable Vector3i home) {
         if (home != null && worldUUID != null) {
             faction.Home = new FactionHome(worldUUID, home);
@@ -439,16 +444,14 @@ public class FactionLogic {
         } else return false;
     }
 
-    @Inject
-    private static Server server;
-
     public static Optional<Faction> getFactionByIdentifier(Optional<String> identifier) {
         if (identifier.isPresent()) {
             Faction faction = getFactionByName(identifier.get());
             if (faction != null) {
                 return Optional.of(faction);
             }
-            Optional<Player> player = server.getPlayer(identifier.get());
+
+            Optional<Player> player = Sponge.getGame().getServer().getPlayer(identifier.get());
             if (player.isPresent()) {
                 return getFactionByPlayerUUID(player.get().getUniqueId());
             }

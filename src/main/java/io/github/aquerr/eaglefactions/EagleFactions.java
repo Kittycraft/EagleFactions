@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions;
 import com.google.inject.Inject;
 import io.github.aquerr.eaglefactions.commands.*;
 import io.github.aquerr.eaglefactions.commands.permission.PermAction;
+import io.github.aquerr.eaglefactions.commands.permission.PermCommand;
 import io.github.aquerr.eaglefactions.commands.permission.PermScope;
 import io.github.aquerr.eaglefactions.commands.relation.AllyCommand;
 import io.github.aquerr.eaglefactions.commands.relation.EnemyCommand;
@@ -195,6 +196,7 @@ public class EagleFactions {
                 .executor(new InfoCommand())
                 .build());
 
+        //TODO: Reformat how /f p looks
         //Player command. Shows info about a player. (their faction etc.)
         Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
                 .description(Text.of("Show info about a player"))
@@ -354,9 +356,10 @@ public class EagleFactions {
 
         Subcommands.put(Arrays.asList("p", "perm", "permission", "permissions"),CommandSpec.builder()
                 .description(Text.of("Shows and edits your faction's permission"))
-                .arguments(GenericArguments.choices(Text.of("scope"), PermScope.choices), GenericArguments.string(Text.of("group")), GenericArguments.choices(Text.of("action"), PermAction.choices), GenericArguments.remainingJoinedStrings(Text.of("node")))
+                .arguments(GenericArguments.optional(GenericArguments.seq(GenericArguments.choices(Text.of("scope"), PermScope.choices), GenericArguments.optional(GenericArguments.seq(GenericArguments.string(Text.of("group")),
+                        GenericArguments.optional(GenericArguments.seq(GenericArguments.choices(Text.of("action"), PermAction.choices), GenericArguments.optional(GenericArguments.remainingJoinedStrings(Text.of("node"))))))))))
                 .permission(PluginPermissions.PermissionCommand)
-                .executor(new SetLeaderCommand())
+                .executor(new PermCommand())
                 .build());
 
         //TODO: Tag color depends on relation!

@@ -37,7 +37,6 @@ public class InviteCommand implements CommandExecutor {
                 if (optionalSenderFaction.isPresent()) {
                     Faction senderFaction = optionalSenderFaction.get();
 
-//                    if (senderFaction.isAllowed(senderPlayer.getUniqueId().toString(), PluginPermissions.InviteCommand)) {
                         if (MainLogic.isPlayerLimit()) {
                             if (senderFaction.Members.size() >= MainLogic.getPlayerLimit()) {
                                 senderPlayer.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_INVITE_MORE_PLAYERS_TO_YOUR_FACTION + " " + PluginMessages.FACTIONS_PLAYER_LIMIT_HAS_BEEN_REACHED));
@@ -73,9 +72,6 @@ public class InviteCommand implements CommandExecutor {
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYER_IS_ALREADY_IN_A_FACTION));
                         }
-//                    } else {
-//                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_INVITE_PLAYERS_TO_FACTION));
-//                    }
                 } else {
                     source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
                 }

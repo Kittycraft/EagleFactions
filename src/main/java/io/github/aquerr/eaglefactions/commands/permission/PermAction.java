@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum PermAction {
-    ADD, REMOVE, REM, DEL, DELETE, CREATE;
+    add, remove, rem, del, delete, create, parents, group;
     public static final Map<String, PermAction> choices;
 
     static {

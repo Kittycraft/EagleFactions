@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum PermScope {
-    USER, GROUP;
+    user, group, help;
     public static final Map<String, PermScope> choices;
 
     static {

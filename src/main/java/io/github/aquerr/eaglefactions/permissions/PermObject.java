@@ -2,9 +2,7 @@ package io.github.aquerr.eaglefactions.permissions;
 
 import io.github.aquerr.eaglefactions.entities.Faction;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class PermObject {
 
@@ -72,6 +70,17 @@ public class PermObject {
         if(inherit.contains(node)) {
             inherit.remove(node);
         }
+    }
+
+    public Collection<String> getInheritedNodes(Faction context){
+        Collection<String> set = new HashSet<>();
+        inherit.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
+        return set;
+    }
+
+    private void addAllNodesToSet(Collection<String> set, Faction context){
+        set.addAll(nodes);
+        inherit.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
     }
 
 }

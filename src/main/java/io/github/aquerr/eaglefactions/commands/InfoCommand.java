@@ -1,8 +1,10 @@
 package io.github.aquerr.eaglefactions.commands;
 
+import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
+import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.command.CommandException;
@@ -36,7 +38,7 @@ public class InfoCommand implements CommandExecutor {
 
         Faction faction;
         if (optionalFactionName.isPresent()) {
-            faction = FactionLogic.getFactionByName(optionalFactionName.get());
+            faction = FactionLogic.getFactionByIdentifier(optionalFactionName).get();
         } else {
             if (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent()) {
                 faction = FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).get();
@@ -44,7 +46,11 @@ public class InfoCommand implements CommandExecutor {
                 faction = FactionLogic.getFactionByName("wilderness");
             }
         }
-        showFactionInfo(source, faction);
+        if(faction == null){
+            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Could not find faction or user."));
+        }else {
+            showFactionInfo(source, faction);
+        }
         return CommandResult.success();
     }
 
@@ -53,7 +59,7 @@ public class InfoCommand implements CommandExecutor {
         for (Faction alliance : FactionLogic.getRelationGroup(faction, type)) {
              sb.append(alliance.Name + ", ");
         }
-        return sb.substring(0, sb.length() - 2);
+        return sb.length() > 2 ? sb.substring(0, sb.length() - 2) : "";
     }
 
     private void showFactionInfo(CommandSource source, Faction faction) {

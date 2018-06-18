@@ -19,7 +19,7 @@ import java.util.Optional;
 public class SetLeaderCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalNewLeaderPlayer = context.<Player>getOne("player");
+        Optional<Player> optionalNewLeaderPlayer = context.getOne("player");
 
         if (optionalNewLeaderPlayer.isPresent()) {
             if (source instanceof Player) {
