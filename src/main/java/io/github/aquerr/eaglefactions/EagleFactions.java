@@ -10,10 +10,8 @@ import io.github.aquerr.eaglefactions.commands.relation.EnemyCommand;
 import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
 import io.github.aquerr.eaglefactions.commands.relation.TruceCommand;
 import io.github.aquerr.eaglefactions.config.Configuration;
-import io.github.aquerr.eaglefactions.entities.AllyInvite;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Invite;
-import io.github.aquerr.eaglefactions.entities.RemoveEnemy;
 import io.github.aquerr.eaglefactions.listeners.*;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MessageLoader;
@@ -38,10 +36,8 @@ import java.util.*;
 
 @Plugin(id = PluginInfo.Id, name = PluginInfo.Name, version = PluginInfo.Version, description = PluginInfo.Description, authors = PluginInfo.Author)
 public class EagleFactions {
-    public static Map<List<String>, CommandSpec> Subcommands = new HashMap<List<String>, CommandSpec>();
+    public static Map<List<String>, CommandSpec> Subcommands = new HashMap<>();
     public static List<Invite> InviteList = new ArrayList<>();
-    public static List<AllyInvite> AllayInviteList = new ArrayList<>();
-    public static List<RemoveEnemy> RemoveEnemyList = new ArrayList<>();
     public static List<UUID> AutoClaimList = new ArrayList<>();
     public static List<UUID> AutoMapList = new ArrayList<>();
     public static List<UUID> AdminList = new ArrayList<>();
@@ -50,7 +46,7 @@ public class EagleFactions {
     public static Map<UUID, ChatEnum> ChatList = new HashMap<>();
     public static Map<UUID, Integer> HomeCooldownPlayers = new HashMap<>();
     private static EagleFactions eagleFactions;
-    private Configuration _configuration;
+    private Configuration configuration;
     private PVPLogger _pvpLogger;
     @Inject
     private Logger _logger;
@@ -62,18 +58,9 @@ public class EagleFactions {
         return eagleFactions;
     }
 
-    public Logger getLogger() {
-        return _logger;
+    public static Logger getLogger(){
+        return EagleFactions.getEagleFactions()._logger;
     }
-
-    public Path getConfigDir() {
-        return _configDir;
-    }
-
-//    @Inject
-//    private Game game;
-//    public Game getGame(){return game;}
-
 
     @Listener
     public void onServerInitialization(GameInitializationEvent event) {
@@ -107,7 +94,7 @@ public class EagleFactions {
 
     private void SetupConfigs() {
         // Create configs
-        _configuration = new Configuration(_configDir);
+        configuration = new Configuration(_configDir);
 
         FactionLogic.setup(_configDir);
         PlayerManager.setup(_configDir);
@@ -393,7 +380,7 @@ public class EagleFactions {
     }
 
     public Configuration getConfiguration() {
-        return this._configuration;
+        return this.configuration;
     }
 
     public PVPLogger getPVPLogger() {

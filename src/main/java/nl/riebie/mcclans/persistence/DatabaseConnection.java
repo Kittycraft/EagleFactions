@@ -23,9 +23,9 @@
 package nl.riebie.mcclans.persistence;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import nl.riebie.mcclans.MCClans;
-import nl.riebie.mcclans.config.Config;
-import nl.riebie.mcclans.enums.DBMSType;
+import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.config.Config;
+import io.github.aquerr.eaglefactions.enums.DBMSType;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.sql.SqlService;
 
@@ -37,7 +37,6 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     private static final String MYSQL_DRIVER_NAME = "mysql";
-    private static final String SQLITE_DRIVER_NAME = "sqlite";
     private static final String H2_DRIVER_NAME = "h2";
 
     private Connection con = null;
@@ -47,7 +46,7 @@ public class DatabaseConnection {
         DBMSType dbmsType = DBMSType.getType(Config.getString(Config.DBMS_TYPE));
         if (dbmsType.equals(DBMSType.MYSQL)) {
             url = "jdbc:" + MYSQL_DRIVER_NAME + "://" + user + ":" + password + "@" + server + ":" + String.valueOf(port) + "/" + database;
-        }else if (dbmsType.equals(DBMSType.H2)) {
+        } else if (dbmsType.equals(DBMSType.H2)) {
             url = "jdbc:" + H2_DRIVER_NAME + ":" + database;
         } else {
             return false;
@@ -55,14 +54,14 @@ public class DatabaseConnection {
 
         SqlService sql = Sponge.getGame().getServiceManager().provide(SqlService.class).get();
         try {
-            DataSource dataSource = sql.getDataSource(MCClans.getPlugin(), url);
+            DataSource dataSource = sql.getDataSource(EagleFactions.getEagleFactions(), url);
             con = dataSource.getConnection();
             return true;
         } catch (SQLException e) {
-            MCClans.getPlugin().getLogger().error("Failed to retrieve sql data source! ", e, true);
+            EagleFactions.getLogger().error("Failed to retrieve sql data source! ", e, true);
             return false;
         } catch (UncheckedExecutionException e) {
-            MCClans.getPlugin().getLogger().error("Please check your database settings!", e, true);
+            EagleFactions.getLogger().error("Please check your database settings!", e, true);
             return false;
         }
     }

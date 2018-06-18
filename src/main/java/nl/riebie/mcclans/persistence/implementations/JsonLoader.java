@@ -26,13 +26,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import nl.riebie.mcclans.MCClans;
+import nl.riebie.mcclans.persistence.exceptions.FlatFileVersionsNotEqualException;
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
+import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.pojo.*;
-import nl.riebie.mcclans.persistence.exceptions.FlatFileVersionsNotEqualException;
-import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
-import nl.riebie.mcclans.persistence.upgrade.versions.JsonUpgrade2;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
+import nl.riebie.mcclans.persistence.upgrade.versions.JsonUpgrade2;
 import nl.riebie.mcclans.utils.FileUtils;
 
 import java.io.File;

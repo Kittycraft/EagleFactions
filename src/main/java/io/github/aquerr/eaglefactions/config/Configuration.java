@@ -18,8 +18,10 @@ import java.util.function.Function;
 /**
  * Created by Aquerr on 2017-07-12.
  */
+
 public class Configuration {
     //TODO: This class should have only one instance. Rework it to singleton.
+    // :( Dependency injection black magic
 
     private static Function<Object, String> objectToStringTransformer = input ->
     {
