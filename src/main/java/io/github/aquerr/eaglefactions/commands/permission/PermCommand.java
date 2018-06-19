@@ -3,7 +3,7 @@ package io.github.aquerr.eaglefactions.commands.permission;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.permissions.Group;
+import io.github.aquerr.eaglefactions.entities.Group;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;

@@ -25,7 +25,8 @@ package nl.riebie.mcclans.persistence.implementations;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import nl.riebie.mcclans.MCClans;
+import io.github.aquerr.eaglefactions.EagleFactions;
+import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.exceptions.FlatFileVersionsNotEqualException;
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
@@ -33,7 +34,6 @@ import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.pojo.*;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
 import nl.riebie.mcclans.persistence.upgrade.versions.JsonUpgrade2;
-import nl.riebie.mcclans.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,8 +43,8 @@ import java.util.List;
 
 public class JsonLoader extends DataLoader {
 
-    private static final File recentDataFolder = new File(MCClans.getPlugin().getDataFolder(), "recent");
-    private static final File loadDataFolder = new File(MCClans.getPlugin().getDataFolder(), "load");
+    private static final File recentDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "recent");
+    private static final File loadDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "load");
 
     private Gson gson = new Gson();
 
@@ -96,7 +96,7 @@ public class JsonLoader extends DataLoader {
         File alliesFile = new File(recentDataFolder, "allies.json");
 
         if (loadFilesPresent()) {
-            MCClans.getPlugin().getLogger().info("Found data in 'load' folder. Loading this data instead", true);
+            EagleFactions.getLogger().info("Found data in 'load' folder. Loading this data instead", true);
             try {
                 FileUtils.moveFile(loadClansFile, clansFile);
                 FileUtils.moveFile(loadClanPlayersFile, clanPlayersFile);

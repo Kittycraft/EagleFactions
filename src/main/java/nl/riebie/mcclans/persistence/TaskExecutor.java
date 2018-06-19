@@ -22,12 +22,12 @@
 
 package nl.riebie.mcclans.persistence;
 
+import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.config.Config;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import nl.riebie.mcclans.MCClans;
-import nl.riebie.mcclans.config.Config;
 
 public class TaskExecutor extends Thread {
 
@@ -54,7 +54,7 @@ public class TaskExecutor extends Thread {
             super.start();
             return true;
         } else {
-            MCClans.getPlugin().getLogger().warn("Could not initialize TaskExecutor! Running: " + running + ", finished: " + finished, true);
+            EagleFactions.getLogger().warn("Could not initialize TaskExecutor! Running: " + running + ", finished: " + finished, true);
             return false;
         }
     }

@@ -3,7 +3,7 @@ package io.github.aquerr.eaglefactions.managers;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
-import io.github.aquerr.eaglefactions.permissions.Player;
+import io.github.aquerr.eaglefactions.entities.Player;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;

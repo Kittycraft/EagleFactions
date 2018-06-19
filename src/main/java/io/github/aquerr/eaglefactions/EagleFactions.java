@@ -59,7 +59,13 @@ public class EagleFactions {
     @ConfigDir(sharedRoot = false)
     private File configDir;
 
+    //TODO: Phase out this function in favor of get plugin
+    @Deprecated
     public static EagleFactions getEagleFactions() {
+        return eagleFactions;
+    }
+
+    public static EagleFactions getPlugin(){
         return eagleFactions;
     }
 
@@ -160,6 +166,10 @@ public class EagleFactions {
             Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.GOLD, "Hey! A new version of ", TextColors.AQUA, PluginInfo.Name, TextColors.GOLD, " is available online!"));
             Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.GREEN, "=========================================="));
         }
+    }
+
+    public File getDataFolder(){
+        return new File(configDir, "data");
     }
 
     private void registerBackupTask() {

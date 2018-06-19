@@ -1,7 +1,5 @@
 package io.github.aquerr.eaglefactions.entities;
 
-import io.github.aquerr.eaglefactions.permissions.Group;
-import io.github.aquerr.eaglefactions.permissions.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 

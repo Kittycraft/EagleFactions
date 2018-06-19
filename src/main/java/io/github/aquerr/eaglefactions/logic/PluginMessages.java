@@ -1,5 +1,6 @@
 package io.github.aquerr.eaglefactions.logic;
 
+@Deprecated
 public class PluginMessages {
     public static String SEND_THIS_FACTION_A_PEACE_REQUEST_FIRST_BEFORE_INVITING_THEM_TO_ALLIES;
     public static String YOU_ARE_IN_WAR_WITH_THIS_FACTION;

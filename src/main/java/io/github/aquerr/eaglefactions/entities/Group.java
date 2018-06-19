@@ -1,4 +1,4 @@
-package io.github.aquerr.eaglefactions.permissions;
+package io.github.aquerr.eaglefactions.entities;
 
 import java.util.List;
 

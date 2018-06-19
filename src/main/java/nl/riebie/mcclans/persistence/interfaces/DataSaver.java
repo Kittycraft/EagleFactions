@@ -24,6 +24,7 @@ package nl.riebie.mcclans.persistence.interfaces;
 
 import java.util.List;
 
+import io.github.aquerr.eaglefactions.config.Config;
 import nl.riebie.mcclans.ClansImpl;
 import nl.riebie.mcclans.clan.ClanImpl;
 import nl.riebie.mcclans.clan.RankFactory;

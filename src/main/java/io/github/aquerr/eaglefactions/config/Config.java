@@ -14,6 +14,10 @@ public class Config {
     public static final String USE_DATABASE = "use-database";
     public static final String DATABASE_NAME = "database-name";
     public static final String CREATE_BACKUP_AFTER_HOURS = "create-backup-after-hours";
+    public static final String DATABASE_SERVER = "database-server";
+    public static final String DATABASE_SERVER_PORT = "database-server-port";
+    public static final String DATABASE_SERVER_USER = "database-server-user";
+    public static final String DATABASE_SERVER_PASSWORD = "database-server-password";
 
 
     public static String getString(String node) {

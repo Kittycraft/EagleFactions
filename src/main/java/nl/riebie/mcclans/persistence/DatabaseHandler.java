@@ -22,6 +22,8 @@
 
 package nl.riebie.mcclans.persistence;
 
+import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.config.Config;
 import nl.riebie.mcclans.ClansImpl;
 import nl.riebie.mcclans.MCClans;
 import nl.riebie.mcclans.clan.ClanImpl;
@@ -44,7 +46,7 @@ import java.util.List;
 
 public class DatabaseHandler {
 
-    public static final int CURRENT_DATA_VERSION = 2;
+    public static final int CURRENT_DATA_VERSION = 1;
 
     private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<>();
 
@@ -106,10 +108,10 @@ public class DatabaseHandler {
                 int count = resultSet.getInt(1);
                 if (count == 0) {
                     databaseConnectionOwner.executeStatement(INSERT_DATAVERSION_QUERY);
-                    MCClans.getPlugin().getLogger().info("Inserted dataversion in database", false);
+                    EagleFactions.getLogger().info("Inserted dataversion in database", false);
                 }
             } else {
-                MCClans.getPlugin().getLogger().warn("Could not read result of count dataversion query", true);
+                EagleFactions.getLogger().warn("Could not read result of count dataversion query", true);
             }
         } catch (SQLException e) {
             throw new WrappedDataException(e);
@@ -164,7 +166,7 @@ public class DatabaseHandler {
     }
 
     public void backup() {
-        MCClans.getPlugin().getLogger().info("System backup commencing...", false);
+        EagleFactions.getLogger().info("System backup commencing...", false);
 
         List<ClanImpl> retrievedClans = ClansImpl.getInstance().getClanImpls();
         List<ClanPlayerImpl> retrievedClanPlayers = ClansImpl.getInstance().getClanPlayerImpls();
@@ -181,16 +183,13 @@ public class DatabaseHandler {
         }
 
         Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
-        taskBuilder.execute(new Runnable() {
-            @Override
-            public void run() {
-                JsonSaver jsonSaver = new JsonSaver();
-                jsonSaver.useBackupLocation();
-                jsonSaver.save(clans, clanPlayers);
-                MCClans.getPlugin().getLogger().info("System backup finished", false);
-            }
+        taskBuilder.execute(() -> {
+            JsonSaver jsonSaver = new JsonSaver();
+            jsonSaver.useBackupLocation();
+            jsonSaver.save(clans, clanPlayers);
+            EagleFactions.getLogger().info("System backup finished", false);
         });
-        taskBuilder.async().submit(MCClans.getPlugin());
+        taskBuilder.async().submit(EagleFactions.getEagleFactions());
     }
 
     public void removeMarkedInactiveClanPlayers() {

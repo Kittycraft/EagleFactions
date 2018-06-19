@@ -1,7 +1,6 @@
 package io.github.aquerr.eaglefactions.logic;
 
 import com.flowpowered.math.vector.Vector3i;
-import com.google.inject.Inject;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.entities.Faction;
@@ -11,8 +10,6 @@ import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.storage.HOCONFactionStorage;
 import io.github.aquerr.eaglefactions.storage.IStorage;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.player.Player;
@@ -87,20 +84,20 @@ public class FactionLogic {
         return relations;
     }
 
-    public static io.github.aquerr.eaglefactions.permissions.Player getLeader(String factionName) {
+    public static io.github.aquerr.eaglefactions.entities.Player getLeader(String factionName) {
         Faction faction = getFactionByName(factionName);
 
         if (faction != null) {
             return faction.Leader;
         }
 
-        return new io.github.aquerr.eaglefactions.permissions.Player("");
+        return new io.github.aquerr.eaglefactions.entities.Player("");
     }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
         List<Player> factionPlayers = new ArrayList<>();
 
-        for (io.github.aquerr.eaglefactions.permissions.Player uuid : faction.Members) {
+        for (io.github.aquerr.eaglefactions.entities.Player uuid : faction.Members) {
             if (!uuid.name.equals("") && PlayerManager.isPlayerOnline(UUID.fromString(uuid.name))) {
                 factionPlayers.add(PlayerManager.getPlayer(UUID.fromString(uuid.name)).get());
             }
@@ -200,7 +197,7 @@ public class FactionLogic {
     }
 
     public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
-        Faction faction = new Faction(factionName, factionTag, new io.github.aquerr.eaglefactions.permissions.Player(playerUUID.toString()));
+        Faction faction = new Faction(factionName, factionTag, new io.github.aquerr.eaglefactions.entities.Player(playerUUID.toString()));
 
         factionsStorage.addOrUpdateFaction(faction);
     }
@@ -211,7 +208,7 @@ public class FactionLogic {
 
     public static void joinFaction(UUID playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
-        io.github.aquerr.eaglefactions.permissions.Player player = new io.github.aquerr.eaglefactions.permissions.Player(playerUUID.toString());
+        io.github.aquerr.eaglefactions.entities.Player player = new io.github.aquerr.eaglefactions.entities.Player(playerUUID.toString());
         player.addGroup("recruit");
         faction.Members.add(player);
         factionsStorage.addOrUpdateFaction(faction);
@@ -225,7 +222,7 @@ public class FactionLogic {
 
     public static void setLeader(UUID newLeaderUUID, String playerFactionName) {
         Faction faction = getFactionByName(playerFactionName);
-        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(newLeaderUUID.toString());
+        io.github.aquerr.eaglefactions.entities.Player player = faction.getMember(newLeaderUUID.toString());
         player.clearGroups();
         player.addGroup("leader");
         faction.Leader = player;
@@ -315,7 +312,7 @@ public class FactionLogic {
 
     public static boolean hasOnlinePlayers(Faction faction) {
 
-        for (io.github.aquerr.eaglefactions.permissions.Player player : faction.Members) {
+        for (io.github.aquerr.eaglefactions.entities.Player player : faction.Members) {
             if (PlayerManager.isPlayerOnline(UUID.fromString(player.name))) {
                 return true;
             }
@@ -462,7 +459,7 @@ public class FactionLogic {
 
     public static void setMember(String playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
-        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        io.github.aquerr.eaglefactions.entities.Player player = faction.getMember(playerUUID);
         System.out.println("UUID: " + playerUUID);
         player.clearGroups();
         player.addGroup("member");
@@ -472,7 +469,7 @@ public class FactionLogic {
 
     public static void setOfficer(String playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
-        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        io.github.aquerr.eaglefactions.entities.Player player = faction.getMember(playerUUID);
         player.clearGroups();
         player.addGroup("officer");
 
@@ -482,7 +479,7 @@ public class FactionLogic {
     //TODO: Recruit command because why not
     public static void setRecruit(String playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
-        io.github.aquerr.eaglefactions.permissions.Player player = faction.getMember(playerUUID);
+        io.github.aquerr.eaglefactions.entities.Player player = faction.getMember(playerUUID);
         player.clearGroups();
         player.addGroup("recruit");
 

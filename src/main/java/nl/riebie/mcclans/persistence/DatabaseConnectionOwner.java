@@ -22,7 +22,7 @@
 
 package nl.riebie.mcclans.persistence;
 
-import nl.riebie.mcclans.config.Config;
+import io.github.aquerr.eaglefactions.config.Config;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
