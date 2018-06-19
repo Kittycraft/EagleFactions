@@ -6,6 +6,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -35,20 +36,16 @@ public class Configuration {
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
     private CommentedConfigurationNode configNode;
 
-    public Configuration(Path configDir) {
+    public Configuration(File configDir) {
         setup(configDir);
     }
 
-    public void setup(Path configDir) {
-        if (!Files.exists(configDir)) {
-            try {
-                Files.createDirectory(configDir);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
+    public void setup(File configDir) {
+        if (!configDir.exists()) {
+            configDir.mkdir();
         }
 
-        configPath = configDir.resolve("Settings.conf");
+        configPath = configDir.toPath().resolve("Settings.conf");
 
         if (!Files.exists(configPath)) {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("Settings.conf");
@@ -126,6 +123,10 @@ public class Configuration {
 
     public List<String> getListOfStrings(List<String> defaultValue, Object... nodePath) {
         return configNode.getNode(nodePath).getList(objectToStringTransformer, defaultValue);
+    }
+
+    public void setValue(Object value, Object... nodePath){
+        configNode.getNode(nodePath).setValue(value);
     }
 
     public boolean setListOfStrings(List<String> listOfStrings, Object... nodePath) {

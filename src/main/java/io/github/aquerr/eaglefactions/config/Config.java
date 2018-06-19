@@ -11,6 +11,9 @@ public class Config {
 
     //Database
     public static final String DBMS_TYPE = "dbms-type";
+    public static final String USE_DATABASE = "use-database";
+    public static final String DATABASE_NAME = "database-name";
+    public static final String CREATE_BACKUP_AFTER_HOURS = "create-backup-after-hours";
 
 
     public static String getString(String node) {
@@ -27,5 +30,10 @@ public class Config {
 
     public static double getDouble(String node) {
         return configuration.getDouble(0, node);
+    }
+
+    //Unsafe! But convenient :D
+    public static void setValue(String node, Object value){
+        configuration.setValue(value, node);
     }
 }
