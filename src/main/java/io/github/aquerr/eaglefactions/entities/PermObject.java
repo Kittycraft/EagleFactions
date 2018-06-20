@@ -7,7 +7,7 @@ public class PermObject {
     public transient static final Group empty = new Group("", Integer.MAX_VALUE);
 
     public List<String> nodes = new ArrayList<>();
-    public List<String> inherit = new LinkedList<>();
+    public List<String> inherit = new ArrayList<>();
 
     public PermObject(){
         nodes.add("-r ^(?!-)(?!(f($|( .*)|(action($|( .*)|(s($|( .*)))))))|(build)|(interact)).*");

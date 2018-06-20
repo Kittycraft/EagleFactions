@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -32,9 +31,9 @@ public class OfficerCommand implements CommandExecutor {
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
                     if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().Name.equals(playerFaction.Name)) {
+                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
                             if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
-                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.Name);
+                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_OFFICER));
@@ -46,9 +45,9 @@ public class OfficerCommand implements CommandExecutor {
                         return CommandResult.success();
                     }
 
-                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().Name.equals(playerFaction.Name)) {
+                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
                             if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
-                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.Name);
+                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_OFFICER));

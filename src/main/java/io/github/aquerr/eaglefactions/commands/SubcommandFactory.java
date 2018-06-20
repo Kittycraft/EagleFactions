@@ -44,7 +44,7 @@ public class SubcommandFactory {
                     .description(Text.of("Create Faction Command"))
                     .permission(PluginPermissions.CreateCommand)
                     .arguments(GenericArguments.optional(GenericArguments.string(Text.of("tag"))),
-                            GenericArguments.optional(GenericArguments.string(Text.of("faction name"))))
+                            GenericArguments.optional(GenericArguments.string(Text.of("faction uuid"))))
                     .executor(new CreateCommand())
                     .build());
 
@@ -82,7 +82,7 @@ public class SubcommandFactory {
             Subcommands.put(Arrays.asList("j", "join"), CommandSpec.builder()
                     .description(Text.of("Join a specific faction"))
                     .permission(PluginPermissions.JoinCommand)
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .executor(new JoinCommand())
                     .build());
 
@@ -103,13 +103,13 @@ public class SubcommandFactory {
             //Info command. Shows info about a faction.
             Subcommands.put(Arrays.asList("i", "info", "f", "show", "faction"), CommandSpec.builder()
                     .description(Text.of("Show info about a faction"))
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .permission(PluginPermissions.InfoCommand)
                     .executor(new InfoCommand())
                     .build());
 
             //TODO: Reformat how /f p looks
-            //Player command. Shows info about a player. (their faction etc.)
+            //FactionPlayer command. Shows info about a player. (their faction etc.)
             Subcommands.put(Arrays.asList("p", "player"), CommandSpec.builder()
                     .description(Text.of("Show info about a player"))
                     .permission(PluginPermissions.PlayerCommand)
@@ -122,7 +122,7 @@ public class SubcommandFactory {
             Subcommands.put(Arrays.asList("a", "ally"), CommandSpec.builder()
                     .description(Text.of("Send or accept an alliance request"))
                     .permission(PluginPermissions.AllyCommands)
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .executor(new AllyCommand())
                     .build());
 
@@ -130,21 +130,21 @@ public class SubcommandFactory {
             Subcommands.put(Arrays.asList("e", "enemy"), CommandSpec.builder()
                     .description(Text.of("Enemy another faction"))
                     .permission(PluginPermissions.EnemyCommands)
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .executor(new EnemyCommand())
                     .build());
 
             Subcommands.put(Arrays.asList("neutral"), CommandSpec.builder()
                     .description(Text.of("Request to be neutral with another faction"))
                     .permission(PluginPermissions.EnemyCommands)
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .executor(new NeutralCommand())
                     .build());
 
             Subcommands.put(Arrays.asList("t", "truce"), CommandSpec.builder()
                     .description(Text.of("Send or accept a truce request"))
                     .permission(PluginPermissions.EnemyCommands)
-                    .arguments(new FactionNameArgument(Text.of("faction name")))
+                    .arguments(new FactionNameArgument(Text.of("faction uuid")))
                     .executor(new TruceCommand())
                     .build());
 

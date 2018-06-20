@@ -44,7 +44,6 @@ public class EagleFactions {
     public static List<UUID> AutoClaimList = new ArrayList<>();
     public static List<UUID> AutoMapList = new ArrayList<>();
     public static List<UUID> AdminList = new ArrayList<>();
-    public static Map<String, Integer> AttackedFactions = new HashMap<>();
     public static Map<UUID, Integer> BlockedHome = new HashMap<>();
     public static Map<UUID, ChatEnum> ChatList = new HashMap<>();
     public static Map<UUID, Integer> HomeCooldownPlayers = new HashMap<>();

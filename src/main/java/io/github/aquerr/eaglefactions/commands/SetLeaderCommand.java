@@ -31,10 +31,10 @@ public class SetLeaderCommand implements CommandExecutor {
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
 
-                    if (optionalNewLeaderPlayerFaction.isPresent() && optionalNewLeaderPlayerFaction.get().Name.equals(playerFaction.Name)) {
+                    if (optionalNewLeaderPlayerFaction.isPresent() && optionalNewLeaderPlayerFaction.get().name.equals(playerFaction.name)) {
                         if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                             if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
-                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.Name);
+                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_SET + " ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " " + PluginMessages.AS_YOUR_NEW + " ", TextColors.BLUE, PluginMessages.LEADER, TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ALREADY_ARE_THE_LEADER_OF_THIS_FACTION));
@@ -43,7 +43,7 @@ public class SetLeaderCommand implements CommandExecutor {
                             return CommandResult.success();
                         }else if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
                             if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
-                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.Name);
+                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_SET + " ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " as your new ", TextColors.BLUE, "Leader", TextColors.WHITE, "!"));
                             } else {
                                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ALREADY_ARE_THE_LEADER_OF_THIS_FACTION));

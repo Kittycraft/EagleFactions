@@ -24,10 +24,9 @@ package nl.riebie.mcclans.persistence;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.config.Config;
-import nl.riebie.mcclans.ClansImpl;
-import nl.riebie.mcclans.MCClans;
-import nl.riebie.mcclans.clan.ClanImpl;
-import nl.riebie.mcclans.config.Config;
+import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionRelation;
+import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.implementations.DatabaseLoader;
 import nl.riebie.mcclans.persistence.implementations.DatabaseSaver;
@@ -35,7 +34,6 @@ import nl.riebie.mcclans.persistence.implementations.JsonLoader;
 import nl.riebie.mcclans.persistence.implementations.JsonSaver;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.interfaces.DataSaver;
-import nl.riebie.mcclans.player.ClanPlayerImpl;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 
@@ -48,38 +46,30 @@ public class DatabaseHandler {
 
     public static final int CURRENT_DATA_VERSION = 1;
 
-    private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<>();
-
-    private final String CREATE_TABLE_DATAVERSION_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_dataversion` " + "( "
+    private final String CREATE_TABLE_DATAVERSION_QUERY = "CREATE TABLE IF NOT EXISTS `ef_dataversion` " + "( "
             + "`dataversion` INT(11) NOT NULL, " + "PRIMARY KEY (`dataversion`) " + ") ENGINE=InnoDB;";
 
-    private static final String COUNT_DATAVERSION_QUERY = "SELECT COUNT(*) FROM `mcc_dataversion`";
-    private static final String INSERT_DATAVERSION_QUERY = "INSERT INTO `mcc_dataversion` VALUES (" + CURRENT_DATA_VERSION + ")";
+    private static final String COUNT_DATAVERSION_QUERY = "SELECT COUNT(*) FROM `ef_dataversion`";
+    private static final String INSERT_DATAVERSION_QUERY = "INSERT INTO `ef_dataversion` VALUES (" + CURRENT_DATA_VERSION + ")";
 
-    private final String CREATE_TABLE_CLANS_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_clans` "
-            + "( "
-            + "`clan_id` INT(11) NOT NULL,`clantag` VARCHAR(255) NOT NULL, "
-            + "`clanname` VARCHAR(255) NOT NULL,`clanplayer_id_owner` INT(11) NOT NULL, "
-            + "`tagcolor` VARCHAR(255) NOT NULL,`allow_ally_invites` TINYINT(1) NOT NULL, "
-            + "`clanhome_world` VARCHAR(255) NULL,`clanhome_x` DOUBLE NOT NULL, "
-            + "`clanhome_y` DOUBLE NOT NULL,`clanhome_z` DOUBLE NOT NULL,`clanhome_yaw` FLOAT NOT NULL "
-            + ",`clanhome_pitch` FLOAT NOT NULL,`clanhome_set_times` INT(11) NOT NULL,`clanhome_set_timestamp` BIGINT NOT NULL,`ff_protection` TINYINT(1) NOT NULL,`creation_time` BIGINT NOT NULL, "
-            + "`bank_id` VARCHAR(255) NOT NULL, PRIMARY KEY (`clan_id`) " + ") ENGINE=InnoDB;";
+    private final String CREATE_TABLE_FACTIONS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_factions` "
+            + "( `faction_name` VARCHAR(255) NOT NULL, `faction_owner` VARCHAR(255) NULL, `faction_home` VARCHAR(255) NULL, `creation_time` BIGINT NOT NULL," +
+            "PRIMARY KEY (`faction_name`) " + ") ENGINE=InnoDB;";
 
-    private final String CREATE_TABLE_CLANS_ALLIES_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_clans_allies` " + "( "
-            + "`clan_id` INT(11) NOT NULL,`clan_id_ally` INT(11) NOT NULL, " + "PRIMARY KEY (`clan_id`, `clan_id_ally`) " + ") ENGINE=InnoDB;";
+    private final String CREATE_TABLE_FACTION_RELATIONS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_relations` " + "( "
+            + "`factionA` VARCHAR(255) NOT NULL,`factionB` VARCHAR(255) NOT NULL,`relation` INT(11) NOT NULL, " + "PRIMARY KEY (`factionA`, `factionB`) " + ") ENGINE=InnoDB;";
 
-    private final String CREATE_TABLE_CLANPLAYERS_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_clanplayers` "
-            + "( "
-            + "`clanplayer_id` INT NOT NULL,`uuid_most_sig_bits` BIGINT NOT NULL,`uuid_least_sig_bits` BIGINT NOT NULL,`playername` VARCHAR(255) NOT NULL, "
-            + "`clan_id` INT(11) NOT NULL,`rank_id` INT(11) NOT NULL,`kills_high` INT(11) NOT NULL "
-            + ",`kills_medium` INT(11) NOT NULL,`kills_low` INT(11) NOT NULL, " + "`deaths_high` INT(11) NOT NULL,`deaths_medium` INT(11) NOT NULL, "
-            + "`deaths_low` INT(11) NOT NULL,`ff_protection` TINYINT(1) NOT NULL,`last_online_time` BIGINT NOT NULL, "
-            + "PRIMARY KEY (`clanplayer_id`) " + ") ENGINE=InnoDB;";
+    private final String CREATE_TABLE_PLAYERS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_players` "
+            + "( `player_uuid` VARCHAR(255) NOT NULL,`player_name` VARCHAR(255) NOT NULL, "
+            + "`player_faction` VARCHAR(255) NOT NULL,`player_groups` TEXT NOT NULL,`player_nodes` TEXT NOT NULL,`last_online_time` BIGINT NOT NULL, "
+            + "PRIMARY KEY (`player_uuid`) " + ") ENGINE=InnoDB;";
 
-    private final String CREATE_TABLE_RANKS_QUERY = "CREATE TABLE IF NOT EXISTS `mcc_ranks` " + "( "
-            + "`rank_id` INT(11) NOT NULL,`clan_id` INT(11) NOT NULL, " + "`rankname` VARCHAR(255) NOT NULL,`permissions` VARCHAR(255) NULL, "
-            + "`changeable` TINYINT(1) NOT NULL, " + "PRIMARY KEY (`rank_id`) " + ") ENGINE=InnoDB;";
+    private final String CREATE_TABLE_GROUPS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_groups` " + "( "
+            + "`faction` VARCHAR(255) NOT NULL, " + "`group_name` VARCHAR(255) NOT NULL, `group_nodes` STRING NOT NULL," +
+            " `group_parents` STRING NOT NULL, `priority` INT(11) NOT NULL, " + "PRIMARY KEY (`faction`, `group_name`) " + ") ENGINE=InnoDB;";
+
+    private final String CREATE_TABLE_CLAIMS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_claims` " + "( "
+            + "`claim_x` INT(11) NOT NULL,`claim_y` INT(11) NOT NULL, " + "`faction_name` VARCHAR(255) NOT NULL, PRIMARY KEY (`claim_x`, `claim_y`) " + ") ENGINE=InnoDB;";
 
     private static DatabaseHandler instance;
 
@@ -117,28 +107,31 @@ public class DatabaseHandler {
             throw new WrappedDataException(e);
         }
 
-        databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANS_QUERY);
-        databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANS_ALLIES_QUERY);
-        databaseConnectionOwner.executeStatement(CREATE_TABLE_CLANPLAYERS_QUERY);
-        databaseConnectionOwner.executeStatement(CREATE_TABLE_RANKS_QUERY);
+        databaseConnectionOwner.executeStatement(CREATE_TABLE_FACTIONS_QUERY);
+        databaseConnectionOwner.executeStatement(CREATE_TABLE_FACTION_RELATIONS_QUERY);
+        databaseConnectionOwner.executeStatement(CREATE_TABLE_PLAYERS_QUERY);
+        databaseConnectionOwner.executeStatement(CREATE_TABLE_GROUPS_QUERY);
+        databaseConnectionOwner.executeStatement(CREATE_TABLE_CLAIMS_QUERY);
     }
 
     public void clearDatabase() {
         DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
-        databaseConnectionOwner.executeStatement("DROP TABLE mcc_dataversion");
-        databaseConnectionOwner.executeStatement("DROP TABLE mcc_clans");
-        databaseConnectionOwner.executeStatement("DROP TABLE mcc_clans_allies");
-        databaseConnectionOwner.executeStatement("DROP TABLE mcc_clanplayers");
-        databaseConnectionOwner.executeStatement("DROP TABLE mcc_ranks");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_dataversion");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_factions");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_relations");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_players");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_groups");
+        databaseConnectionOwner.executeStatement("DROP TABLE ef_claims");
     }
 
     public void truncateDatabase() {
         DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
-        databaseConnectionOwner.executeStatement("DELETE FROM mcc_dataversion");
-        databaseConnectionOwner.executeStatement("DELETE FROM mcc_clans");
-        databaseConnectionOwner.executeStatement("DELETE FROM mcc_clans_allies");
-        databaseConnectionOwner.executeStatement("DELETE FROM mcc_clanplayers");
-        databaseConnectionOwner.executeStatement("DELETE FROM mcc_ranks");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_dataversion");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_factions");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_relations");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_players");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_groups");
+        databaseConnectionOwner.executeStatement("DELETE FROM ef_claims");
     }
 
     public boolean save() {
@@ -159,7 +152,6 @@ public class DatabaseHandler {
             dataLoader = new JsonLoader();
         }
         if (dataLoader.load()) {
-            markedClanPlayers = dataLoader.getMarkedClanPlayers();
             return true;
         }
         return false;
@@ -168,33 +160,22 @@ public class DatabaseHandler {
     public void backup() {
         EagleFactions.getLogger().info("System backup commencing...", false);
 
-        List<ClanImpl> retrievedClans = ClansImpl.getInstance().getClanImpls();
-        List<ClanPlayerImpl> retrievedClanPlayers = ClansImpl.getInstance().getClanPlayerImpls();
+        List<Faction> retrievedFactions = FactionLogic.getFactions();
 
-        final List<ClanImpl> clans = new ArrayList<ClanImpl>();
-        final List<ClanPlayerImpl> clanPlayers = new ArrayList<ClanPlayerImpl>();
+        final List<Faction> factions = new ArrayList<>();
+        final List<FactionRelation> relations = (List)((ArrayList)FactionLogic.getRelations()).clone();
 
-        for (ClanImpl retrievedClan : retrievedClans) {
-            clans.add(retrievedClan.clone());
-        }
-
-        for (ClanPlayerImpl retrievedclanPlayers : retrievedClanPlayers) {
-            clanPlayers.add(retrievedclanPlayers.clone());
+        for (Faction retrievedFaction : retrievedFactions) {
+            factions.add(retrievedFaction.clone());
         }
 
         Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
         taskBuilder.execute(() -> {
             JsonSaver jsonSaver = new JsonSaver();
             jsonSaver.useBackupLocation();
-            jsonSaver.save(clans, clanPlayers);
+            jsonSaver.save(factions, relations);
             EagleFactions.getLogger().info("System backup finished", false);
         });
-        taskBuilder.async().submit(EagleFactions.getEagleFactions());
-    }
-
-    public void removeMarkedInactiveClanPlayers() {
-        for (ClanPlayerImpl clanPlayer : markedClanPlayers) {
-            ClansImpl.getInstance().removeClanPlayer(clanPlayer);
-        }
+        taskBuilder.async().submit(EagleFactions.getPlugin());
     }
 }

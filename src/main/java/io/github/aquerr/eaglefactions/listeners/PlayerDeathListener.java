@@ -32,14 +32,14 @@ public class PlayerDeathListener {
 
             Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 
-            if (MainLogic.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().Name.equals("WarZone"))) {
+            if (MainLogic.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("WarZone"))) {
                 PlayerManager.setDeathInWarZone(player.getUniqueId(), true);
             }
 
             if (MainLogic.shouldBlockHomeAfterDeathInOwnFaction()) {
                 Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
 
-                if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().Name.equals(optionalPlayerFaction.get().Name)) {
+                if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().name.equals(optionalPlayerFaction.get().name)) {
                     if (EagleFactions.BlockedHome.containsKey(player.getUniqueId())) {
                         EagleFactions.BlockedHome.replace(player.getUniqueId(), MainLogic.getHomeBlockTimeAfterDeath());
                     } else {

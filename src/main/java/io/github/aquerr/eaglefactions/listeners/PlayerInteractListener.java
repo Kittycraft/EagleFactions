@@ -42,9 +42,9 @@ public class PlayerInteractListener {
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
                 if (optionalChunkFaction.isPresent()) {
-                    if (optionalChunkFaction.get().Name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
+                    if (optionalChunkFaction.get().name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
                         return;
-                    } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
+                    } else if (optionalChunkFaction.get().name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
                         return;
                     } else if (optionalPlayerFaction.isPresent()) {
                         //TODO: Find out if allies give permission for interacting (Reference: optionalChunkFaction.get())

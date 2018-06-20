@@ -37,7 +37,7 @@ public class EntityDamageListener {
 
                 //Block all damage an attacked player would get if location is a SafeZone.
                 Optional<Faction> chunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), attackedPlayer.getLocation().getChunkPosition());
-                if (chunkFaction.isPresent() && chunkFaction.get().Name.equals("SafeZone")) {
+                if (chunkFaction.isPresent() && chunkFaction.get().name.equals("SafeZone")) {
                     event.setBaseDamage(0);
                     event.setCancelled(true);
                     return;
@@ -51,7 +51,7 @@ public class EntityDamageListener {
 
                         //Block all damage a player could deal if location is SafeZone.
                         Optional<Faction> playerChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
-                        if (playerChunkFaction.isPresent() && playerChunkFaction.get().Name.equals("SafeZone")) {
+                        if (playerChunkFaction.isPresent() && playerChunkFaction.get().name.equals("SafeZone")) {
                             event.setBaseDamage(0);
                             event.setCancelled(true);
                             return;
@@ -64,7 +64,7 @@ public class EntityDamageListener {
                                 Optional<Faction> optionalAttackedPlayerFaction = FactionLogic.getFactionByPlayerUUID(attackedPlayer.getUniqueId());
                                 if (optionalAttackedPlayerFaction.isPresent()) {
                                     //Check if players are in the same faction
-                                    RelationType relation = FactionLogic.getRelation(optionalPlayerFaction.get().Name, optionalAttackedPlayerFaction.get().Name);
+                                    RelationType relation = FactionLogic.getRelation(optionalPlayerFaction.get().name, optionalAttackedPlayerFaction.get().name);
                                     if (relation == RelationType.SAME) {
                                         //If friendlyfire is off the block the damage.
                                         if (!MainLogic.isFactionFriendlyFire()) {

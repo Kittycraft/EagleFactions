@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -38,7 +37,7 @@ public class InviteCommand implements CommandExecutor {
                     Faction senderFaction = optionalSenderFaction.get();
 
                         if (MainLogic.isPlayerLimit()) {
-                            if (senderFaction.Members.size() >= MainLogic.getPlayerLimit()) {
+                            if (senderFaction.members.size() >= MainLogic.getPlayerLimit()) {
                                 senderPlayer.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_INVITE_MORE_PLAYERS_TO_YOUR_FACTION + " " + PluginMessages.FACTIONS_PLAYER_LIMIT_HAS_BEEN_REACHED));
                                 return CommandResult.success();
                             }
@@ -46,11 +45,11 @@ public class InviteCommand implements CommandExecutor {
 
                         if (!FactionLogic.getFactionByPlayerUUID(invitedPlayer.getUniqueId()).isPresent()) {
                             try {
-                                Invite invite = new Invite(senderFaction.Name, invitedPlayer.getUniqueId());
+                                Invite invite = new Invite(senderFaction.name, invitedPlayer.getUniqueId());
                                 EagleFactions.InviteList.add(invite);
 
-                                invitedPlayer.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.FACTION + " ", TextColors.GOLD, senderFaction.Name, TextColors.GREEN, " " + PluginMessages.HAS_SENT_YOU_AN_INVITE + " " + PluginMessages.YOU_HAVE_TWO_MINUTES_TO_ACCEPT_IT +
-                                        " " + PluginMessages.TYPE + " ", TextColors.GOLD, "/f join " + senderFaction.Name, TextColors.WHITE, " " + PluginMessages.TO_JOIN));
+                                invitedPlayer.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.FACTION + " ", TextColors.GOLD, senderFaction.name, TextColors.GREEN, " " + PluginMessages.HAS_SENT_YOU_AN_INVITE + " " + PluginMessages.YOU_HAVE_TWO_MINUTES_TO_ACCEPT_IT +
+                                        " " + PluginMessages.TYPE + " ", TextColors.GOLD, "/f join " + senderFaction.name, TextColors.WHITE, " " + PluginMessages.TO_JOIN));
 
                                 senderPlayer.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.YOU_INVITED + " ", TextColors.GOLD, invitedPlayer.getName(), TextColors.GREEN, " " + PluginMessages.TO_YOUR_FACTION));
 

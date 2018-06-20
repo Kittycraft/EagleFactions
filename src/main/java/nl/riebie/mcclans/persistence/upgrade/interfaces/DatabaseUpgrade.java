@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.riebie.mcclans.persistence.DatabaseConnection;
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.query.Query;
@@ -93,6 +92,6 @@ public abstract class DatabaseUpgrade extends DataUpgrade {
     }
 
     private void upgradeVersionTable() {
-        updateQuery("mcc_dataversion").value("dataversion", getVersion());
+        updateQuery("ef_dataversion").value("dataversion", getVersion());
     }
 }

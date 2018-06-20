@@ -13,7 +13,7 @@ public class MobTargetListener {
     public void onTargetChange(SetAITargetEvent event) {
         if (event.getTarget().isPresent() && event.getTarget().get() instanceof Player) {
             Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(event.getTarget().get().getWorld().getUniqueId(), ((Player) event.getTarget().get()).getLocation().getChunkPosition());
-            if (optionalChunkFaction.isPresent() && optionalChunkFaction.get().Name.equals("SafeZone")) {
+            if (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("SafeZone")) {
                 event.setCancelled(true);
                 return;
             }

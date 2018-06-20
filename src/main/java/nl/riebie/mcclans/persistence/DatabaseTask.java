@@ -20,39 +20,19 @@
  * THE SOFTWARE.
  */
 
-package nl.riebie.mcclans.persistence.upgrade.versions;
+package nl.riebie.mcclans.persistence;
 
-import nl.riebie.mcclans.persistence.upgrade.interfaces.JsonUpgrade;
-import nl.riebie.mcclans.persistence.upgrade.json.FieldAdd;
-import nl.riebie.mcclans.persistence.upgrade.json.FieldRemove;
-import nl.riebie.mcclans.persistence.upgrade.json.FieldRename;
+import java.sql.PreparedStatement;
 
-import java.util.List;
-import java.util.UUID;
+public class DatabaseTask {
 
-/**
- * Created by Kippers on 19/03/2016.
- */
-public class JsonUpgrade2 extends JsonUpgrade {
+	private PreparedStatement query;
 
-    @Override
-    public int getVersion() {
-        return 2;
-    }
+	public DatabaseTask(PreparedStatement query) {
+		this.query = query;
+	}
 
-    @Override
-    protected List<FieldAdd> getFieldAdditions(List<FieldAdd> fieldAdditions) {
-        fieldAdditions.add(new FieldAdd("clans", "bankId", () -> UUID.randomUUID().toString()));
-        return fieldAdditions;
-    }
-
-    @Override
-    protected List<FieldRemove> getFieldRemovals(List<FieldRemove> fieldRemovals) {
-        return fieldRemovals;
-    }
-
-    @Override
-    protected List<FieldRename> getFieldRenames(List<FieldRename> fieldRenames) {
-        return fieldRenames;
-    }
+	public PreparedStatement getQuery() {
+		return query;
+	}
 }

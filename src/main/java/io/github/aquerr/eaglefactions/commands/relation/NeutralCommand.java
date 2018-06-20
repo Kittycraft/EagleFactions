@@ -22,7 +22,7 @@ public class NeutralCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.getOne(Text.of("faction name"));
+        Optional<String> optionalFactionName = context.getOne(Text.of("faction uuid"));
         if (!(source instanceof Player)) {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in game in order to use this command!"));
             return CommandResult.success();
@@ -37,14 +37,14 @@ public class NeutralCommand implements CommandExecutor {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction!"));
         } else if (!factionB.isPresent()) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must specify a faction or player!"));
-        } else if (factionA.get().Name.equals(factionB.get().Name)) {
+        } else if (factionA.get().name.equals(factionB.get().name)) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not set a relation with your own faction!"));
         } else {
             List<FactionRelation> relations = FactionLogic.getRelations();
-            RelationType pre = FactionLogic.getRelation(factionA.get().Name, factionB.get().Name);
+            RelationType pre = FactionLogic.getRelation(factionA.get().name, factionB.get().name);
             boolean change = false;
             for (int i = 0; i < relations.size(); i++) {
-                if (relations.get(i).factionA.equals(factionA.get().Name) && relations.get(i).factionB.equals(factionB.get().Name)) {
+                if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
                     change = true;
                     relations.remove(i);
                     break;
@@ -55,15 +55,15 @@ public class NeutralCommand implements CommandExecutor {
                 return CommandResult.success();
             }
             if(pre == RelationType.NEUTRAL){
-                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has dropped their ally/truce request with ", TextColors.GRAY, factionB.get().Name, TextColors.WHITE, "!"));
-                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().Name, TextColors.WHITE, " has removed their ally/truce request!"));
+                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has dropped their ally/truce request with ", TextColors.GRAY, factionB.get().name, TextColors.WHITE, "!"));
+                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().name, TextColors.WHITE, " has removed their ally/truce request!"));
             } else if(pre == RelationType.ALLY || pre == RelationType.TRUCE) {
-                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction is no longer allied/truced with ", TextColors.GRAY, factionB.get().Name, TextColors.WHITE, "!"));
-                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().Name, TextColors.WHITE, " no longer wishes to be allied/truced with your faction!"));
+                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction is no longer allied/truced with ", TextColors.GRAY, factionB.get().name, TextColors.WHITE, "!"));
+                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().name, TextColors.WHITE, " no longer wishes to be allied/truced with your faction!"));
             } else {
-                TextColor color = FactionLogic.getRelationColor(factionA.get().Name, factionB.get().Name);
-                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction no longer wants to be enemies with ", color, factionB.get().Name, TextColors.WHITE, "!"));
-                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().Name, TextColors.WHITE, " no longer wants to be enemies with your faction!"));
+                TextColor color = FactionLogic.getRelationColor(factionA.get().name, factionB.get().name);
+                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction no longer wants to be enemies with ", color, factionB.get().name, TextColors.WHITE, "!"));
+                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().name, TextColors.WHITE, " no longer wants to be enemies with your faction!"));
             }
             FactionLogic.saveRelations();
         }

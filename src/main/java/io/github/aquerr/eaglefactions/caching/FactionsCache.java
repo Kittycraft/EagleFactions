@@ -19,7 +19,7 @@ public class FactionsCache {
     }
 
     public static void addOrUpdateFactionCache(Faction faction) {
-        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.Name.equals(faction.Name)).findFirst();
+        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.name.equals(faction.name)).findFirst();
 
         if (optionalFaction.isPresent()) {
             Faction factionToUpdate = optionalFaction.get();
@@ -31,7 +31,7 @@ public class FactionsCache {
     }
 
     public static void removeFactionCache(String factionName) {
-        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.Name.equals(factionName)).findFirst();
+        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.name.equals(factionName)).findFirst();
 
         if (optionalFaction.isPresent()) {
             Faction factionToRemove = optionalFaction.get();
@@ -41,7 +41,7 @@ public class FactionsCache {
 
     public static @Nullable
     Faction getFactionCache(String factionName) {
-        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.Name.equalsIgnoreCase(factionName)).findFirst();
+        Optional<Faction> optionalFaction = _factionsList.stream().filter(x -> x.name.equalsIgnoreCase(factionName)).findFirst();
 
         if (optionalFaction.isPresent()) {
             Faction faction = optionalFaction.get();

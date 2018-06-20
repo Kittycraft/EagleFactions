@@ -28,7 +28,6 @@ import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
-import nl.riebie.mcclans.persistence.upgrade.versions.DatabaseUpgrade2;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,7 +68,6 @@ public class DatabaseLoader extends DataLoader {
 
     @Override
     protected List<DataUpgrade> getDataUpgrades(List<DataUpgrade> dataUpgrades) {
-        dataUpgrades.add(new DatabaseUpgrade2());
         return dataUpgrades;
     }
 

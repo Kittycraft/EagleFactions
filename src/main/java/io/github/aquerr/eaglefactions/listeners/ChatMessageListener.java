@@ -54,7 +54,7 @@ public class ChatMessageListener {
 
                     //TODO: Add option to style prefixes by user form config file.
 
-                    for (Faction alliance : FactionLogic.getRelationGroup(playerFaction.Name, RelationType.ALLY)) {
+                    for (Faction alliance : FactionLogic.getRelationGroup(playerFaction.name, RelationType.ALLY)) {
                         receivers.addAll(FactionLogic.getOnlinePlayers(alliance));
                     }
 
@@ -101,10 +101,10 @@ public class ChatMessageListener {
                         factionPrefixText.append(factionTag);
                     }
                 }
-            } else if (MainLogic.getPrefixOption().equals("name")) {
-                //Add faction name
+            } else if (MainLogic.getPrefixOption().equals("uuid")) {
+                //Add faction uuid
                 Text factionNamePrefix = Text.builder()
-                        .append(MainLogic.getFactionPrefixStart(), Text.of(TextColors.GREEN, playerFaction.Name, TextColors.RESET), MainLogic.getFactionPrefixEnd())
+                        .append(MainLogic.getFactionPrefixStart(), Text.of(TextColors.GREEN, playerFaction.name, TextColors.RESET), MainLogic.getFactionPrefixEnd())
                         .build();
 
                 factionPrefixText.append(factionNamePrefix);

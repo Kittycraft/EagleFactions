@@ -35,7 +35,7 @@ public class TaskExecutor extends Thread {
 
     private boolean running = false;
     private boolean finished = true;
-    private ConcurrentLinkedQueue<MCClansDatabaseTask> queue = new ConcurrentLinkedQueue<MCClansDatabaseTask>();
+    private ConcurrentLinkedQueue<DatabaseTask> queue = new ConcurrentLinkedQueue();
 
     protected TaskExecutor() {
     }
@@ -59,7 +59,7 @@ public class TaskExecutor extends Thread {
         }
     }
 
-    public boolean enqueue(MCClansDatabaseTask task) {
+    public boolean enqueue(DatabaseTask task) {
         return running && queue.add(task);
     }
 
@@ -85,7 +85,7 @@ public class TaskExecutor extends Thread {
     @Override
     public void run() {
         while (!finished) {
-            MCClansDatabaseTask task = queue.poll();
+            DatabaseTask task = queue.poll();
             if (task == null) {
                 if (!running) {
                     synchronized (this) {

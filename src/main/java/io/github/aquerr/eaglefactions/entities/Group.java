@@ -1,5 +1,6 @@
 package io.github.aquerr.eaglefactions.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
@@ -28,6 +29,10 @@ public class Group {
         this.prefix = prefix;
         this.priority = priority;
         this.perms = new PermObject(inherit, nodes);
+    }
+
+    public Group clone(){
+        return new Group(name, prefix, priority, (List<String>) ((ArrayList) perms.inherit).clone(), (List<String>) ((ArrayList) perms.nodes).clone());
     }
 
 }

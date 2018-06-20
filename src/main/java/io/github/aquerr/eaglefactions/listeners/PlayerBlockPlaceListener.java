@@ -40,9 +40,9 @@ public class PlayerBlockPlaceListener {
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
                 if (optionalChunkFaction.isPresent()) {
-                    if (optionalChunkFaction.get().Name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_BUILD)) {
+                    if (optionalChunkFaction.get().name.equals("SafeZone") && player.hasPermission(PluginPermissions.SAFE_ZONE_BUILD)) {
                         return;
-                    } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_BUILD)) {
+                    } else if (optionalChunkFaction.get().name.equals("WarZone") && player.hasPermission(PluginPermissions.WAR_ZONE_BUILD)) {
                         return;
                     } else if (optionalPlayerFaction.isPresent()) {
                         //TODO: Find out if allies give permission for building (Reference: optionalChunkFaction.get())

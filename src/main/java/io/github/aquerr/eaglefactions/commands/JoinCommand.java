@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -21,7 +20,7 @@ import java.util.Optional;
 public class JoinCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.<String>getOne("faction name");
+        Optional<String> optionalFactionName = context.<String>getOne("faction uuid");
 
         if (optionalFactionName.isPresent()) {
             if (source instanceof Player) {
@@ -46,7 +45,7 @@ public class JoinCommand implements CommandExecutor {
                             if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(factionName)) {
                                 try {
                                     if (MainLogic.isPlayerLimit()) {
-                                        if (FactionLogic.getFactionByName(factionName).Members.size() >= MainLogic.getPlayerLimit()) {
+                                        if (FactionLogic.getFactionByName(factionName).members.size() >= MainLogic.getPlayerLimit()) {
                                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_JOIN_THIS_FACTION_BECAUSE_IT_REACHED_ITS_PLAYER_LIMIT));
                                             return CommandResult.success();
                                         }
@@ -74,7 +73,7 @@ public class JoinCommand implements CommandExecutor {
             }
         } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f join <faction name>"));
+            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f join <faction uuid>"));
         }
 
         return CommandResult.success();

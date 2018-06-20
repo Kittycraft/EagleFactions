@@ -22,7 +22,7 @@ public class AllyCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.getOne(Text.of("faction name"));
+        Optional<String> optionalFactionName = context.getOne(Text.of("faction uuid"));
         if (!(source instanceof Player)) {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in game in order to use this command!"));
             return CommandResult.success();
@@ -37,12 +37,12 @@ public class AllyCommand implements CommandExecutor {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction!"));
         } else if (!factionB.isPresent()) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must specify a faction or player!"));
-        } else if (factionA.get().Name.equals(factionB.get().Name)) {
+        } else if (factionA.get().name.equals(factionB.get().name)) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not ally your own faction!"));
         } else {
             List<FactionRelation> relations = FactionLogic.getRelations();
             for (int i = 0; i < relations.size(); i++) {
-                if (relations.get(i).factionA.equals(factionA.get().Name) && relations.get(i).factionB.equals(factionB.get().Name)) {
+                if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
                     if (relations.get(i).type == RelationType.ALLY) {
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already allies with that faction!"));
                         return CommandResult.success();
@@ -51,14 +51,14 @@ public class AllyCommand implements CommandExecutor {
                     break;
                 }
             }
-            relations.add(new FactionRelation(factionA.get().Name, factionB.get().Name, RelationType.ALLY));
-            if(FactionLogic.getOneWayRelation(factionB.get().Name, factionA.get().Name) == RelationType.ALLY){
-                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now allied to ", TextColors.GREEN, factionB.get().Name, TextColors.WHITE, "!"));
-                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().Name, TextColors.WHITE, " has accepted your alliance request!"));
+            relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ALLY));
+            if(FactionLogic.getOneWayRelation(factionB.get().name, factionA.get().name) == RelationType.ALLY){
+                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now allied to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
+                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has accepted your alliance request!"));
             }else {
-                TextColor color = FactionLogic.getRelationColor(factionA.get().Name, factionB.get().Name);
-                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has sent an alliance request to ", color, factionB.get().Name, TextColors.WHITE, "!"));
-                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().Name, TextColors.WHITE, " has requested an alliance!"));
+                TextColor color = FactionLogic.getRelationColor(factionA.get().name, factionB.get().name);
+                FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has sent an alliance request to ", color, factionB.get().name, TextColors.WHITE, "!"));
+                FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().name, TextColors.WHITE, " has requested an alliance!"));
             }
             FactionLogic.saveRelations();
         }

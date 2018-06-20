@@ -6,12 +6,12 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class FactionHome {
-    public Vector3i BlockPosition;
-    public UUID WorldUUID;
+    public final Vector3i blockPosition;
+    public final UUID worldUUID;
 
     public FactionHome(@Nullable UUID worldUUID, @Nullable Vector3i blockPosition) {
-        this.BlockPosition = blockPosition;
-        this.WorldUUID = worldUUID;
+        this.blockPosition = blockPosition;
+        this.worldUUID = worldUUID;
     }
 
     public FactionHome(String homeString) {
@@ -28,8 +28,12 @@ public class FactionHome {
         Vector3i blockPosition = Vector3i.from(x, y, z);
 
         UUID worldUUID = UUID.fromString(worldUUIDString);
-        this.BlockPosition = blockPosition;
-        this.WorldUUID = worldUUID;
+        this.blockPosition = blockPosition;
+        this.worldUUID = worldUUID;
+    }
 
+    @Override
+    public String toString() {
+        return worldUUID.toString() + "|" + blockPosition.toString();
     }
 }

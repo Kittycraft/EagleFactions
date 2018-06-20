@@ -2,7 +2,11 @@
 
 # Eagle Factions Remake
 This is a factions plugin more similar to massivecraft factions built off of the existing Eagle Factions.
-#####Top Priority (will be worked on tomorrow)
+#####Currently working on
+ * Better save mechanics. It will have the same saving as Mcclans which also means it will have database support!
+   * Note to self for database changes:
+   * mcc_x -> ef_x in table names
+#####Top Priority
  * Add commands for permissions
  * Add permissions for allies
  * Add user friendly /f promote and /f demote

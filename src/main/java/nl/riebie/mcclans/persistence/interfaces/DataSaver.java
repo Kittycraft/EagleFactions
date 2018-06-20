@@ -22,31 +22,26 @@
 
 package nl.riebie.mcclans.persistence.interfaces;
 
-import java.util.List;
-
 import io.github.aquerr.eaglefactions.config.Config;
-import nl.riebie.mcclans.ClansImpl;
-import nl.riebie.mcclans.clan.ClanImpl;
-import nl.riebie.mcclans.clan.RankFactory;
-import nl.riebie.mcclans.clan.RankImpl;
-import nl.riebie.mcclans.config.Config;
-import nl.riebie.mcclans.player.ClanPlayerImpl;
+import io.github.aquerr.eaglefactions.entities.*;
+import io.github.aquerr.eaglefactions.logic.FactionLogic;
+
+import java.util.List;
 
 public abstract class DataSaver {
 
-    private List<ClanImpl> retrievedClans;
-    private List<ClanPlayerImpl> retrievedClanPlayers;
+    private List<Faction> retrievedFactions;
+    private List<FactionRelation> retrievedRelations;
 
     public boolean save() {
-        retrievedClans = ClansImpl.getInstance().getClanImpls();
-        retrievedClanPlayers = ClansImpl.getInstance().getClanPlayerImpls();
-
+        retrievedFactions = FactionLogic.getFactions();
+        retrievedRelations = FactionLogic.getRelations();
         return continueSave();
     }
 
-    public boolean save(List<ClanImpl> clans, List<ClanPlayerImpl> clanPlayers) {
-        retrievedClans = clans;
-        retrievedClanPlayers = clanPlayers;
+    public boolean save(List<Faction> factions, List<FactionRelation> relations) {
+        retrievedFactions = factions;
+        retrievedRelations = relations;
 
         return continueSave();
     }
@@ -54,8 +49,8 @@ public abstract class DataSaver {
     public boolean continueSave() {
         try {
             saveStarted();
-            storeClans();
-            storeClanPlayers();
+            storeFactions();
+            storeFactionRelations();
             saveFinished();
             return true;
         } catch (Exception e) {
@@ -67,35 +62,37 @@ public abstract class DataSaver {
         }
     }
 
-    private void storeClans() throws Exception {
-        for (ClanImpl clan : retrievedClans) {
-            saveClan(clan);
-            int clanID = clan.getID();
-            List<RankImpl> ranks = clan.getRankImpls();
-            List<ClanImpl> allies = clan.getAlliesImpl();
-            for (RankImpl rank : ranks) {
-                if (rank.getID() != RankFactory.getOwnerID() && rank.getID() != RankFactory.getRecruitID())
-                    saveRank(clanID, rank);
+    private void storeFactionRelations() throws Exception {
+        for(FactionRelation relation : retrievedRelations){
+            saveFactionRelation(relation);
+        }
+    }
+
+    private void storeFactions() throws Exception {
+        for (Faction faction : retrievedFactions) {
+            saveFaction(faction);
+            for(Group group : faction.groups.values()){
+                saveGroup(group);
             }
-            for (ClanImpl ally : allies) {
-                saveClanAlly(clanID, ally.getID());
+            for(FactionPlayer player : faction.members){
+                savePlayer(player);
+            }
+            for(FactionClaim claim : faction.claims){
+                saveFactionClaim(claim);
             }
         }
     }
 
-    private void storeClanPlayers() throws Exception {
-        for (ClanPlayerImpl clanPlayer : retrievedClanPlayers) {
-            saveClanPlayer(clanPlayer);
-        }
-    }
 
-    protected abstract void saveClan(ClanImpl clan) throws Exception;
+    protected abstract void saveFaction(Faction faction) throws Exception;
 
-    protected abstract void saveClanPlayer(ClanPlayerImpl cp) throws Exception;
+    protected abstract void savePlayer(FactionPlayer player) throws Exception;
 
-    protected abstract void saveRank(int clanID, RankImpl rank) throws Exception;
+    protected abstract void saveGroup(Group group) throws Exception;
 
-    protected abstract void saveClanAlly(int clanID, int clanIDAlly) throws Exception;
+    protected abstract void saveFactionRelation(FactionRelation relation) throws Exception;
+
+    protected abstract void saveFactionClaim(FactionClaim claim) throws Exception;
 
     protected abstract void saveStarted() throws Exception;
 

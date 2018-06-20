@@ -33,7 +33,6 @@ import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.pojo.*;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
-import nl.riebie.mcclans.persistence.upgrade.versions.JsonUpgrade2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -167,7 +166,6 @@ public class JsonLoader extends DataLoader {
 
     @Override
     protected List<DataUpgrade> getDataUpgrades(List<DataUpgrade> dataUpgrades) {
-        dataUpgrades.add(new JsonUpgrade2());
         return dataUpgrades;
     }
 

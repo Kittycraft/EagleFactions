@@ -2,11 +2,8 @@ package io.github.aquerr.eaglefactions.storage;
 
 import com.google.common.reflect.TypeToken;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
-import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.entities.FactionHome;
-import io.github.aquerr.eaglefactions.entities.FactionRelation;
-import io.github.aquerr.eaglefactions.entities.Group;
-import io.github.aquerr.eaglefactions.entities.Player;
+import io.github.aquerr.eaglefactions.entities.*;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -19,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+@Deprecated
 public class HOCONFactionStorage implements IStorage {
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
     private CommentedConfigurationNode configNode;
@@ -65,31 +63,31 @@ public class HOCONFactionStorage implements IStorage {
     @Override
     public boolean addOrUpdateFaction(Faction faction) {
         try {
-            configNode.getNode("factions", faction.Name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
-            configNode.getNode("factions", faction.Name, "leader").setValue(faction.Leader.name);
-            configNode.getNode("factions", faction.Name, "claims").setValue(faction.Claims);
+            configNode.getNode("factions", faction.name, "tag").setValue(TypeToken.of(Text.class), faction.Tag);
+            configNode.getNode("factions", faction.name, "leader").setValue(faction.Leader.uuid);
+            //configNode.getNode("factions", faction.uuid, "claims").setValue(faction.claims);
             List<String> groups = new ArrayList<>();
             faction.groups.forEach((a, b) -> {
                 groups.add(a);
-                configNode.getNode("factions", faction.Name, "group", a, "inherit").setValue(b.perms.inherit);
-                configNode.getNode("factions", faction.Name, "group", a, "nodes").setValue(b.perms.nodes);
-                configNode.getNode("factions", faction.Name, "group", a, "priority").setValue(b.priority);
-                configNode.getNode("factions", faction.Name, "group", a, "prefix").setValue(b.prefix);
+                configNode.getNode("factions", faction.name, "group", a, "inherit").setValue(b.perms.inherit);
+                configNode.getNode("factions", faction.name, "group", a, "nodes").setValue(b.perms.nodes);
+                configNode.getNode("factions", faction.name, "group", a, "priority").setValue(b.priority);
+                configNode.getNode("factions", faction.name, "group", a, "prefix").setValue(b.prefix);
             });
-            configNode.getNode("factions", faction.Name, "groups").setValue(groups);
+            configNode.getNode("factions", faction.name, "groups").setValue(groups);
 
             List<String> members = new ArrayList<>();
-            for (Player p : faction.Members) {
-                members.add(p.name);
-                configNode.getNode("factions", faction.Name, "member", p.name, "inherit").setValue(p.inherit);
-                configNode.getNode("factions", faction.Name, "member", p.name, "nodes").setValue(p.nodes);
+            for (FactionPlayer p : faction.members) {
+                members.add(p.uuid);
+                configNode.getNode("factions", faction.name, "member", p.uuid, "inherit").setValue(p.inherit);
+                configNode.getNode("factions", faction.name, "member", p.uuid, "nodes").setValue(p.nodes);
             }
-            configNode.getNode("factions", faction.Name, "members").setValue(members);
+            configNode.getNode("factions", faction.name, "members").setValue(members);
 
             if (faction.Home == null) {
-                configNode.getNode("factions", faction.Name, "home").setValue(faction.Home);
+                configNode.getNode("factions", faction.name, "home").setValue(faction.Home);
             } else {
-                configNode.getNode("factions", faction.Name, "home").setValue(faction.Home.WorldUUID.toString() + '|' + faction.Home.BlockPosition.toString());
+                configNode.getNode("factions", faction.name, "home").setValue(faction.Home.worldUUID.toString() + '|' + faction.Home.blockPosition.toString());
             }
 
             FactionsCache.addOrUpdateFactionCache(faction);
@@ -139,13 +137,13 @@ public class HOCONFactionStorage implements IStorage {
 
     private Faction createFactionObject(String factionName) {
         Text tag = getFactionTag(factionName);
-        Player leader = getFactionLeader(factionName);
+        FactionPlayer leader = getFactionLeader(factionName);
         FactionHome home = getFactionHome(factionName);
-        List<Player> members = getFactionMembers(factionName);
-        List<String> claims = getFactionClaims(factionName);
+        List<FactionPlayer> members = getFactionMembers(factionName);
+//        List<String> claims = getFactionClaims(factionName);
         Map<String, Group> groups = getFactionGroups(factionName);
 
-        Faction faction = new Faction(factionName, tag, leader, members, claims, home, groups);
+        Faction faction = new Faction(factionName, tag, leader, members, new ArrayList<>(), home, groups, 0);
 
         //TODO: Refactor this code so that the power can be sent to the faction constructor like other parameters.
         //faction.Power = PowerManager.getFactionPower(faction); //Get power from all players in faction.
@@ -165,7 +163,7 @@ public class HOCONFactionStorage implements IStorage {
         }
     }
 
-    private List<Player> getFactionMembers(String factionName) {
+    private List<FactionPlayer> getFactionMembers(String factionName) {
         Object membersObject = configNode.getNode("factions", factionName, "members").getValue();
         List<String> members;
         if (membersObject != null) {
@@ -176,7 +174,7 @@ public class HOCONFactionStorage implements IStorage {
             members = new ArrayList<>();
         }
 
-        List<Player> memberList = new ArrayList<>();
+        List<FactionPlayer> memberList = new ArrayList<>();
         for (String player : members) {
             Object inherit = configNode.getNode("factions", factionName, "member", player, "inherit").getValue();
             Object nodes = configNode.getNode("factions", factionName, "member", player, "nodes").getValue();
@@ -190,7 +188,7 @@ public class HOCONFactionStorage implements IStorage {
                 saveChanges();
                 nodes = new ArrayList<String>();
             }
-            memberList.add(new Player(player, (List<String>) inherit, (List<String>) nodes));
+            memberList.add(new FactionPlayer(player, "", (List<String>) inherit, (List<String>) nodes));
         }
 
         return memberList;
@@ -254,13 +252,13 @@ public class HOCONFactionStorage implements IStorage {
         }
     }
 
-    private Player getFactionLeader(String factionName) {
+    private FactionPlayer getFactionLeader(String factionName) {
         Object name = configNode.getNode("factions", factionName, "leader").getValue();
 
         if (name != null) {
-            List<Player> members = getFactionMembers(factionName);
-            for (Player p : members) {
-                if (p.name.equals(name)) {
+            List<FactionPlayer> members = getFactionMembers(factionName);
+            for (FactionPlayer p : members) {
+                if (p.uuid.equals(name)) {
                     return p;
                 }
             }
@@ -300,7 +298,7 @@ public class HOCONFactionStorage implements IStorage {
 
         for (Object object : keySet) {
             if (object instanceof String) {
-                if (factionList.stream().noneMatch(x -> x.Name.equals(String.valueOf(object)))) {
+                if (factionList.stream().noneMatch(x -> x.name.equals(String.valueOf(object)))) {
                     Faction faction = createFactionObject(String.valueOf(object));
                     FactionsCache.addOrUpdateFactionCache(faction);
                 }

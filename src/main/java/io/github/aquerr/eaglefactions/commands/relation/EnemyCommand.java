@@ -21,7 +21,7 @@ public class EnemyCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.getOne(Text.of("faction name"));
+        Optional<String> optionalFactionName = context.getOne(Text.of("faction uuid"));
         if (!(source instanceof Player)) {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in game in order to use this command!"));
             return CommandResult.success();
@@ -36,12 +36,12 @@ public class EnemyCommand implements CommandExecutor {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction!"));
         } else if (!factionB.isPresent()) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must specify a faction or player!"));
-        } else if (factionA.get().Name.equals(factionB.get().Name)) {
+        } else if (factionA.get().name.equals(factionB.get().name)) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not enemy your own faction!"));
         } else {
             List<FactionRelation> relations = FactionLogic.getRelations();
             for (int i = 0; i < relations.size(); i++) {
-                if (relations.get(i).factionA.equals(factionA.get().Name) && relations.get(i).factionB.equals(factionB.get().Name)) {
+                if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
                     if (relations.get(i).type == RelationType.ENEMY) {
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already enemies with that faction!"));
                         return CommandResult.success();
@@ -50,9 +50,9 @@ public class EnemyCommand implements CommandExecutor {
                     break;
                 }
             }
-            relations.add(new FactionRelation(factionA.get().Name, factionB.get().Name, RelationType.ENEMY));
-            FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has enemied ", TextColors.RED, factionB.get().Name, TextColors.WHITE, "!"));
-            FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.RED, factionA.get().Name, TextColors.WHITE, " has enemied your faction!"));
+            relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ENEMY));
+            FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has enemied ", TextColors.RED, factionB.get().name, TextColors.WHITE, "!"));
+            FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.RED, factionA.get().name, TextColors.WHITE, " has enemied your faction!"));
             FactionLogic.saveRelations();
         }
         return CommandResult.success();

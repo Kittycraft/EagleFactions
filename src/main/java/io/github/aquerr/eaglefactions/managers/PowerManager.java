@@ -2,8 +2,8 @@ package io.github.aquerr.eaglefactions.managers;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
-import io.github.aquerr.eaglefactions.entities.Player;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -87,8 +87,8 @@ public class PowerManager {
     }
 
     public static BigDecimal getFactionPower(Faction faction) {
-        if (faction.Name.equals("SafeZone") || faction.Name.equals("WarZone")) {
-            ConfigurationNode powerNode = _factionsNode.getNode("factions", faction.Name, "power");
+        if (faction.name.equals("SafeZone") || faction.name.equals("WarZone")) {
+            ConfigurationNode powerNode = _factionsNode.getNode("factions", faction.name, "power");
 
             BigDecimal factionPowerInFile = new BigDecimal(powerNode.getDouble());
 
@@ -96,9 +96,9 @@ public class PowerManager {
         }
 
         BigDecimal factionPower = BigDecimal.ZERO;
-        if (faction.Members != null && !faction.Members.isEmpty()) {
-            for (Player member : faction.Members) {
-                BigDecimal memberPower = getPlayerPower(UUID.fromString(member.name));
+        if (faction.members != null && !faction.members.isEmpty()) {
+            for (FactionPlayer member : faction.members) {
+                BigDecimal memberPower = getPlayerPower(UUID.fromString(member.uuid));
                 factionPower = factionPower.add(memberPower);
             }
         }
@@ -106,8 +106,8 @@ public class PowerManager {
     }
 
     public static BigDecimal getFactionMaxPower(Faction faction) {
-        if (faction.Name.equals("SafeZone") || faction.Name.equals("WarZone")) {
-            ConfigurationNode powerNode = _factionsNode.getNode("factions", faction.Name, "power");
+        if (faction.name.equals("SafeZone") || faction.name.equals("WarZone")) {
+            ConfigurationNode powerNode = _factionsNode.getNode("factions", faction.name, "power");
 
             BigDecimal factionPowerInFile = new BigDecimal(powerNode.getDouble());
 
@@ -116,9 +116,9 @@ public class PowerManager {
 
         BigDecimal factionMaxPower = BigDecimal.ZERO;
 
-        if (faction.Members != null && !faction.Members.isEmpty()) {
-            for (Player member : faction.Members) {
-                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(member.name)));
+        if (faction.members != null && !faction.members.isEmpty()) {
+            for (FactionPlayer member : faction.members) {
+                factionMaxPower = factionMaxPower.add(PowerManager.getPlayerMaxPower(UUID.fromString(member.uuid)));
             }
         }
 

@@ -26,6 +26,7 @@ import io.github.aquerr.eaglefactions.config.Config;
 
 import java.sql.PreparedStatement;
 
+//TODO: Requires refactor.
 public class TaskForwarder {
 //    Reference: TODO: Write connections to database.
 //    public static void sendInsertClanPlayer(ClanPlayerImpl clanPlayer) {
@@ -36,7 +37,7 @@ public class TaskForwarder {
 
     public static void queueTask(PreparedStatement query) {
         if (Config.getBoolean(Config.USE_DATABASE)) {
-            MCClansDatabaseTask task = new MCClansDatabaseTask(query);
+            DatabaseTask task = new DatabaseTask(query);
             TaskExecutor.getInstance().enqueue(task);
         }
     }

@@ -1,6 +1,6 @@
 package io.github.aquerr.eaglefactions.entities;
 
-public class FactionRelation {
+public class FactionRelation implements Cloneable {
 
     public final String factionA, factionB;
     public final RelationType type;

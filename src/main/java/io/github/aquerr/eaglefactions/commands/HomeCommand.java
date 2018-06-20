@@ -48,7 +48,7 @@ public class HomeCommand implements CommandExecutor {
                             source.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.STAY_STILL_FOR + " ", TextColors.GOLD, MainLogic.getHomeDelayTime() + " " + PluginMessages.SECONDS, TextColors.RESET, "!"));
                             teleportHome(player, player.getLocation().getBlockPosition(), playerFaction.Home);
                         } else {
-                            if (player.getWorld().getUniqueId().equals(playerFaction.Home.WorldUUID)) {
+                            if (player.getWorld().getUniqueId().equals(playerFaction.Home.worldUUID)) {
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.STAY_STILL_FOR + " ", TextColors.GOLD, MainLogic.getHomeDelayTime() + " " + PluginMessages.SECONDS, TextColors.RESET, "!"));
                                 teleportHome(player, player.getLocation().getBlockPosition(), playerFaction.Home);
                             } else {
@@ -81,7 +81,7 @@ public class HomeCommand implements CommandExecutor {
             public void accept(Task task) {
                 if (player.getLocation().getBlockPosition().equals(lastBlockPosition)) {
                     if (seconds >= MainLogic.getHomeDelayTime()) {
-                        player.setLocation(new Location<World>(Sponge.getServer().getWorld(factionHome.WorldUUID).get(), factionHome.BlockPosition));
+                        player.setLocation(new Location<World>(Sponge.getServer().getWorld(factionHome.worldUUID).get(), factionHome.blockPosition));
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOU_WERE_TELEPORTED_TO_FACTIONS_HOME));
                         startHomeCooldown(player.getUniqueId());
                         task.cancel();

@@ -22,6 +22,8 @@
 
 package nl.riebie.mcclans.persistence.implementations;
 
+import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import nl.riebie.mcclans.api.enums.KillDeathFactor;
 import nl.riebie.mcclans.clan.ClanImpl;
 import nl.riebie.mcclans.clan.RankImpl;
@@ -40,13 +42,16 @@ public class DatabaseSaver extends DataSaver {
 
     private final static DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
 
-    protected void saveClan(ClanImpl clan) throws Exception {
-        PreparedStatement query = getInsertClanQuery(clan);
-        databaseConnectionOwner.executeTransactionStatement(query);
+    protected void saveFaction(Faction faction) throws Exception {
+        databaseConnectionOwner.executeTransactionStatement(QueryGenerator.createInsertQuery("ef_factions",
+                databaseConnectionOwner.getConnection()).value("faction_name", faction.name)
+                .value("faction_owner", faction.Leader == null ? null : faction.Leader.uuid).value("faction_name", faction.name)
+                .value("faction_home", faction.Home == null ? null : faction.Home.toString()).value("creation_time", faction.creationTime)
+                .create());
     }
 
-    protected void saveClanPlayer(ClanPlayerImpl cp) throws Exception {
-        PreparedStatement query = getInsertClanPlayerQuery(cp);
+    protected void savePlayer(FactionPlayer player) throws Exception {
+        PreparedStatement query = getInsertPlayerQuery(player);
         databaseConnectionOwner.executeTransactionStatement(query);
     }
 
@@ -90,33 +95,10 @@ public class DatabaseSaver extends DataSaver {
         ).create();
     }
 
-    public static PreparedStatement getInsertClanPlayerQuery(ClanPlayerImpl clanPlayer) {
-        int clanPlayerID = clanPlayer.getID();
-        UUID uuid = clanPlayer.getUUID();
-        String name = clanPlayer.getName();
-        int clanID = -1;
-        int rankID = -1;
-        if (clanPlayer.getClan() != null) {
-            clanID = clanPlayer.getClan().getID();
-            rankID = clanPlayer.getRank().getID();
-        }
-        int killsHigh = clanPlayer.getKillDeath().getKills(KillDeathFactor.HIGH);
-        int killsMedium = clanPlayer.getKillDeath().getKills(KillDeathFactor.MEDIUM);
-        int killsLow = clanPlayer.getKillDeath().getKills(KillDeathFactor.LOW);
-        int deathsHigh = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.HIGH);
-        int deathsMedium = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.MEDIUM);
-        int deathsLow = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.LOW);
+    public static PreparedStatement getInsertPlayerQuery(FactionPlayer player) {
 
-        boolean ffProtection = clanPlayer.isFfProtected();
-        long lastOnlineTime = clanPlayer.getLastOnline().getTime();
-
-        return QueryGenerator.createInsertQuery("mcc_clanplayers", databaseConnectionOwner.getConnection()).value("clanplayer_id", clanPlayerID)
-                .value("uuid_most_sig_bits", uuid.getMostSignificantBits()).value("uuid_least_sig_bits", uuid.getLeastSignificantBits())
-                .value("playername", name).value("clan_id", clanID).value("rank_id", rankID).value("kills_high", killsHigh)
-                .value("kills_medium", killsMedium).value("kills_low", killsLow).value("deaths_high", deathsHigh)
-                .value("deaths_medium", deathsMedium).value("deaths_low", deathsLow).value("last_online_time", lastOnlineTime)
-                .value("ff_protection", ffProtection).create();
-
+        return QueryGenerator.createInsertQuery("ef_players", databaseConnectionOwner.getConnection()).value("player_uuid", player.uuid)
+                .value("player_name", player.name).value("player_name", player.name).create();
     }
 
     public static PreparedStatement getUpdateClanPlayerQuery(ClanPlayerImpl clanPlayer) {
@@ -151,44 +133,6 @@ public class DatabaseSaver extends DataSaver {
     public static PreparedStatement getDeleteClanPlayerQuery(int clanPlayerID) {
         return QueryGenerator.createDeleteQuery("mcc_clanplayers", databaseConnectionOwner.getConnection()).where("clanplayer_id", clanPlayerID)
                 .create();
-    }
-
-    public static PreparedStatement getInsertClanQuery(ClanImpl clan) {
-        int clanID = clan.getID();
-        String tag = clan.getTag();
-        String name = clan.getName();
-        int ownerID = clan.getOwner().getID();
-        String tagColorId = clan.getTagColor().getId();
-        boolean allowAllyInvites = clan.isAllowingAllyInvites();
-        boolean ffProtection = clan.isFfProtected();
-        long creationTime = clan.getCreationDate().getTime();
-        Location<World> clanHome = clan.getHome();
-        String clanHomeWorld = null;
-        double clanHomeX = 0;
-        double clanHomeY = 0;
-        double clanHomeZ = 0;
-        float clanHomeYaw = 0;
-        float clanHomePitch = 0;
-        if (clanHome != null) {
-            clanHomeWorld = clanHome.getExtent().getUniqueId().toString();
-            clanHomeX = clanHome.getX();
-            clanHomeY = clanHome.getY();
-            clanHomeZ = clanHome.getZ();
-            // TODO SPONGE vector3d or something
-//            clanHomeYaw = clanHome.getYaw();
-//            clanHomePitch = clanHome.getPitch();
-        }
-        int homeSetTimes = clan.getHomeSetTimes();
-        long homeLastSetTimeStamp = clan.getHomeSetTimeStamp();
-        String bankId = clan.getBankId();
-
-        return QueryGenerator.createInsertQuery("mcc_clans", databaseConnectionOwner.getConnection()).value("clan_id", clanID).value("clantag", tag)
-                .value("clanname", name).value("clanplayer_id_owner", ownerID).value("tagcolor", tagColorId)
-                .value("allow_ally_invites", allowAllyInvites).value("clanhome_world", clanHomeWorld).value("clanhome_x", clanHomeX)
-                .value("clanhome_y", clanHomeY).value("clanhome_z", clanHomeZ).value("clanhome_yaw", clanHomeYaw)
-                .value("clanhome_pitch", clanHomePitch).value("clanhome_set_times", homeSetTimes)
-                .value("clanhome_set_timestamp", homeLastSetTimeStamp).value("ff_protection", ffProtection).value("creation_time", creationTime)
-                .value("bank_id", bankId).create();
     }
 
     public static PreparedStatement getUpdateClanQuery(ClanImpl clan) {

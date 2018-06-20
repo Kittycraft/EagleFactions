@@ -75,7 +75,7 @@ public class PermCommand implements CommandExecutor {
                         return CommandResult.success();
                     } else {
                         src.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not contain that group! Use \"/f perm group "
-                                + group.get() + "create\" if you want to create a group with that name."));
+                                + group.get() + "create\" if you want to create a group with that uuid."));
                         return CommandResult.success();
                     }
                     faction.groups.get(group.get());

@@ -29,7 +29,7 @@ import java.util.Optional;
 public class CreateCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.<String>getOne("faction name");
+        Optional<String> optionalFactionName = context.<String>getOne("faction uuid");
         Optional<String> optionalFactionTag = context.<String>getOne("tag");
 
         if (optionalFactionName.isPresent() && optionalFactionTag.isPresent()) {
@@ -63,7 +63,7 @@ public class CreateCommand implements CommandExecutor {
                     }
 
                     if (FactionLogic.getFactionsNames().stream().noneMatch(x -> x.equalsIgnoreCase(factionName))) {
-                        //Check name length
+                        //Check uuid length
                         if (factionName.length() > MainLogic.getMaxNameLength()) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + MainLogic.getMaxNameLength() + " " + PluginMessages.CHARS + ")"));
                             return CommandResult.success();
@@ -93,7 +93,7 @@ public class CreateCommand implements CommandExecutor {
             }
         } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f create <tag> <faction name>"));
+            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f create <tag> <faction uuid>"));
         }
 
         return CommandResult.success();

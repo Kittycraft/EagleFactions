@@ -30,7 +30,7 @@ public class TopCommand implements CommandExecutor {
         //This should show only top 10 factions on the server.
 
         for (Faction faction : factionsList) {
-            if (faction.Name.equalsIgnoreCase("safezone") || faction.Name.equalsIgnoreCase("warzone")) continue;
+            if (faction.name.equalsIgnoreCase("safezone") || faction.name.equalsIgnoreCase("warzone")) continue;
             if (index == 11) break;
 
             index++;
@@ -39,7 +39,7 @@ public class TopCommand implements CommandExecutor {
 
             Text factionHelp = Text.builder()
                     .append(Text.builder()
-                            .append(Text.of(TextColors.AQUA, index + ". " + tag + faction.Name + " (" + PowerManager.getFactionPower(faction) + "/" + PowerManager.getFactionMaxPower(faction) + ")"))
+                            .append(Text.of(TextColors.AQUA, index + ". " + tag + faction.name + " (" + PowerManager.getFactionPower(faction) + "/" + PowerManager.getFactionMaxPower(faction) + ")"))
                             .build())
                     .build();
 

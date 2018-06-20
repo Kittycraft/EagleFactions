@@ -43,9 +43,9 @@ public class BlockBreakListener {
                     Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
                     if (optionalChunkFaction.isPresent()) {
-                        if (optionalChunkFaction.get().Name.equals("SafeZone") && player.hasPermission("eaglefactions.safezone.build")) {
+                        if (optionalChunkFaction.get().name.equals("SafeZone") && player.hasPermission("eaglefactions.safezone.build")) {
                             return;
-                        } else if (optionalChunkFaction.get().Name.equals("WarZone") && player.hasPermission("eaglefactions.warzone.build")) {
+                        } else if (optionalChunkFaction.get().name.equals("WarZone") && player.hasPermission("eaglefactions.warzone.build")) {
                             return;
                         } else if (optionalPlayerFaction.isPresent()) {
                             //TODO: Find out if allies give permission for building (Reference: optionalChunkFaction.get())
@@ -78,13 +78,13 @@ public class BlockBreakListener {
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
                 if (optionalChunkFaction.isPresent()) {
-                    if (!optionalChunkFaction.get().Name.equals("SafeZone") && !optionalChunkFaction.get().Name.equals("WarZone") && MainLogic.isBlockDestroyingDisabled()) {
+                    if (!optionalChunkFaction.get().name.equals("SafeZone") && !optionalChunkFaction.get().name.equals("WarZone") && MainLogic.isBlockDestroyingDisabled()) {
                         event.setCancelled(true);
                         return;
-                    } else if (optionalChunkFaction.get().Name.equals("SafeZone")) {
+                    } else if (optionalChunkFaction.get().name.equals("SafeZone")) {
                         event.setCancelled(true);
                         return;
-                    } else if (optionalChunkFaction.get().Name.equals("WarZone") && MainLogic.isBlockDestroyingInWarZoneDisabled()) {
+                    } else if (optionalChunkFaction.get().name.equals("WarZone") && MainLogic.isBlockDestroyingInWarZoneDisabled()) {
                         event.setCancelled(true);
                         return;
                     }

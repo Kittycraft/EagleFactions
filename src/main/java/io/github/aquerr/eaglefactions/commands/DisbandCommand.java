@@ -27,7 +27,7 @@ public class DisbandCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
                 if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                    boolean didSucceed = FactionLogic.disbandFaction(playerFaction.Name);
+                    boolean didSucceed = FactionLogic.disbandFaction(playerFaction.name);
 
                     if (didSucceed) {
                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.FACTION_HAS_BEEN_DISBANDED));
@@ -43,7 +43,7 @@ public class DisbandCommand implements CommandExecutor {
 
                 if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
                     try {
-                        boolean didSucceed = FactionLogic.disbandFaction(playerFaction.Name);
+                        boolean didSucceed = FactionLogic.disbandFaction(playerFaction.name);
 
                         if (didSucceed) {
                             player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.FACTION_HAS_BEEN_DISBANDED));

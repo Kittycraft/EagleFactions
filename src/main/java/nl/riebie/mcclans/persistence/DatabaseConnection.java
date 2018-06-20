@@ -54,7 +54,7 @@ public class DatabaseConnection {
 
         SqlService sql = Sponge.getGame().getServiceManager().provide(SqlService.class).get();
         try {
-            DataSource dataSource = sql.getDataSource(EagleFactions.getEagleFactions(), url);
+            DataSource dataSource = sql.getDataSource(EagleFactions.getPlugin(), url);
             con = dataSource.getConnection();
             return true;
         } catch (SQLException e) {

@@ -22,7 +22,7 @@ import java.util.Map;
 public class HelpCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Map<List<String>, CommandSpec> commands = EagleFactions.Subcommands;
+        Map<List<String>, CommandSpec> commands = SubcommandFactory.getSubcommands();
         List<Text> helpList = Lists.newArrayList();
 
         for (List<String> aliases : commands.keySet()) {

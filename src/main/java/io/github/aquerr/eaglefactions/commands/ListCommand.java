@@ -34,7 +34,7 @@ public class ListCommand implements CommandExecutor {
 
             Text factionHelp = Text.builder()
                     .append(Text.builder()
-                            .append(Text.of(TextColors.AQUA, "- ")).append(tag).append(Text.of(faction.Name, " (", PowerManager.getFactionPower(faction), "/", PowerManager.getFactionMaxPower(faction), ")"))
+                            .append(Text.of(TextColors.AQUA, "- ")).append(tag).append(Text.of(faction.name, " (", PowerManager.getFactionPower(faction), "/", PowerManager.getFactionMaxPower(faction), ")"))
                             .build())
                     .build();
 

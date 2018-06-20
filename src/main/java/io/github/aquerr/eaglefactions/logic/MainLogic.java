@@ -48,11 +48,11 @@ public class MainLogic {
     }
 
     public static int getMaxNameLength() {
-        return configuration.getInt(30, "name", "max-length");
+        return configuration.getInt(30, "uuid", "max-length");
     }
 
     public static int getMinNameLength() {
-        return configuration.getInt(3, "name", "min-length");
+        return configuration.getInt(3, "uuid", "min-length");
     }
 
     public static int getMaxTagLength() {

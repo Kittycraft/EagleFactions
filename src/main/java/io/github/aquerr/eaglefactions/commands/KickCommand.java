@@ -2,7 +2,6 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -34,10 +33,10 @@ public class KickCommand implements CommandExecutor {
                         Player selectedPlayer = optionalSelectedPlayer.get();
                         Optional<Faction> optionalSelectedPlayerFaction = FactionLogic.getFactionByPlayerUUID(selectedPlayer.getUniqueId());
 
-                        if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().Name.equals(playerFaction.Name)) {
+                        if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().name.equals(playerFaction.name)) {
                             if (!playerFaction.Leader.equals(selectedPlayer.getUniqueId().toString())) {
                                 if (playerFaction.getMember(player.getUniqueId().toString()).getPriority(playerFaction) > playerFaction.getMember(selectedPlayer.getUniqueId().toString()).getPriority(playerFaction)) {
-                                    FactionLogic.kickPlayer(selectedPlayer.getUniqueId(), playerFaction.Name);
+                                    FactionLogic.kickPlayer(selectedPlayer.getUniqueId(), playerFaction.name);
 
                                     //TODO: Add listener that will inform players in a faction that someone has left their faction.
 

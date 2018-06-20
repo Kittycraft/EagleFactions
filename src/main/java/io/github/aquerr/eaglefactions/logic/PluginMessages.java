@@ -214,7 +214,7 @@ public class PluginMessages {
     public static String TO;
     public static String YOU_CANT_SET_FACTIONS_LEADER_AS_MEMBER;
 
-    //Player
+    //FactionPlayer
     public static String PLAYER_INFO;
     public static String LAST_PLAYED;
     public static String THIS_PLAYER_HAS_NOT_PLAYED_ON_THIS_SERVER;

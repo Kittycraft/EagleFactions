@@ -25,12 +25,12 @@ package nl.riebie.mcclans.persistence.upgrade.interfaces;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import nl.riebie.mcclans.MCClans;
+import io.github.aquerr.eaglefactions.EagleFactions;
+import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.upgrade.json.FieldAdd;
 import nl.riebie.mcclans.persistence.upgrade.json.FieldRemove;
 import nl.riebie.mcclans.persistence.upgrade.json.FieldRename;
-import nl.riebie.mcclans.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -44,10 +44,12 @@ import java.util.List;
 /**
  * Created by Kippers on 19/03/2016.
  */
+
+//TODO: Requires refactor.
 public abstract class JsonUpgrade extends DataUpgrade {
 
-    protected static final File recentDataFolder = new File(MCClans.getPlugin().getDataFolder(), "recent");
-    protected static final File tempDataFolder = new File(MCClans.getPlugin().getDataFolder(), "temp");
+    protected static final File recentDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "recent");
+    protected static final File tempDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "temp");
 
     private List<String> fileNames = Arrays.asList("clans", "clanPlayers", "ranks", "allies");
 

@@ -3,7 +3,6 @@ package io.github.aquerr.eaglefactions.commands;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
-import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -37,8 +36,8 @@ public class UnclaimCommand implements CommandExecutor {
 
                 if (optionalChunkFaction.isPresent()) {
                     if (optionalChunkFaction.get().Home != null) {
-                        if (world.getUniqueId().equals(optionalChunkFaction.get().Home.WorldUUID)) {
-                            Location homeLocation = world.getLocation(optionalChunkFaction.get().Home.BlockPosition);
+                        if (world.getUniqueId().equals(optionalChunkFaction.get().Home.worldUUID)) {
+                            Location homeLocation = world.getLocation(optionalChunkFaction.get().Home.blockPosition);
 
                             if (homeLocation.getChunkPosition().toString().equals(player.getLocation().getChunkPosition().toString()))
                                 FactionLogic.setHome(world.getUniqueId(), optionalChunkFaction.get(), null);
@@ -68,10 +67,10 @@ public class UnclaimCommand implements CommandExecutor {
                     if (optionalChunkFaction.isPresent()) {
                         Faction chunkFaction = optionalChunkFaction.get();
 
-                        if (chunkFaction.Name.equals(playerFaction.Name)) {
+                        if (chunkFaction.name.equals(playerFaction.name)) {
                             if (optionalChunkFaction.get().Home != null) {
-                                if (world.getUniqueId().equals(optionalChunkFaction.get().Home.WorldUUID)) {
-                                    Location homeLocation = world.getLocation(optionalChunkFaction.get().Home.BlockPosition);
+                                if (world.getUniqueId().equals(optionalChunkFaction.get().Home.worldUUID)) {
+                                    Location homeLocation = world.getLocation(optionalChunkFaction.get().Home.blockPosition);
 
                                     if (homeLocation.getChunkPosition().toString().equals(player.getLocation().getChunkPosition().toString()))
                                         FactionLogic.setHome(world.getUniqueId(), optionalChunkFaction.get(), null);
