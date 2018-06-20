@@ -72,7 +72,7 @@ public abstract class DataSaver {
         for (Faction faction : retrievedFactions) {
             saveFaction(faction);
             for(Group group : faction.groups.values()){
-                saveGroup(group);
+                saveGroup(faction.name, group);
             }
             for(FactionPlayer player : faction.members){
                 savePlayer(player);
@@ -88,7 +88,7 @@ public abstract class DataSaver {
 
     protected abstract void savePlayer(FactionPlayer player) throws Exception;
 
-    protected abstract void saveGroup(Group group) throws Exception;
+    protected abstract void saveGroup(String factionName, Group group) throws Exception;
 
     protected abstract void saveFactionRelation(FactionRelation relation) throws Exception;
 

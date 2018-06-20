@@ -88,7 +88,7 @@ public class FactionLogic {
             return faction.Leader;
         }
 
-        return new FactionPlayer("");
+        return new FactionPlayer("", "", "");
     }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
@@ -194,7 +194,7 @@ public class FactionLogic {
     }
 
     public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
-        Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString()));
+        Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName));
 
         factionsStorage.addOrUpdateFaction(faction);
     }
@@ -205,7 +205,7 @@ public class FactionLogic {
 
     public static void joinFaction(UUID playerUUID, String factionName) {
         Faction faction = getFactionByName(factionName);
-        FactionPlayer player = new FactionPlayer(playerUUID.toString());
+        FactionPlayer player = new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName);
         player.addGroup("recruit");
         faction.members.add(player);
         factionsStorage.addOrUpdateFaction(faction);

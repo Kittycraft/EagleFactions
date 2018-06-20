@@ -188,7 +188,7 @@ public class HOCONFactionStorage implements IStorage {
                 saveChanges();
                 nodes = new ArrayList<String>();
             }
-            memberList.add(new FactionPlayer(player, "", (List<String>) inherit, (List<String>) nodes));
+            memberList.add(new FactionPlayer(player, "", factionName, (List<String>) inherit, (List<String>) nodes));
         }
 
         return memberList;

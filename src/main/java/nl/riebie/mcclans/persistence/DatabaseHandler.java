@@ -69,7 +69,7 @@ public class DatabaseHandler {
             " `group_parents` STRING NOT NULL, `priority` INT(11) NOT NULL, " + "PRIMARY KEY (`faction`, `group_name`) " + ") ENGINE=InnoDB;";
 
     private final String CREATE_TABLE_CLAIMS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_claims` " + "( "
-            + "`claim_x` INT(11) NOT NULL,`claim_y` INT(11) NOT NULL, " + "`faction_name` VARCHAR(255) NOT NULL, PRIMARY KEY (`claim_x`, `claim_y`) " + ") ENGINE=InnoDB;";
+            + "`claim_x` INT(11) NOT NULL,`claim_z` INT(11) NOT NULL, " + "`faction_name` VARCHAR(255) NOT NULL, PRIMARY KEY (`claim_x`, `claim_z`) " + ") ENGINE=InnoDB;";
 
     private static DatabaseHandler instance;
 

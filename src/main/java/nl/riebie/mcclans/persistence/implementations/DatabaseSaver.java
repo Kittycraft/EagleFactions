@@ -22,21 +22,13 @@
 
 package nl.riebie.mcclans.persistence.implementations;
 
-import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.entities.FactionPlayer;
-import nl.riebie.mcclans.api.enums.KillDeathFactor;
-import nl.riebie.mcclans.clan.ClanImpl;
-import nl.riebie.mcclans.clan.RankImpl;
+import io.github.aquerr.eaglefactions.entities.*;
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.QueryGenerator;
 import nl.riebie.mcclans.persistence.interfaces.DataSaver;
-import nl.riebie.mcclans.player.ClanPlayerImpl;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 import java.sql.PreparedStatement;
-import java.util.UUID;
 
 public class DatabaseSaver extends DataSaver {
 
@@ -55,13 +47,19 @@ public class DatabaseSaver extends DataSaver {
         databaseConnectionOwner.executeTransactionStatement(query);
     }
 
-    protected void saveRank(int clanID, RankImpl rank) throws Exception {
-        PreparedStatement query = getInsertRankQuery(clanID, rank);
+    protected void saveGroup(String factionName, Group group) throws Exception {
+        PreparedStatement query = getInsertGroupQuery(factionName, group);
         databaseConnectionOwner.executeTransactionStatement(query);
     }
 
-    protected void saveClanAlly(int clanID, int clanIDAlly) throws Exception {
-        PreparedStatement query = getInsertClanAllyQuery(clanID, clanIDAlly);
+    protected void saveFactionRelation(FactionRelation relation) throws Exception {
+        PreparedStatement query = getInsertFactionRelationQuery(relation);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    @Override
+    protected void saveFactionClaim(FactionClaim claim) throws Exception {
+        PreparedStatement query = getInsertClaimQuery(claim);
         databaseConnectionOwner.executeTransactionStatement(query);
     }
 
@@ -95,129 +93,98 @@ public class DatabaseSaver extends DataSaver {
         ).create();
     }
 
+    public static PreparedStatement getInsertClaimQuery(FactionClaim claim){
+        return QueryGenerator.createInsertQuery("ef_claims", databaseConnectionOwner.getConnection()).value("claim_x", claim.chunk.getX())
+                .value("claim_z", claim.chunk.getZ()).value("faction_name", claim.faction).create();
+    }
+
+    public static PreparedStatement getDeleteClaimQuery(FactionClaim claim){
+        return QueryGenerator.createDeleteQuery("ef_claims", databaseConnectionOwner.getConnection()).where("claim_x", claim.chunk.getX())
+                .and("claim_z", claim.chunk.getZ()).create();
+    }
+
     public static PreparedStatement getInsertPlayerQuery(FactionPlayer player) {
-
+        String playerGroups = "";
+        for (int i = 0; i < player.inherit.size(); i++) {
+            playerGroups += player.inherit.get(i) + (i != player.inherit.size() - 1 ? "," : "");
+        }
+        String playerNodes = "";
+        for (int i = 0; i < player.nodes.size(); i++) {
+            playerGroups += player.nodes.get(i) + (i != player.nodes.size() - 1 ? "\n" : "");
+        }
         return QueryGenerator.createInsertQuery("ef_players", databaseConnectionOwner.getConnection()).value("player_uuid", player.uuid)
-                .value("player_name", player.name).value("player_name", player.name).create();
+                .value("player_name", player.name).value("player_faction", player.faction).value("player_groups", playerGroups)
+                .value("player_nodes", playerNodes).value("last_online_time", player.getLastOnline()).create();
     }
 
-    public static PreparedStatement getUpdateClanPlayerQuery(ClanPlayerImpl clanPlayer) {
-        int clanPlayerID = clanPlayer.getID();
-        UUID uuid = clanPlayer.getUUID();
-        String name = clanPlayer.getName();
-        int clanID = -1;
-        int rankID = -1;
-        if (clanPlayer.getClan() != null) {
-            clanID = clanPlayer.getClan().getID();
-            rankID = clanPlayer.getRank().getID();
+    public static PreparedStatement getUpdatePlayerQuery(FactionPlayer player) {
+        String playerGroups = "";
+        for (int i = 0; i < player.inherit.size(); i++) {
+            playerGroups += player.inherit.get(i) + (i != player.inherit.size() - 1 ? "," : "");
         }
-        int killsHigh = clanPlayer.getKillDeath().getKills(KillDeathFactor.HIGH);
-        int killsMedium = clanPlayer.getKillDeath().getKills(KillDeathFactor.MEDIUM);
-        int killsLow = clanPlayer.getKillDeath().getKills(KillDeathFactor.LOW);
-        int deathsHigh = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.HIGH);
-        int deathsMedium = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.MEDIUM);
-        int deathsLow = clanPlayer.getKillDeath().getDeaths(KillDeathFactor.LOW);
-
-        boolean ffProtection = clanPlayer.isFfProtected();
-        long lastOnlineTime = clanPlayer.getLastOnline().getTime();
-
-        return QueryGenerator.createUpdateQuery("mcc_clanplayers", databaseConnectionOwner.getConnection())
-                .value("uuid_most_sig_bits", uuid.getMostSignificantBits()).value("uuid_least_sig_bits", uuid.getLeastSignificantBits())
-                .value("playername", name).value("clan_id", clanID).value("rank_id", rankID).value("kills_high", killsHigh)
-                .value("kills_medium", killsMedium).value("kills_low", killsLow).value("deaths_high", deathsHigh)
-                .value("deaths_medium", deathsMedium).value("deaths_low", deathsLow).value("last_online_time", lastOnlineTime)
-                .value("ff_protection", ffProtection).where("clanplayer_id", clanPlayerID).create();
-
-    }
-
-    public static PreparedStatement getDeleteClanPlayerQuery(int clanPlayerID) {
-        return QueryGenerator.createDeleteQuery("mcc_clanplayers", databaseConnectionOwner.getConnection()).where("clanplayer_id", clanPlayerID)
-                .create();
-    }
-
-    public static PreparedStatement getUpdateClanQuery(ClanImpl clan) {
-        int clanID = clan.getID();
-        String tag = clan.getTag();
-        String name = clan.getName();
-        int ownerID = clan.getOwner().getID();
-        String tagColorId = clan.getTagColor().getId();
-        boolean allowAllyInvites = clan.isAllowingAllyInvites();
-        boolean ffProtection = clan.isFfProtected();
-        long creationTime = clan.getCreationDate().getTime();
-        Location<World> clanHome = clan.getHome();
-        String clanHomeWorld = null;
-        double clanHomeX = 0;
-        double clanHomeY = 0;
-        double clanHomeZ = 0;
-        float clanHomeYaw = 0;
-        float clanHomePitch = 0;
-        if (clanHome != null) {
-            clanHomeWorld = clanHome.getExtent().getUniqueId().toString();
-            clanHomeX = clanHome.getX();
-            clanHomeY = clanHome.getY();
-            clanHomeZ = clanHome.getZ();
-            // TODO SPONGE vector3d or something
-//            clanHomeYaw = clanHome.getYaw();
-//            clanHomePitch = clanHome.getPitch();
+        String playerNodes = "";
+        for (int i = 0; i < player.nodes.size(); i++) {
+            playerGroups += player.nodes.get(i) + (i != player.nodes.size() - 1 ? "\n" : "");
         }
-        int homeSetTimes = clan.getHomeSetTimes();
-        long homeLastSetTimeStamp = clan.getHomeSetTimeStamp();
-        String bankId = clan.getBankId();
-
-        return QueryGenerator.createUpdateQuery("mcc_clans", databaseConnectionOwner.getConnection()).value("clantag", tag).value("clanname", name)
-                .value("clanplayer_id_owner", ownerID).value("tagcolor", tagColorId)
-                .value("allow_ally_invites", allowAllyInvites)
-                .value("clanhome_world", clanHomeWorld).value("clanhome_x", clanHomeX).value("clanhome_y", clanHomeY).value("clanhome_z", clanHomeZ)
-                .value("clanhome_yaw", clanHomeYaw).value("clanhome_pitch", clanHomePitch).value("clanhome_set_times", homeSetTimes)
-                .value("clanhome_set_timestamp", homeLastSetTimeStamp).value("ff_protection", ffProtection).value("creation_time", creationTime)
-                .value("bank_id", bankId).where("clan_id", clanID).create();
+        return QueryGenerator.createUpdateQuery("ef_players", databaseConnectionOwner.getConnection())
+                .value("player_faction", player.faction).value("player_groups", playerGroups)
+                .value("player_nodes", playerNodes).value("last_online_time", player.getLastOnline())
+                .where("player_uuid", player.uuid).create();
     }
 
-    public static PreparedStatement getDeleteClanQuery(int clanID) {
-        return QueryGenerator.createDeleteQuery("mcc_clans", databaseConnectionOwner.getConnection()).where("clan_id", clanID).create();
+    public static PreparedStatement getDeletePlayerQuery(String uuid) {
+        return QueryGenerator.createDeleteQuery("ef_players", databaseConnectionOwner.getConnection()).where("player_uuid", uuid).create();
     }
 
-    public static PreparedStatement getInsertRankQuery(int clanID, RankImpl rank) {
-        int rankID = rank.getID();
-        String name = rank.getName();
-        boolean changeable = rank.isChangeable();
-
-        String permissions = rank.getPermissionsAsString();
-
-        return QueryGenerator.createInsertQuery("mcc_ranks", databaseConnectionOwner.getConnection()).value("rank_id", rankID)
-                .value("clan_id", clanID).value("rankname", name).value("permissions", permissions).value("changeable", changeable).create();
+    public static PreparedStatement getUpdateFactionQuery(Faction faction) {
+        return QueryGenerator.createUpdateQuery("ef_factions", databaseConnectionOwner.getConnection())
+                .value("faction_owner", faction.Leader == null ? null : faction.Leader.uuid).value("faction_home", faction.Home == null ? null : faction.Home.toString())
+                .where("faction_name", faction.name).create();
     }
 
-    public static PreparedStatement getUpdateRankQuery(RankImpl rank) {
-        int rankID = rank.getID();
-        String name = rank.getName();
-        boolean changeable = rank.isChangeable();
+    public static PreparedStatement getDeleteFactionQuery(String factionName) {
+        return QueryGenerator.createDeleteQuery("ef_factions", databaseConnectionOwner.getConnection()).where("faction_name", factionName).create();
+    }
 
-        String permissions = "";
-        int i = 0;
-        for (String perm : rank.getPermissions()) {
-            if (i != 0) {
-                permissions += ",";
-            }
-            permissions += perm;
-            i++;
+    public static PreparedStatement getInsertGroupQuery(String factionName, Group group) {
+        String parents = "";
+        for (int i = 0; i < group.perms.inherit.size(); i++) {
+            parents += group.perms.inherit.get(i) + (i != group.perms.inherit.size() - 1 ? "," : "");
         }
-
-        return QueryGenerator.createUpdateQuery("mcc_ranks", databaseConnectionOwner.getConnection()).value("rankname", name)
-                .value("permissions", permissions).value("changeable", changeable).where("rank_id", rankID).create();
+        String nodes = "";
+        for (int i = 0; i < group.perms.nodes.size(); i++) {
+            parents += group.perms.nodes.get(i) + (i != group.perms.nodes.size() - 1 ? "\n" : "");
+        }
+        return QueryGenerator.createInsertQuery("ef_groups", databaseConnectionOwner.getConnection()).value("faction", factionName)
+                .value("group_name", group.name).value("group_parents", parents).value("group_nodes", nodes)
+                .value("priority", group.priority).create();
     }
 
-    public static PreparedStatement getDeleteRankQuery(int rankID) {
-        return QueryGenerator.createDeleteQuery("mcc_ranks", databaseConnectionOwner.getConnection()).where("rank_id", rankID).create();
+    public static PreparedStatement getUpdateGroupQuery(Group group, String factionName) {
+        String parents = "";
+        for (int i = 0; i < group.perms.inherit.size(); i++) {
+            parents += group.perms.inherit.get(i) + (i != group.perms.inherit.size() - 1 ? "," : "");
+        }
+        String nodes = "";
+        for (int i = 0; i < group.perms.nodes.size(); i++) {
+            parents += group.perms.nodes.get(i) + (i != group.perms.nodes.size() - 1 ? "\n" : "");
+        }
+        return QueryGenerator.createUpdateQuery("ef_groups", databaseConnectionOwner.getConnection())
+                .value("group_name", group.name).value("group_parents", parents).value("group_nodes", nodes)
+                .value("priority", group.priority).where("faction", factionName).and("group_name", group.name).create();
     }
 
-    public static PreparedStatement getInsertClanAllyQuery(int clanID, int clanID_ally) {
-        return QueryGenerator.createInsertQuery("mcc_clans_allies", databaseConnectionOwner.getConnection()).value("clan_id", clanID)
-                .value("clan_id_ally", clanID_ally).create();
+    public static PreparedStatement getDeleteGroupQuery(String factionName, String groupName) {
+        return QueryGenerator.createDeleteQuery("ef_groups", databaseConnectionOwner.getConnection()).where("faction", factionName).and("group_name", groupName).create();
     }
 
-    public static PreparedStatement getDeleteClanAllyQuery(int clanID, int clanID_ally) {
-        return QueryGenerator.createDeleteQuery("mcc_clans_allies", databaseConnectionOwner.getConnection()).where("clan_id", clanID)
-                .and("clan_id_ally", clanID_ally).create();
+    public static PreparedStatement getInsertFactionRelationQuery(FactionRelation relation) {
+        return QueryGenerator.createInsertQuery("ef_relations", databaseConnectionOwner.getConnection()).value("factionA", relation.factionA)
+                .value("factionB", relation.factionB).value("relation", relation.type.identifier).create();
+    }
+
+    public static PreparedStatement getDeleteFactionRelationQuery(String factionA, String factionB) {
+        return QueryGenerator.createDeleteQuery("ef_relations", databaseConnectionOwner.getConnection()).value("factionA", factionA)
+                .value("factionB", factionB).create();
     }
 }

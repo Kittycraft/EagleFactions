@@ -3,7 +3,7 @@ package io.github.aquerr.eaglefactions.entities;
 public enum RelationType {
     ALLY(0), ENEMY(1), TRUCE(2), NEUTRAL(3), SAME(4);
 
-    private final int identifier;
+    public final int identifier;
 
     RelationType(int identifier){
         this.identifier = identifier;
