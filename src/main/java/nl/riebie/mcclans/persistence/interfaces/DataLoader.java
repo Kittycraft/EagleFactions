@@ -22,19 +22,10 @@
 
 package nl.riebie.mcclans.persistence.interfaces;
 
-import nl.riebie.mcclans.ClansImpl;
-import nl.riebie.mcclans.MCClans;
-import nl.riebie.mcclans.clan.ClanImpl;
-import nl.riebie.mcclans.clan.RankFactory;
-import nl.riebie.mcclans.clan.RankImpl;
-import nl.riebie.mcclans.config.Config;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
 import nl.riebie.mcclans.persistence.upgrade.DataUpgradeComparator;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
-import nl.riebie.mcclans.player.ClanPlayerImpl;
-import nl.riebie.mcclans.player.LastOnlineImpl;
-import nl.riebie.mcclans.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 
@@ -47,9 +38,7 @@ public abstract class DataLoader {
     private Map<Integer, ClanPlayerImpl> clanPlayers = new HashMap<Integer, ClanPlayerImpl>();
     private Map<Integer, RankImpl> ranks = new HashMap<Integer, RankImpl>();
 
-    private Map<Integer, Integer> clanOwners = new HashMap<Integer, Integer>();
-
-    private List<ClanPlayerImpl> markedClanPlayers = new ArrayList<ClanPlayerImpl>();
+    private Map<Integer, Integer> clanOwners = new HashMap();
 
     private int highestUsedClanID = -1;
     private int highestUsedClanPlayerID = -1;
@@ -72,12 +61,6 @@ public abstract class DataLoader {
 
             setResults();
 
-            if (markedClanPlayers.size() != 0) {
-                MCClans.getPlugin().getLogger().info(
-                        "Scheduled " + markedClanPlayers.size() + " ClanPlayer(s) for deletion due to inactivity (>"
-                                + Config.getInteger(Config.REMOVE_INACTIVE_CLAN_PLAYERS_AFTER_DAYS) + "d)", false);
-            }
-            // ClansImpl.getInstance().fillThisDummyDummy();
             return true;
         } else {
             return false;
@@ -181,8 +164,6 @@ public abstract class DataLoader {
             clan.addMember(cp);
         }
 
-        markInactiveClanPlayer(cp);
-
         checkHighestUsedClanPlayerID(clanPlayerID);
     }
 
@@ -217,54 +198,5 @@ public abstract class DataLoader {
 
         ClansImpl.getInstance().setClanPlayers(finishedClanPlayers);
         ClansImpl.getInstance().setClans(finishedClans);
-    }
-
-    private void checkHighestUsedClanID(int clanID) {
-        if (clanID > highestUsedClanID) {
-            highestUsedClanID = clanID;
-        }
-    }
-
-    private void checkHighestUsedClanPlayerID(int clanPlayerID) {
-        if (clanPlayerID > highestUsedClanPlayerID) {
-            highestUsedClanPlayerID = clanPlayerID;
-        }
-    }
-
-    private void checkHighestUsedRankID(int rankID) {
-        if (rankID > highestUsedRankID) {
-            highestUsedRankID = rankID;
-        }
-    }
-
-    public int getHighestUsedClanID() {
-        return highestUsedClanID;
-    }
-
-    public int getHighestUsedClanPlayerID() {
-        return highestUsedClanPlayerID;
-    }
-
-    public int getHighestUsedRankID() {
-        return highestUsedRankID;
-    }
-
-    private void markInactiveClanPlayer(ClanPlayerImpl clanPlayer) {
-        int removeInactiveClanPlayersAfterDays = Config.getInteger(Config.REMOVE_INACTIVE_CLAN_PLAYERS_AFTER_DAYS);
-        boolean removeInactiveClanOwnersIncludingClan = Config.getBoolean(Config.REMOVE_INACTIVE_CLAN_OWNERS_INCLUDING_CLAN);
-        if (removeInactiveClanPlayersAfterDays != 0) {
-            long lastOnlineTime = clanPlayer.getLastOnline().getTime();
-            if ((System.currentTimeMillis() - lastOnlineTime) / (86400000) > removeInactiveClanPlayersAfterDays) {
-                if (clanPlayer.getClan() == null
-                        || !(!removeInactiveClanOwnersIncludingClan && clanPlayer.getRank().getName()
-                        .equalsIgnoreCase(RankFactory.getOwnerIdentifier()))) {
-                    markedClanPlayers.add(clanPlayer);
-                }
-            }
-        }
-    }
-
-    public List<ClanPlayerImpl> getMarkedClanPlayers() {
-        return markedClanPlayers;
     }
 }

@@ -24,34 +24,32 @@ package nl.riebie.mcclans.persistence.implementations;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
-import nl.riebie.mcclans.MCClans;
-import nl.riebie.mcclans.clan.ClanImpl;
-import nl.riebie.mcclans.clan.RankImpl;
-import nl.riebie.mcclans.config.Config;
+import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.config.Config;
+import io.github.aquerr.eaglefactions.entities.*;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
+import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.interfaces.DataSaver;
-import nl.riebie.mcclans.persistence.pojo.AllyPojo;
-import nl.riebie.mcclans.persistence.pojo.ClanPlayerPojo;
-import nl.riebie.mcclans.persistence.pojo.ClanPojo;
-import nl.riebie.mcclans.persistence.pojo.RankPojo;
-import nl.riebie.mcclans.player.ClanPlayerImpl;
-import nl.riebie.mcclans.utils.FileUtils;
+import nl.riebie.mcclans.persistence.pojo.FactionGroupPojo;
+import nl.riebie.mcclans.persistence.pojo.FactionPlayerPojo;
+import nl.riebie.mcclans.persistence.pojo.FactionPojo;
+import nl.riebie.mcclans.persistence.pojo.FactionRelationPojo;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class JsonSaver extends DataSaver {
 
-    private File saveDataFolder = new File(MCClans.getPlugin().getDataFolder(), "recent");
-    private File tempDataFolder = new File(MCClans.getPlugin().getDataFolder(), "temp");
+    private File saveDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "recent");
+    private File tempDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "temp");
 
-    private JsonWriter clansWriter;
-    private JsonWriter clanPlayersWriter;
-    private JsonWriter ranksWriter;
-    private JsonWriter alliesWriter;
+    private JsonWriter factionsWriter;
+    private JsonWriter factionPlayersWriter;
+    private JsonWriter factionGroupsWriter;
+    private JsonWriter factionRelationsWriter;
+    private JsonWriter factionClaimsWriter;
 
     public JsonSaver() {
         saveDataFolder.mkdirs();
@@ -61,7 +59,7 @@ public class JsonSaver extends DataSaver {
     public void useBackupLocation() {
         String backupName = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(System.currentTimeMillis());
 
-        File backupFolder = new File(MCClans.getPlugin().getDataFolder(), "backup");
+        File backupFolder = new File(EagleFactions.getPlugin().getDataFolder(), "backup");
         backupFolder.mkdirs();
         saveDataFolder = getBackupLocation(backupFolder, backupName, 0);
         saveDataFolder.mkdirs();
@@ -70,7 +68,7 @@ public class JsonSaver extends DataSaver {
         int maxAmountOfBackups = Config.getInteger(Config.MAXIMUM_AMOUNT_OF_BACKUPS_BEFORE_REMOVING_OLDEST);
         if (amountOfBackups > maxAmountOfBackups) {
             removeOldestBackups(backupFolder, maxAmountOfBackups);
-            MCClans.getPlugin().getLogger().info("Removed " + (amountOfBackups - maxAmountOfBackups) + " old backup(s)", true);
+            EagleFactions.getPlugin().getLogger().info("Removed " + (amountOfBackups - maxAmountOfBackups) + " old backup(s)", true);
         }
     }
 
@@ -96,11 +94,7 @@ public class JsonSaver extends DataSaver {
             return;
         }
         if (amountOfBackups > maxBackups) {
-            Arrays.sort(files, new Comparator<File>() {
-                public int compare(File o1, File o2) {
-                    return new Long(o2.lastModified()).compareTo(o1.lastModified());
-                }
-            });
+            Arrays.sort(files, (o1, o2) -> new Long(o2.lastModified()).compareTo(o1.lastModified()));
             for (int index = maxBackups; index < amountOfBackups; index++) {
                 FileUtils.removeFolder(files[index]);
             }
@@ -108,118 +102,141 @@ public class JsonSaver extends DataSaver {
     }
 
     @Override
-    protected void saveClan(ClanImpl clan) throws Exception {
-        ClanPojo clanPojo = ClanPojo.from(clan);
+    protected void saveFaction(Faction faction) throws Exception {
+        FactionPojo factionPojo = FactionPojo.from(faction);
         Gson gson = new Gson();
-        gson.toJson(clanPojo, ClanPojo.class, clansWriter);
+        gson.toJson(factionPojo, FactionPojo.class, factionsWriter);
     }
 
     @Override
-    protected void saveClanPlayer(ClanPlayerImpl cp) throws Exception {
-        ClanPlayerPojo clanPlayerPojo = ClanPlayerPojo.from(cp);
+    protected void savePlayer(FactionPlayer player) throws Exception {
+        FactionPlayerPojo factionPlayerPojo = FactionPlayerPojo.from(player);
         Gson gson = new Gson();
-        gson.toJson(clanPlayerPojo, ClanPlayerPojo.class, clanPlayersWriter);
+        gson.toJson(factionPlayerPojo, FactionPlayerPojo.class, factionPlayersWriter);
     }
 
     @Override
-    protected void saveRank(int clanID, RankImpl rank) throws Exception {
-        RankPojo rankPojo = RankPojo.from(clanID, rank);
+    protected void saveGroup(String factionName, Group group) throws Exception {
+        FactionGroupPojo factionGroupPojo = FactionGroupPojo.from(group, factionName);
         Gson gson = new Gson();
-        gson.toJson(rankPojo, RankPojo.class, ranksWriter);
+        gson.toJson(factionGroupPojo, FactionGroupPojo.class, factionGroupsWriter);
     }
 
     @Override
-    protected void saveClanAlly(int clanID, int clanIDAlly) throws Exception {
-        AllyPojo allyPojo = AllyPojo.from(clanID, clanIDAlly);
+    protected void saveFactionRelation(FactionRelation relation) throws Exception {
+        FactionRelationPojo factionRelationPojo = FactionRelationPojo.from(relation);
         Gson gson = new Gson();
-        gson.toJson(allyPojo, AllyPojo.class, alliesWriter);
+        gson.toJson(factionRelationPojo, FactionRelationPojo.class, factionRelationsWriter);
+    }
+
+    @Override
+    protected void saveFactionClaim(FactionClaim claim) throws Exception {
+        Gson gson = new Gson();
+        gson.toJson(claim, FactionClaim.class, factionClaimsWriter);
     }
 
     @Override
     protected void saveStarted() throws Exception {
-        File clansFile = new File(saveDataFolder, "clans.json");
-        File clanPlayersFile = new File(saveDataFolder, "clanPlayers.json");
-        File ranksFile = new File(saveDataFolder, "ranks.json");
-        File alliesFile = new File(saveDataFolder, "allies.json");
+        File factionsFile = new File(saveDataFolder, "factions.json");
+        File factionPlayersFile = new File(saveDataFolder, "factionPlayers.json");
+        File factionGroupsFile = new File(saveDataFolder, "factionGroups.json");
+        File factionRelationsFile = new File(saveDataFolder, "factionRelations.json");
+        File factionClaimsFile = new File(saveDataFolder, "factionClaims.json");
 
-        File tempClansFile = new File(tempDataFolder, "clans.json");
-        File tempClanPlayersFile = new File(tempDataFolder, "clanPlayers.json");
-        File tempRanksFile = new File(tempDataFolder, "ranks.json");
-        File tempAlliesFile = new File(tempDataFolder, "allies.json");
+        File tempFactionsFile = new File(tempDataFolder, "factions.json");
+        File tempFactionPlayersFile = new File(tempDataFolder, "factionPlayers.json");
+        File tempFactionGroupsFile = new File(tempDataFolder, "factionGroups.json");
+        File tempFactionRelationsFile = new File(tempDataFolder, "factionRelations.json");
+        File tempFactionClaimsFile = new File(tempDataFolder, "factionClaims.json");
 
-        FileUtils.copyFile(clansFile, tempClansFile);
-        FileUtils.copyFile(clanPlayersFile, tempClanPlayersFile);
-        FileUtils.copyFile(ranksFile, tempRanksFile);
-        FileUtils.copyFile(alliesFile, tempAlliesFile);
+        FileUtils.copyFile(factionsFile, tempFactionsFile);
+        FileUtils.copyFile(factionPlayersFile, tempFactionPlayersFile);
+        FileUtils.copyFile(factionGroupsFile, tempFactionGroupsFile);
+        FileUtils.copyFile(factionRelationsFile, tempFactionRelationsFile);
+        FileUtils.copyFile(factionClaimsFile, tempFactionClaimsFile);
 
-        clansWriter = new JsonWriter(new FileWriter(clansFile));
-        clanPlayersWriter = new JsonWriter(new FileWriter(clanPlayersFile));
-        ranksWriter = new JsonWriter(new FileWriter(ranksFile));
-        alliesWriter = new JsonWriter(new FileWriter(alliesFile));
+        factionsWriter = new JsonWriter(new FileWriter(factionsFile));
+        factionPlayersWriter = new JsonWriter(new FileWriter(factionPlayersFile));
+        factionGroupsWriter = new JsonWriter(new FileWriter(factionGroupsFile));
+        factionRelationsWriter = new JsonWriter(new FileWriter(factionRelationsFile));
+        factionClaimsWriter = new JsonWriter(new FileWriter(factionClaimsFile));
 
-        clansWriter.beginObject();
-        clansWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
-        clansWriter.name("list").beginArray();
+        factionsWriter.beginObject();
+        factionsWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
+        factionsWriter.name("list").beginArray();
 
-        clanPlayersWriter.beginObject();
-        clanPlayersWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
-        clanPlayersWriter.name("list").beginArray();
+        factionPlayersWriter.beginObject();
+        factionPlayersWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
+        factionPlayersWriter.name("list").beginArray();
 
-        ranksWriter.beginObject();
-        ranksWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
-        ranksWriter.name("list").beginArray();
+        factionGroupsWriter.beginObject();
+        factionGroupsWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
+        factionGroupsWriter.name("list").beginArray();
 
-        alliesWriter.beginObject();
-        alliesWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
-        alliesWriter.name("list").beginArray();
+        factionRelationsWriter.beginObject();
+        factionRelationsWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
+        factionRelationsWriter.name("list").beginArray();
+
+        factionClaimsWriter.beginObject();
+        factionClaimsWriter.name("dataVersion").value(DatabaseHandler.CURRENT_DATA_VERSION);
+        factionClaimsWriter.name("list").beginArray();
     }
 
     @Override
     protected void saveFinished() throws Exception {
-        clansWriter.endArray();
-        clansWriter.endObject();
-        clansWriter.close();
+        factionsWriter.endArray();
+        factionsWriter.endObject();
+        factionsWriter.close();
 
-        clanPlayersWriter.endArray();
-        clanPlayersWriter.endObject();
-        clanPlayersWriter.close();
+        factionPlayersWriter.endArray();
+        factionPlayersWriter.endObject();
+        factionPlayersWriter.close();
 
-        ranksWriter.endArray();
-        ranksWriter.endObject();
-        ranksWriter.close();
+        factionGroupsWriter.endArray();
+        factionGroupsWriter.endObject();
+        factionGroupsWriter.close();
 
-        alliesWriter.endArray();
-        alliesWriter.endObject();
-        alliesWriter.close();
+        factionRelationsWriter.endArray();
+        factionRelationsWriter.endObject();
+        factionRelationsWriter.close();
 
-        File tempClansFile = new File(tempDataFolder, "clans.json");
-        File tempClanPlayersFile = new File(tempDataFolder, "clanPlayers.json");
-        File tempRanksFile = new File(tempDataFolder, "ranks.json");
-        File tempAlliesFile = new File(tempDataFolder, "allies.json");
+        factionClaimsWriter.endArray();
+        factionClaimsWriter.endObject();
+        factionClaimsWriter.close();
 
-        tempClansFile.delete();
-        tempClanPlayersFile.delete();
-        tempRanksFile.delete();
-        tempAlliesFile.delete();
+        File tempFactionsFile = new File(tempDataFolder, "factions.json");
+        File tempFactionPlayersFile = new File(tempDataFolder, "factionPlayers.json");
+        File tempFactionGroupsFile = new File(tempDataFolder, "factionGroups.json");
+        File tempFactionRelationsFile = new File(tempDataFolder, "factionRelations.json");
+        File tempFactionClaimsFile = new File(tempDataFolder, "factionClaims.json");
+
+        tempFactionsFile.delete();
+        tempFactionPlayersFile.delete();
+        tempFactionGroupsFile.delete();
+        tempFactionRelationsFile.delete();
+        tempFactionClaimsFile.delete();
     }
 
     @Override
     protected void saveCancelled() {
-        File clansFile = new File(saveDataFolder, "clans.json");
-        File clanPlayersFile = new File(saveDataFolder, "clanPlayers.json");
-        File ranksFile = new File(saveDataFolder, "ranks.json");
-        File alliesFile = new File(saveDataFolder, "allies.json");
+        File factionsFile = new File(saveDataFolder, "factions.json");
+        File factionPlayersFile = new File(saveDataFolder, "factionPlayers.json");
+        File factionGroupsFile = new File(saveDataFolder, "factionGroups.json");
+        File factionRelationsFile = new File(saveDataFolder, "factionRelations.json");
+        File factionClaimsFile = new File(saveDataFolder, "factionClaims.json");
 
-        File tempClansFile = new File(tempDataFolder, "clans.json");
-        File tempClanPlayersFile = new File(tempDataFolder, "clanPlayers.json");
-        File tempRanksFile = new File(tempDataFolder, "ranks.json");
-        File tempAlliesFile = new File(tempDataFolder, "allies.json");
+        File tempFactionsFile = new File(tempDataFolder, "factions.json");
+        File tempFactionPlayersFile = new File(tempDataFolder, "factionPlayers.json");
+        File tempFactionGroupsFile = new File(tempDataFolder, "factionGroups.json");
+        File tempFactionRelationsFile = new File(tempDataFolder, "factionRelations.json");
+        File tempFactionClaimsFile = new File(tempDataFolder, "factionClaims.json");
 
         try {
-            FileUtils.copyFile(tempClansFile, clansFile);
-            FileUtils.copyFile(tempClanPlayersFile, clanPlayersFile);
-            FileUtils.copyFile(tempRanksFile, ranksFile);
-            FileUtils.copyFile(tempAlliesFile, alliesFile);
+            FileUtils.copyFile(tempFactionClaimsFile, factionClaimsFile);
+            FileUtils.copyFile(tempFactionGroupsFile, factionGroupsFile);
+            FileUtils.copyFile(tempFactionPlayersFile, factionPlayersFile);
+            FileUtils.copyFile(tempFactionRelationsFile, factionRelationsFile);
+            FileUtils.copyFile(tempFactionsFile, factionsFile);
         } catch (Exception e) {
             e.printStackTrace();
         }

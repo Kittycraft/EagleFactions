@@ -22,27 +22,26 @@
 
 package nl.riebie.mcclans.persistence.pojo;
 
-import nl.riebie.mcclans.clan.RankImpl;
+import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionHome;
 
 /**
  * Created by Kippers on 28/03/2016.
  */
-public class RankPojo {
+public class FactionPojo {
 
-    public int rankID = -1;
-    public int clanID = -1;
-    public String rankName;
-    public String permissions;
-    public boolean changeable = true;
+    public String name = null;
+    public String ownerUUID = null;
+    public FactionHome home = null;
+    public long creationTime = -1;
 
-    public static RankPojo from(int clanID, RankImpl rank) {
-        RankPojo rankPojo = new RankPojo();
-        rankPojo.rankID = rank.getID();
-        rankPojo.clanID = clanID;
-        rankPojo.rankName = rank.getName();
-        rankPojo.changeable = rank.isChangeable();
-        rankPojo.permissions = rank.getPermissionsAsString();
-        return rankPojo;
+
+    public static FactionPojo from(Faction faction) {
+        FactionPojo factionPojo = new FactionPojo();
+        factionPojo.name = faction.name;
+        factionPojo.ownerUUID = faction.Leader.uuid;
+        factionPojo.creationTime = faction.creationTime;
+        return factionPojo;
     }
 
 }

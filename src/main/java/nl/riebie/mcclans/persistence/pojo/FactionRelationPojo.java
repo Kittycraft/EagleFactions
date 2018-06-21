@@ -22,19 +22,24 @@
 
 package nl.riebie.mcclans.persistence.pojo;
 
+import io.github.aquerr.eaglefactions.entities.FactionRelation;
+import io.github.aquerr.eaglefactions.entities.RelationType;
+
 /**
  * Created by Kippers on 28/03/2016.
  */
-public class AllyPojo {
+public class FactionRelationPojo {
 
-    public int clanID = -1;
-    public int clanIDAlly = -1;
+    public String FactionA = null;
+    public String FactionB = null;
+    public RelationType relation = RelationType.NEUTRAL;
 
-    public static AllyPojo from(int clanID, int clanIDAlly) {
-        AllyPojo allyPojo = new AllyPojo();
-        allyPojo.clanID = clanID;
-        allyPojo.clanIDAlly = clanIDAlly;
-        return allyPojo;
+    public static FactionRelationPojo from(FactionRelation relation) {
+        FactionRelationPojo relationPojo = new FactionRelationPojo();
+        relationPojo.FactionA = relation.factionA;
+        relationPojo.FactionB = relation.factionB;
+        relationPojo.relation = relation.type;
+        return relationPojo;
     }
 
 }

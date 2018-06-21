@@ -171,10 +171,10 @@ public class JsonLoader extends DataLoader {
 
     @Override
     protected void loadClans() {
-        RootPojo<ClanPojo> clans = gson.fromJson(clansReader, new TypeToken<RootPojo<ClanPojo>>() {
+        RootPojo<FactionPojo> clans = gson.fromJson(clansReader, new TypeToken<RootPojo<FactionPojo>>() {
         }.getType());
 
-        for (ClanPojo clan : clans.list) {
+        for (FactionPojo clan : clans.list) {
             super.loadedClan(clan.clanID, clan.clanTag, clan.clanName, clan.ownerID, clan.tagColorId, clan.allowAllyInvites, clan.ffProtection, clan.creationTime, clan.homeWorld,
                     clan.homeX, clan.homeY, clan.homeZ, clan.homeYaw, clan.homePitch, clan.homeSetTimes, clan.homeSetTimeStamp, clan.bankId);
         }
@@ -189,10 +189,10 @@ public class JsonLoader extends DataLoader {
 
     @Override
     protected void loadRanks() {
-        RootPojo<RankPojo> ranks = gson.fromJson(ranksReader, new TypeToken<RootPojo<RankPojo>>() {
+        RootPojo<FactionGroupPojo> ranks = gson.fromJson(ranksReader, new TypeToken<RootPojo<FactionGroupPojo>>() {
         }.getType());
 
-        for (RankPojo rank : ranks.list) {
+        for (FactionGroupPojo rank : ranks.list) {
             super.loadedRank(rank.rankID, rank.clanID, rank.rankName, rank.permissions, rank.changeable);
         }
 
@@ -206,10 +206,10 @@ public class JsonLoader extends DataLoader {
 
     @Override
     protected void loadClanPlayers() {
-        RootPojo<ClanPlayerPojo> clanPlayers = gson.fromJson(clanPlayersReader, new TypeToken<RootPojo<ClanPlayerPojo>>() {
+        RootPojo<FactionPlayerPojo> clanPlayers = gson.fromJson(clanPlayersReader, new TypeToken<RootPojo<FactionPlayerPojo>>() {
         }.getType());
 
-        for (ClanPlayerPojo clanPlayer : clanPlayers.list) {
+        for (FactionPlayerPojo clanPlayer : clanPlayers.list) {
             super.loadedClanPlayer(clanPlayer.clanPlayerID, clanPlayer.uuidMostSigBits, clanPlayer.uuidLeastSigBits, clanPlayer.playerName, clanPlayer.clanID, clanPlayer.rankID, clanPlayer.killsHigh, clanPlayer.killsMedium,
                     clanPlayer.killsLow, clanPlayer.deathsHigh, clanPlayer.deathsMedium, clanPlayer.deathsLow, clanPlayer.ffProtection, clanPlayer.lastOnlineTime);
         }

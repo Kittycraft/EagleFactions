@@ -4,16 +4,17 @@ import io.github.aquerr.eaglefactions.EagleFactions;
 
 //Link between mcclans database logic and config
 public class Config {
-    private static Configuration configuration = EagleFactions.getEagleFactions().getConfiguration();
+    private static Configuration configuration = EagleFactions.getPlugin().getConfiguration();
 
     //General
     public static final String DEBUGGING = "debugging";
+    public static final String MAXIMUM_AMOUNT_OF_BACKUPS_BEFORE_REMOVING_OLDEST = "maximum-amount-of-backups-before-removing-oldest";
+    public static final String CREATE_BACKUP_AFTER_HOURS = "create-backup-after-hours";
 
     //Database
     public static final String DBMS_TYPE = "dbms-type";
     public static final String USE_DATABASE = "use-database";
     public static final String DATABASE_NAME = "database-uuid";
-    public static final String CREATE_BACKUP_AFTER_HOURS = "create-backup-after-hours";
     public static final String DATABASE_SERVER = "database-server";
     public static final String DATABASE_SERVER_PORT = "database-server-port";
     public static final String DATABASE_SERVER_USER = "database-server-user";
