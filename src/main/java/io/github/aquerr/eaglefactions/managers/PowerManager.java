@@ -273,7 +273,7 @@ public class PowerManager {
 
 //    public static void updateFactionPower(UUID playerUUID, BigDecimal power, boolean increment)
 //    {
-//        Optional<Faction> optionalFaction = FactionLogic.getFactionByPlayerUUID(playerUUID);
+//        Optional<Faction> optionalFaction = FactionsCache.getInstance().getFactionByPlayer(playerUUID);
 //
 //        if (optionalFaction.isPresent())
 //        {

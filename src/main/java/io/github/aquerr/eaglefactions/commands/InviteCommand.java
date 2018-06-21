@@ -31,7 +31,7 @@ public class InviteCommand implements CommandExecutor {
             if (source instanceof Player) {
                 Player senderPlayer = (Player) source;
                 Player invitedPlayer = optionalInvitedPlayer.get();
-                Optional<Faction> optionalSenderFaction = FactionLogic.getFactionByPlayerUUID(senderPlayer.getUniqueId());
+                Optional<Faction> optionalSenderFaction = FactionsCache.getInstance().getFactionByPlayer(senderPlayer.getUniqueId());
 
                 if (optionalSenderFaction.isPresent()) {
                     Faction senderFaction = optionalSenderFaction.get();
@@ -43,7 +43,7 @@ public class InviteCommand implements CommandExecutor {
                             }
                         }
 
-                        if (!FactionLogic.getFactionByPlayerUUID(invitedPlayer.getUniqueId()).isPresent()) {
+                        if (!FactionsCache.getInstance().getFactionByPlayer(invitedPlayer.getUniqueId()).isPresent()) {
                             try {
                                 Invite invite = new Invite(senderFaction.name, invitedPlayer.getUniqueId());
                                 EagleFactions.InviteList.add(invite);

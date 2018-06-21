@@ -38,7 +38,7 @@ public class PlayerInteractListener {
                 Location location = new Location(world, vector3d);
                 Vector3i claim = location.getChunkPosition();
 
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
                 Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 
                 if (optionalChunkFaction.isPresent()) {

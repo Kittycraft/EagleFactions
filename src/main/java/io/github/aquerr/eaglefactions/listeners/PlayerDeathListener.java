@@ -37,7 +37,7 @@ public class PlayerDeathListener {
             }
 
             if (MainLogic.shouldBlockHomeAfterDeathInOwnFaction()) {
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
                 if (optionalChunkFaction.isPresent() && optionalPlayerFaction.isPresent() && optionalChunkFaction.get().name.equals(optionalPlayerFaction.get().name)) {
                     if (EagleFactions.BlockedHome.containsKey(player.getUniqueId())) {

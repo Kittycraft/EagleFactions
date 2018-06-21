@@ -2,7 +2,9 @@ package io.github.aquerr.eaglefactions.commands;
 
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionClaim;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -44,7 +46,7 @@ public class MapCommand implements CommandExecutor {
     }
 
     private void generateMap(Player player) {
-        Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
         World world = player.getWorld();
 
@@ -83,8 +85,8 @@ public class MapCommand implements CommandExecutor {
 
                 Vector3i chunk = playerPosition.add(column, 0, row);
 
-                if (FactionLogic.isClaimed(world.getUniqueId(), chunk)) {
-                    Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), chunk);
+                Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), chunk);
+                if (optionalChunkFaction.isPresent()) {
 
                     if (optionalPlayerFaction.isPresent()) {
                         Faction playerFaction = optionalPlayerFaction.get();
@@ -138,7 +140,7 @@ public class MapCommand implements CommandExecutor {
 
         String playerPositionClaim = "none";
 
-        Optional<Faction> optionalPlayerPositionFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), playerPosition);
+        Optional<Faction> optionalPlayerPositionFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), playerPosition);
 
         if (optionalPlayerPositionFaction.isPresent()) {
             playerPositionClaim = optionalPlayerPositionFaction.get().name;
@@ -174,13 +176,13 @@ public class MapCommand implements CommandExecutor {
         {
             //Because faction could have changed we need to get it again here.
 
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
             World world = player.getWorld();
 
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
                 //We need to check if because player can click on the claim that is already claimed (in the previous map in the chat)
-                if (!FactionLogic.isClaimed(world.getUniqueId(), chunk)) {
+                if (!FactionsCache.getInstance().getClaim(world.getUniqueId(), chunk).isPresent()) {
                     if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.claims.size()) {
                         if (!playerFaction.claims.isEmpty()) {
                             if (playerFaction.name.equals("SafeZone") || playerFaction.name.equals("WarZone")) {
@@ -215,7 +217,7 @@ public class MapCommand implements CommandExecutor {
                         }
                     }
 
-                    FactionLogic.removeClaim(playerFaction, world.getUniqueId(), chunk);
+                    FactionsCache.getInstance().removeClaim(world.getUniqueId(), chunk);
 
                     player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND_HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.UNCLAIMED, TextColors.WHITE, "!"));
                 }

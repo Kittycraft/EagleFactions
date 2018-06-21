@@ -2,10 +2,13 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
-import io.github.aquerr.eaglefactions.logic.PluginMessages;
+import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -20,60 +23,61 @@ import java.util.Optional;
 public class JoinCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<String> optionalFactionName = context.<String>getOne("faction uuid");
+        Optional<String> optionalFactionName = context.getOne("faction uuid");
 
         if (optionalFactionName.isPresent()) {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 String rawFactionName = optionalFactionName.get();
 
-                if (!FactionLogic.getFactionByPlayerUUID(player.getUniqueId()).isPresent()) {
-                    String factionName = FactionLogic.getRealFactionName(rawFactionName);
-                    if (factionName == null) {
-                        player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THERE_IS_NO_FACTION_CALLED + " ", TextColors.GOLD, rawFactionName + "!"));
-                        return CommandResult.success();
+                if (!FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId()).isPresent()) {
+                    Optional<Faction> faction = FactionsCache.getInstance().getFaction(rawFactionName);
+                    if (!faction.isPresent()) {
+                        player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "There is no faction called ", TextColors.GOLD, rawFactionName + "!"));
                     } else {
                         //If player has admin mode then force join.
                         if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                            FactionLogic.joinFaction(player.getUniqueId(), factionName);
-                            source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.SUCCESSFULLY_JOINED_FACTION + " ", TextColors.GOLD, factionName));
+                            FactionPlayer factionPlayer = new FactionPlayer(player.getUniqueId().toString(), PlayerManager.getPlayerName(player.getUniqueId()).get(), faction.get().name);
+                            factionPlayer.addGroup("recruit");
+                            faction.get().members.add(factionPlayer);
+                            FactionsCache.getInstance().updatePlayer(player.getUniqueId().toString(), faction.get().name);
+                            FactionLogic.informFaction(faction.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, player.getDisplayNameData().displayName().get(), TextColors.GREEN, " joined the faction!"));
+                        } else {
 
-                            return CommandResult.success();
-                        }
-
-                        for (Invite invite : EagleFactions.InviteList) {
-                            if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(factionName)) {
-                                try {
-                                    if (MainLogic.isPlayerLimit()) {
-                                        if (FactionLogic.getFactionByName(factionName).members.size() >= MainLogic.getPlayerLimit()) {
-                                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_JOIN_THIS_FACTION_BECAUSE_IT_REACHED_ITS_PLAYER_LIMIT));
-                                            return CommandResult.success();
+                            for (Invite invite : EagleFactions.InviteList) {
+                                if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(faction.get().name)) {
+                                    try {
+                                        if (MainLogic.isPlayerLimit()) {
+                                            if (faction.get().members.size() >= MainLogic.getPlayerLimit()) {
+                                                player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not join this faction because it has reached the player limit!"));
+                                                return CommandResult.success();
+                                            }
                                         }
+                                        FactionPlayer factionPlayer = new FactionPlayer(player.getUniqueId().toString(), PlayerManager.getPlayerName(player.getUniqueId()).get(), faction.get().name);
+                                        factionPlayer.addGroup("recruit");
+                                        faction.get().members.add(factionPlayer);
+                                        FactionsCache.getInstance().updatePlayer(player.getUniqueId().toString(), faction.get().name);
+                                        FactionLogic.informFaction(faction.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, player.getDisplayNameData().displayName().get(), TextColors.GREEN, " joined the faction!"));
+
+                                        EagleFactions.InviteList.remove(new Invite(faction.get().name, player.getUniqueId()));
+                                        return CommandResult.success();
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
                                     }
-
-                                    //TODO: Create a listener which will notify all players in faction that someone has joined.
-                                    FactionLogic.joinFaction(player.getUniqueId(), factionName);
-
-                                    EagleFactions.InviteList.remove(new Invite(factionName, player.getUniqueId()));
-
-                                    source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.SUCCESSFULLY_JOINED_FACTION + " ", TextColors.GOLD, factionName));
-                                    return CommandResult.success();
-                                } catch (Exception exception) {
-                                    exception.printStackTrace();
                                 }
                             }
+                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You have not been invited to this faction!"));
                         }
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_HAVENT_BEEN_INVITED_TO_THIS_FACTION));
                     }
                 } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ARE_ALREADY_IN_A_FACTION));
+                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already in a faction!"));
                 }
             } else {
-                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
+                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Only in game players can use this command!"));
             }
         } else {
-            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f join <faction uuid>"));
+            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Wrong command arguments."));
+            source.sendMessage(Text.of(TextColors.RED, "Usage: /f join <faction uuid>"));
         }
 
         return CommandResult.success();

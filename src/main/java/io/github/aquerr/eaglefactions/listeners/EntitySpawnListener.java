@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionHome;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -33,7 +34,7 @@ public class EntitySpawnListener {
                         return;
                     }
 
-                    if (FactionLogic.isClaimed(entity.getWorld().getUniqueId(), entity.getLocation().getChunkPosition())) {
+                    if (FactionsCache.getInstance().getClaim(entity.getWorld().getUniqueId(), entity.getLocation().getChunkPosition()).isPresent()) {
                         event.setCancelled(true);
                         return;
                     }
@@ -42,7 +43,7 @@ public class EntitySpawnListener {
                 if (MainLogic.shouldSpawnAtHomeAfterDeath()) {
                     Player player = (Player) entity;
 
-                    Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                    Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
                     if (optionalPlayerFaction.isPresent()) {
                         FactionHome factionHome = optionalPlayerFaction.get().Home;

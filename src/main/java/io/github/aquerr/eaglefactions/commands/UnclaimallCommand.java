@@ -23,7 +23,7 @@ public class UnclaimallCommand implements CommandExecutor {
         if (source instanceof Player) {
             Player player = (Player) source;
 
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             //Check if player is in the faction.
             if (optionalPlayerFaction.isPresent()) {

@@ -3,10 +3,9 @@ package io.github.aquerr.eaglefactions.logic;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.*;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
-import io.github.aquerr.eaglefactions.storage.HOCONFactionStorage;
-import io.github.aquerr.eaglefactions.storage.IStorage;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.player.Player;
@@ -31,65 +30,56 @@ import static io.github.aquerr.eaglefactions.entities.RelationType.*;
  * Created by Aquerr on 2017-07-12.
  */
 public class FactionLogic {
-    private static IStorage factionsStorage;
-    private static List<FactionRelation> relations;
+    //private static IStorage factionsStorage;
+    //private static List<FactionRelation> relations;
 
+    @Deprecated
     public static void setup(Path configDir) {
-        //TODO: Change which storage should be used to prevent mass data corruption. (MySQL etc.)
-        factionsStorage = new HOCONFactionStorage(configDir);
+        //factionsStorage = new HOCONFactionStorage(configDir);
     }
 
+    @Deprecated
     public static void reload() {
-        factionsStorage.load();
+//        factionsStorage.load();
     }
 
-    public static Optional<Faction> getFactionByPlayerUUID(UUID playerUUID) {
-        for (Faction faction : getFactions()) {
-            if (faction.containsMember(playerUUID.toString())) {
-                return Optional.of(faction);
-            }
-        }
+//    public static Optional<Faction> getFactionByPlayerUUID(UUID playerUUID) {
+//        for (Faction faction : getFactions()) {
+//            if (faction.containsMember(playerUUID.toString())) {
+//                return Optional.of(faction);
+//            }
+//        }
+//
+//        return Optional.empty();
+//    }
 
-        return Optional.empty();
-    }
+//    public static Optional<Faction> getFactionByChunk(UUID worldUUID, Vector3i chunk) {
+//        for (Faction faction : getFactions()) {
+//            if (faction.claims.contains(worldUUID.toString() + "|" + chunk.toString())) {
+//                return Optional.of(faction);
+//            }
+//        }
+//
+//        return Optional.empty();
+//    }
 
-    public static Optional<Faction> getFactionByChunk(UUID worldUUID, Vector3i chunk) {
-        for (Faction faction : getFactions()) {
-            if (faction.claims.contains(worldUUID.toString() + "|" + chunk.toString())) {
-                return Optional.of(faction);
-            }
-        }
+//    public static @Nullable
+//    Faction getFactionByName(String factionName) {
+//        Faction faction = factionsStorage.getFaction(factionName);
+//
+//        if (faction != null) {
+//            return faction;
+//        }
+//
+//        return null;
+//    }
 
-        return Optional.empty();
-    }
-
-    public static @Nullable
-    Faction getFactionByName(String factionName) {
-        Faction faction = factionsStorage.getFaction(factionName);
-
-        if (faction != null) {
-            return faction;
-        }
-
-        return null;
-    }
-
-    public static List<FactionRelation> getRelations() {
-        if (relations == null) {
-            return relations = factionsStorage.getFactionRelations();
-        }
-        return relations;
-    }
-
-    public static FactionPlayer getLeader(String factionName) {
-        Faction faction = getFactionByName(factionName);
-
-        if (faction != null) {
-            return faction.Leader;
-        }
-
-        return new FactionPlayer("", "", "");
-    }
+//    public static List<FactionRelation> getRelations() {
+//        if (relations == null) {
+//            return relations = factionsStorage.getFactionRelations();
+//        }
+//        return relations;
+//    }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
         List<Player> factionPlayers = new ArrayList<>();
@@ -104,7 +94,7 @@ public class FactionLogic {
     }
 
     public static RelationType getOneWayRelation(String factionA, String factionB) {
-        for (FactionRelation relation : relations) {
+        for (FactionRelation relation : FactionsCache.getInstance().getRelations()) {
             if (relation.factionA.equals(factionA) && relation.factionB.equals(factionB)) {
                 return relation.type;
             }
@@ -113,7 +103,7 @@ public class FactionLogic {
     }
 
     public static List<Faction> getRelationGroup(String faction, RelationType type) {
-        List<Faction> all = getFactions(), end = new ArrayList<>();
+        List<Faction> all = FactionsCache.getInstance().getFactions(), end = new ArrayList<>();
         for (Faction f : all) {
             if (getRelation(faction, f.name) == type) {
                 end.add(f);
@@ -141,7 +131,7 @@ public class FactionLogic {
         if (factionA.equals(factionB)) {
             return SAME;
         }
-        List<FactionRelation> relations = getRelations();
+        List<FactionRelation> relations = FactionsCache.getInstance().getRelations();
         RelationType a = NEUTRAL, b = NEUTRAL;
         for (FactionRelation relation : relations) {
             if (relation.factionA.equals(factionA) && relation.factionB.equals(factionB)) {
@@ -165,56 +155,39 @@ public class FactionLogic {
         getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
     }
 
-    public static void saveRelations() {
-        if (relations != null) {
-            factionsStorage.updateRelations(relations);
-        }
-    }
+//    public static void saveRelations() {
+//        if (relations != null) {
+//            factionsStorage.updateRelations(relations);
+//        }
+//    }
 
-    public static List<String> getFactionsNames() {
-        List<Faction> factions = getFactions();
-        List<String> namesList = new ArrayList<>();
+//    public static List<String> getFactionsNames() {
+//        List<Faction> factions = getFactions();
+//        List<String> namesList = new ArrayList<>();
+//
+//        for (Faction faction : factions) {
+//            namesList.add(faction.name);
+//        }
+//
+//        return namesList;
+//    }
 
-        for (Faction faction : factions) {
-            namesList.add(faction.name);
-        }
-
-        return namesList;
-    }
-
-    public static @Nullable
-    String getRealFactionName(String rawFactionName) {
-        List<String> factionsNames = getFactionsNames();
-
-        return factionsNames.stream().filter(x -> x.equalsIgnoreCase(rawFactionName)).findFirst().orElse(null);
-    }
-
-    public static List<Faction> getFactions() {
-        return factionsStorage.getFactions();
-    }
+//    public static List<Faction> getFactions() {
+//        return factionsStorage.getFactions();
+//    }
 
     public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
         Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName));
-
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static boolean disbandFaction(String factionName) {
-        return factionsStorage.removeFaction(factionName);
-    }
-
-    public static void joinFaction(UUID playerUUID, String factionName) {
-        Faction faction = getFactionByName(factionName);
-        FactionPlayer player = new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName);
-        player.addGroup("recruit");
-        faction.members.add(player);
-        factionsStorage.addOrUpdateFaction(faction);
+        FactionsCache.getInstance().addFaction(faction);
+        FactionsCache.getInstance().updatePlayer(playerUUID.toString(), factionName);
     }
 
     public static void leaveFaction(UUID playerUUID, String factionName) {
-        Faction faction = getFactionByName(factionName);
-        faction.members.remove(faction.getMember(playerUUID.toString()));
-        factionsStorage.addOrUpdateFaction(faction);
+        Optional<Faction> faction = FactionsCache.getInstance().getFaction(factionName);
+        if (faction.isPresent()) {
+            faction.get().members.remove(faction.get().getMember(playerUUID.toString()));
+            FactionsCache.getInstance().removePlayer(playerUUID);
+        }
     }
 
     public static void setLeader(UUID newLeaderUUID, String playerFactionName) {
@@ -227,33 +200,9 @@ public class FactionLogic {
         factionsStorage.addOrUpdateFaction(faction);
     }
 
-    public static List<FactionClaim> getAllClaims() {
-        List<FactionClaim> claimsList = new ArrayList<>();
-
-        for (Faction faction : getFactions()) {
-            claimsList.addAll(faction.claims);
-        }
-
-        return claimsList;
-    }
-
     public static void addClaim(Faction faction, UUID worldUUID, Vector3i claimedChunk) {
         faction.claims.add(new FactionClaim(claimedChunk, worldUUID, faction.name));
         factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static void removeClaim(Faction faction, UUID worldUUID, Vector3i claimedChunk) {
-        faction.claims.removeIf((e) -> e.world.toString().equals(worldUUID.toString()) && e.chunk.toString().equals(claimedChunk.toString()));
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static boolean isClaimed(UUID worldUUID, Vector3i chunk) {
-        for (FactionClaim claim : getAllClaims()) {
-            if (claim.world.equals(worldUUID.toString()) && claim.chunk.equals(chunk.toString())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static boolean isClaimConnected(Faction faction, UUID worldUUID, Vector3i chunk) {

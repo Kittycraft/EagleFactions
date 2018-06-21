@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.commands.permission;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.entities.Group;
@@ -43,7 +44,7 @@ public class PermCommand implements CommandExecutor {
             return CommandResult.success();
         }
 
-        Optional<Faction> optionalFaction = FactionLogic.getFactionByPlayerUUID(((Player) src).getUniqueId());
+        Optional<Faction> optionalFaction = FactionsCache.getInstance().getFactionByPlayer(((Player) src).getUniqueId());
         Faction faction;
         if (!optionalFaction.isPresent()) {
             src.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction to use this command."));

@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions.commands;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -25,14 +26,14 @@ public class UnclaimCommand implements CommandExecutor {
         if (source instanceof Player) {
             Player player = (Player) source;
 
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             //Check if player has admin mode.
             if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                 World world = player.getWorld();
                 Vector3i chunk = player.getLocation().getChunkPosition();
 
-                Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), chunk);
+                Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), chunk);
 
                 if (optionalChunkFaction.isPresent()) {
                     if (optionalChunkFaction.get().Home != null) {
@@ -44,7 +45,7 @@ public class UnclaimCommand implements CommandExecutor {
                         }
                     }
 
-                    FactionLogic.removeClaim(optionalChunkFaction.get(), world.getUniqueId(), chunk);
+                    FactionsCache.getInstance().removeClaim(world.getUniqueId(), chunk);
 
                     player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND_HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.UNCLAIMED, TextColors.WHITE, "!"));
                     return CommandResult.success();
@@ -58,11 +59,10 @@ public class UnclaimCommand implements CommandExecutor {
             if (optionalPlayerFaction.isPresent()) {
                 Faction playerFaction = optionalPlayerFaction.get();
 
-//                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.UnclaimCommand)) {
                     World world = player.getWorld();
                     Vector3i chunk = player.getLocation().getChunkPosition();
 
-                    Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), chunk);
+                    Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), chunk);
 
                     if (optionalChunkFaction.isPresent()) {
                         Faction chunkFaction = optionalChunkFaction.get();
@@ -77,7 +77,7 @@ public class UnclaimCommand implements CommandExecutor {
                                 }
                             }
 
-                            FactionLogic.removeClaim(optionalChunkFaction.get(), world.getUniqueId(), chunk);
+                            FactionsCache.getInstance().removeClaim(world.getUniqueId(), chunk);
 
                             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND_HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.UNCLAIMED, TextColors.WHITE, "!"));
                             return CommandResult.success();
@@ -87,9 +87,6 @@ public class UnclaimCommand implements CommandExecutor {
                     } else {
                         source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLACE_IS_ALREADY_CLAIMED));
                     }
-//                } else {
-//                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PLAYERS_WITH_YOUR_RANK_CANT_UNCLAIM_LANDS));
-//                }
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
             }

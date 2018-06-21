@@ -1,6 +1,6 @@
 ![alt text](http://i.imgur.com/Lh7W1Mo.png)
 
-# Eagle Factions Remake
+# Eagle Factions Remake [Not a war plugin]
 The idea of this remake is to create a plugin **for sponge** which looks and (sort of) feels like massivecraft factions.
 On top of that, it will have extra features like an enhanced permissions system.
 

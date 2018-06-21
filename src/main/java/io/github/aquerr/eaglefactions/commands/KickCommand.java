@@ -24,14 +24,14 @@ public class KickCommand implements CommandExecutor {
         if (optionalSelectedPlayer.isPresent()) {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
 
 //                    if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.KickCommand)) {
                         Player selectedPlayer = optionalSelectedPlayer.get();
-                        Optional<Faction> optionalSelectedPlayerFaction = FactionLogic.getFactionByPlayerUUID(selectedPlayer.getUniqueId());
+                        Optional<Faction> optionalSelectedPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(selectedPlayer.getUniqueId());
 
                         if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().name.equals(playerFaction.name)) {
                             if (!playerFaction.Leader.equals(selectedPlayer.getUniqueId().toString())) {

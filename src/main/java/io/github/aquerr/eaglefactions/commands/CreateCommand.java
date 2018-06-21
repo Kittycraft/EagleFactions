@@ -44,7 +44,7 @@ public class CreateCommand implements CommandExecutor {
                     return CommandResult.success();
                 }
 
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
                 if (!optionalPlayerFaction.isPresent()) {
                     if (FactionLogic.getFactionsTags().stream().anyMatch(x -> x.equalsIgnoreCase(factionTag))) {

@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -22,26 +23,23 @@ public class LeaveCommand implements CommandExecutor {
         if (source instanceof Player) {
             Player player = (Player) source;
 
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             if (optionalPlayerFaction.isPresent()) {
                 if (!optionalPlayerFaction.get().Leader.equals(player.getUniqueId().toString())) {
+                    FactionLogic.informFaction(optionalPlayerFaction.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE,
+                            player.getDisplayNameData().displayName().get(), TextColors.GREEN, " left the faction!"));
                     FactionLogic.leaveFaction(player.getUniqueId(), optionalPlayerFaction.get().name);
 
-                    //TODO: Add listener that will inform players in a faction that someone has left their faction.
-                    player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.YOU_LEFT_FACTION + " ", TextColors.GOLD, optionalPlayerFaction.get().name));
-
                     EagleFactions.AutoClaimList.remove(player.getUniqueId());
-
-                    return CommandResult.success();
                 } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_LEAVE_YOUR_FACTION_BECAUSE_YOU_ARE_ITS_LEADER + " " + PluginMessages.DISBAND_YOUR_FACTION_OR_SET_SOMEONE_AS_LEADER));
+                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You cant leave the faction because you are it's owner! Disband your faction or set someone else as the owner."));
                 }
             } else {
-                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
+                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You need to be in a faction to use this command."));
             }
         } else {
-            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
+            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Only in game players can use this command."));
         }
 
         return CommandResult.success();

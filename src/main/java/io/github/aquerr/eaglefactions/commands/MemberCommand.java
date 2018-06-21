@@ -25,8 +25,8 @@ public class MemberCommand implements CommandExecutor {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 Player newMemberPlayer = optionalNewMemberPlayer.get();
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
-                Optional<Faction> optionalNewMemberFaction = FactionLogic.getFactionByPlayerUUID(newMemberPlayer.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
+                Optional<Faction> optionalNewMemberFaction = FactionsCache.getInstance().getFactionByPlayer(newMemberPlayer.getUniqueId());
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();

@@ -5,6 +5,7 @@ import io.github.aquerr.eaglefactions.entities.FactionRelation;
 
 import java.util.List;
 
+@Deprecated
 public interface IStorage {
     boolean addOrUpdateFaction(Faction faction);
 

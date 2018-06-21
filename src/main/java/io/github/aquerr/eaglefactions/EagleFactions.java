@@ -69,7 +69,7 @@ public class EagleFactions {
     }
 
     public static Logger getLogger() {
-        return EagleFactions.getEagleFactions().logger;
+        return EagleFactions.getPlugin().logger;
     }
 
     @Listener
@@ -101,7 +101,7 @@ public class EagleFactions {
         // Init database/xml
         if (Config.getBoolean(Config.USE_DATABASE) && !DatabaseHandler.getInstance().setupConnection()) {
             Config.setValue(Config.USE_DATABASE, false);
-            getLogger().warn("Failed to setup connection with database " + Config.getString(Config.DATABASE_NAME) + ". Deactivating database usage for MCClans", true);
+            getLogger().warn("Failed to setup connection with database " + Config.getString(Config.DATABASE_NAME) + ". Deactivating database usage for EagleFactions", true);
         }
         if (Config.getBoolean(Config.USE_DATABASE)) {
             DatabaseHandler.getInstance().setupDatabase();
@@ -110,13 +110,12 @@ public class EagleFactions {
             try {
                 DatabaseHandler.getInstance().load();
             } catch (Exception e) {
-                getLogger().error("MCClans: Fatal error during data load: " + e.getMessage(), true);
-                Sponge.getServer().shutdown(Text.of("MCClans: Fatal error during data load!"));
+                getLogger().error("EagleFactions: Fatal error during data load: " + e.getMessage(), true);
+                Sponge.getServer().shutdown(Text.of("EagleFactions: Fatal error during data load!"));
                 loadError = true;
                 throw e;
             }
             getLogger().info("Finished loading in: " + (System.currentTimeMillis() - databaseLoadStartTime) + "ms", true);
-            DatabaseHandler.getInstance().removeMarkedInactiveClanPlayers();
             getLogger().info("Database updater starting...", false);
             if (TaskExecutor.getInstance().initialize()) {
                 getLogger().info("Database updater successfully started", false);
@@ -128,13 +127,12 @@ public class EagleFactions {
             try {
                 if (DatabaseHandler.getInstance().load()) {
                     getLogger().info("Finished loading in: " + (System.currentTimeMillis() - databaseLoadStartTime) + "ms", true);
-                    DatabaseHandler.getInstance().removeMarkedInactiveClanPlayers();
                 } else {
                     getLogger().info("No data loaded from flat file", true);
                 }
             } catch (Exception e) {
-                getLogger().error("MCClans: Fatal error during data load: " + e.getMessage(), true);
-                Sponge.getServer().shutdown(Text.of("MCClans: Fatal error during data load!"));
+                getLogger().error("EagleFactions: Fatal error during data load: " + e.getMessage(), true);
+                Sponge.getServer().shutdown(Text.of("EagleFactions: Fatal error during data load!"));
                 loadError = true;
                 throw e;
             }

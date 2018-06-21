@@ -38,7 +38,7 @@ public class BlockBreakListener {
 
                     Vector3i claim = transaction.getFinal().getLocation().get().getChunkPosition();
 
-                    Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                    Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
                     Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), claim);
 

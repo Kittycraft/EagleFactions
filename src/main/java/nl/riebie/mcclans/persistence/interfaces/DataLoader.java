@@ -22,6 +22,7 @@
 
 package nl.riebie.mcclans.persistence.interfaces;
 
+import io.github.aquerr.eaglefactions.EagleFactions;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
 import nl.riebie.mcclans.persistence.upgrade.DataUpgradeComparator;
@@ -39,10 +40,6 @@ public abstract class DataLoader {
     private Map<Integer, RankImpl> ranks = new HashMap<Integer, RankImpl>();
 
     private Map<Integer, Integer> clanOwners = new HashMap();
-
-    private int highestUsedClanID = -1;
-    private int highestUsedClanPlayerID = -1;
-    private int highestUsedRankID = -1;
 
     public boolean load() {
         if (initialize()) {
@@ -75,9 +72,9 @@ public abstract class DataLoader {
 
     private void upgradeIfNeeded() {
         int dataVersion = getDataVersion();
-        MCClans.getPlugin().getLogger().info("Detected data version " + dataVersion, true);
+        EagleFactions.getPlugin().getLogger().info("Detected data version " + dataVersion, true);
         if (DatabaseHandler.CURRENT_DATA_VERSION > dataVersion) {
-            MCClans.getPlugin().getLogger().info("Starting data upgrade from version " + dataVersion + " to " + DatabaseHandler.CURRENT_DATA_VERSION + "...", true);
+            EagleFactions.getPlugin().getLogger().info("Starting data upgrade from version " + dataVersion + " to " + DatabaseHandler.CURRENT_DATA_VERSION + "...", true);
 
             List<DataUpgrade> dataUpgrades = new ArrayList<>();
             for (DataUpgrade dataUpgrade : getDataUpgrades(new ArrayList<>())) {
@@ -89,7 +86,7 @@ public abstract class DataLoader {
             Collections.sort(dataUpgrades, new DataUpgradeComparator());
             for (DataUpgrade dataUpgrade : dataUpgrades) {
                 dataUpgrade.upgrade();
-                MCClans.getPlugin().getLogger().info("Finished data upgrade to version " + dataUpgrade.getVersion(), true);
+                EagleFactions.getPlugin().getLogger().info("Finished data upgrade to version " + dataUpgrade.getVersion(), true);
             }
         } else if (DatabaseHandler.CURRENT_DATA_VERSION < dataVersion) {
             throw new DataVersionTooHighException(dataVersion, DatabaseHandler.CURRENT_DATA_VERSION);

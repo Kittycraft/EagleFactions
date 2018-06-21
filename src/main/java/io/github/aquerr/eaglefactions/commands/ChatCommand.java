@@ -24,7 +24,7 @@ public class ChatCommand implements CommandExecutor {
         if (source instanceof Player) {
             Player player = (Player) source;
 
-            if (FactionLogic.getFactionByPlayerUUID(player.getUniqueId()).isPresent()) {
+            if (FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId()).isPresent()) {
                 if (optionalChatType.isPresent()) {
                     if (EagleFactions.ChatList.containsKey(player.getUniqueId())) {
                         if (optionalChatType.get().equals(ChatEnum.Global)) {

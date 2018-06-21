@@ -53,7 +53,7 @@ public class PlayerCommand implements CommandExecutor {
             List<Text> playerInfo = new ArrayList<Text>();
 
             String playerFactionName = "";
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
             if (optionalPlayerFaction.isPresent()) playerFactionName = optionalPlayerFaction.get().name;
 
             Date lastPlayed = Date.from(player.getJoinData().lastPlayed().get());

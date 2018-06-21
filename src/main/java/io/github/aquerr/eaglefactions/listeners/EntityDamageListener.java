@@ -58,10 +58,10 @@ public class EntityDamageListener {
                         } else //If player is is not in a SafeZone.
                         {
                             //Check if player is in a faction.
-                            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+                            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
                             if (optionalPlayerFaction.isPresent()) {
                                 //Check if attackedPlayer is in a faction.
-                                Optional<Faction> optionalAttackedPlayerFaction = FactionLogic.getFactionByPlayerUUID(attackedPlayer.getUniqueId());
+                                Optional<Faction> optionalAttackedPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(attackedPlayer.getUniqueId());
                                 if (optionalAttackedPlayerFaction.isPresent()) {
                                     //Check if players are in the same faction
                                     RelationType relation = FactionLogic.getRelation(optionalPlayerFaction.get().name, optionalAttackedPlayerFaction.get().name);

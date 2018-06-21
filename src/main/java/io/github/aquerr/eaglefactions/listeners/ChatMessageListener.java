@@ -23,7 +23,7 @@ public class ChatMessageListener {
 
     @Listener
     public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player) {
-        Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
         if (optionalPlayerFaction.isPresent()) {
             MessageChannel messageChannel = event.getOriginalChannel();

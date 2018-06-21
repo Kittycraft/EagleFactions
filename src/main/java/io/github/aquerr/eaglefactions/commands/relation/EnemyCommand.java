@@ -29,7 +29,7 @@ public class EnemyCommand implements CommandExecutor {
 
         Player player = (Player) source;
 
-        Optional<Faction> factionA = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        Optional<Faction> factionA = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
         Optional<Faction> factionB = FactionLogic.getFactionByIdentifier(optionalFactionName);
 
         if (!factionA.isPresent()) {

@@ -24,7 +24,7 @@ public class PlayerBlockPlaceListener {
     @Listener
     public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player) {
         if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
-            Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+            Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
                 World world = player.getWorld();

@@ -39,8 +39,8 @@ public class InfoCommand implements CommandExecutor {
         if (optionalFactionName.isPresent()) {
             faction = FactionLogic.getFactionByIdentifier(optionalFactionName).get();
         } else {
-            if (source instanceof Player && FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).isPresent()) {
-                faction = FactionLogic.getFactionByPlayerUUID(((Player) source).getUniqueId()).get();
+            if (source instanceof Player && FactionsCache.getInstance().getFactionByPlayer(((Player) source).getUniqueId()).isPresent()) {
+                faction = FactionsCache.getInstance().getFactionByPlayer(((Player) source).getUniqueId()).get();
             } else {
                 faction = FactionLogic.getFactionByName("wilderness");
             }

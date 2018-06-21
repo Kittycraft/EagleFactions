@@ -19,7 +19,7 @@ public class PlayerDisconnectListener {
             player.damage(1000, DamageSource.builder().type(DamageTypes.ATTACK).build());
             EagleFactions.getPlugin().getPVPLogger().removePlayer(player);
         }
-        Optional<Faction> f = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        Optional<Faction> f = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
         if(f.isPresent()){
             f.get().getMember(player.getUniqueId().toString()).lastOnline = System.currentTimeMillis();
         }

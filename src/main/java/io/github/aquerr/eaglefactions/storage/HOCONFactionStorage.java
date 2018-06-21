@@ -90,7 +90,7 @@ public class HOCONFactionStorage implements IStorage {
                 configNode.getNode("factions", faction.name, "home").setValue(faction.Home.worldUUID.toString() + '|' + faction.Home.blockPosition.toString());
             }
 
-            FactionsCache.addOrUpdateFactionCache(faction);
+            FactionsCache.addFaction(faction);
 
             return saveChanges();
         } catch (Exception exception) {
@@ -104,7 +104,7 @@ public class HOCONFactionStorage implements IStorage {
     public boolean removeFaction(String factionName) {
         try {
             configNode.getNode("factions").removeChild(factionName);
-            FactionsCache.removeFactionCache(factionName);
+            FactionsCache.removeFaction(factionName);
             return true;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -115,7 +115,7 @@ public class HOCONFactionStorage implements IStorage {
     @Override
     public @Nullable Faction getFaction(String factionName) {
         try {
-            Faction factionCache = FactionsCache.getFactionCache(factionName);
+            Faction factionCache = FactionsCache.getFaction(factionName);
             if (factionCache != null) return factionCache;
 
             if (configNode.getNode("factions", factionName).getValue() == null) {
@@ -124,7 +124,7 @@ public class HOCONFactionStorage implements IStorage {
 
             Faction faction = createFactionObject(factionName);
 
-            FactionsCache.addOrUpdateFactionCache(faction);
+            FactionsCache.addFaction(faction);
 
             return faction;
         } catch (Exception exception) {
@@ -292,7 +292,7 @@ public class HOCONFactionStorage implements IStorage {
 
     @Override
     public List<Faction> getFactions() {
-        List<Faction> factionList = FactionsCache.getFactionsList();
+        List<Faction> factionList = FactionsCache.getFactions();
 
         final Set<Object> keySet = getStorage().getNode("factions").getChildrenMap().keySet();
 
@@ -300,12 +300,12 @@ public class HOCONFactionStorage implements IStorage {
             if (object instanceof String) {
                 if (factionList.stream().noneMatch(x -> x.name.equals(String.valueOf(object)))) {
                     Faction faction = createFactionObject(String.valueOf(object));
-                    FactionsCache.addOrUpdateFactionCache(faction);
+                    FactionsCache.addFaction(faction);
                 }
             }
         }
 
-        return FactionsCache.getFactionsList();
+        return FactionsCache.getFactions();
     }
 
     @Override

@@ -25,8 +25,8 @@ public class OfficerCommand implements CommandExecutor {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 Player newOfficerPlayer = optionalNewOfficerPlayer.get();
-                Optional<Faction> optionalPlayerFaction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
-                Optional<Faction> optionalNewOfficerFaction = FactionLogic.getFactionByPlayerUUID(newOfficerPlayer.getUniqueId());
+                Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
+                Optional<Faction> optionalNewOfficerFaction = FactionsCache.getInstance().getFactionByPlayer(newOfficerPlayer.getUniqueId());
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();

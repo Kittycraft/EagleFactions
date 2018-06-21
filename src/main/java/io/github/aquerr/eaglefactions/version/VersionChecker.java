@@ -21,7 +21,13 @@ import java.util.Date;
 public class VersionChecker {
     private static final String USER_AGENT = "Mozilla/5.0";
 
+    //TODO: Redirect version checker.
+    private static final boolean ignoreUpdate = true;
+
     public static boolean isLatest(String version) {
+        if(ignoreUpdate){
+            return true;
+        }
         String latest = "https://api.github.com/repos/Aquerr/EagleFactions/releases";
         String currentTag = "https://api.github.com/repos/Aquerr/EagleFactions/releases/tags/v" + version;
 

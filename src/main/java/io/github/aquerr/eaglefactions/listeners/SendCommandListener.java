@@ -32,7 +32,7 @@ public class SendCommandListener {
             return;
         }
 
-        Optional<Faction> faction = FactionLogic.getFactionByPlayerUUID(player.getUniqueId());
+        Optional<Faction> faction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
         if (faction.isPresent()) {
             String node = event.getCommand() + " " + event.getArguments();
             if (!EagleFactions.AdminList.contains(player.getUniqueId()) && !faction.get().getMember(player.getUniqueId().toString()).hasNode(node.toLowerCase(), faction.get())) {
