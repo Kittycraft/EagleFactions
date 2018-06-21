@@ -1,11 +1,13 @@
 ![alt text](http://i.imgur.com/Lh7W1Mo.png)
 
 # Eagle Factions Remake
-This is a factions plugin more similar to massivecraft factions built off of the existing Eagle Factions.
+The idea of this remake is to create a plugin **for sponge** which looks and (sort of) feels like massivecraft factions.
+On top of that, it will have extra features like an enhanced permissions system.
+
+
 #####Currently working on
- * Better save mechanics. It will have the same saving as Mcclans which also means it will have database support!
-   * Note to self for database changes:
-   * mcc_x -> ef_x in table names
+ * Better save mechanics. It will have the same saving as Mcclans which also means it will have **database support**!
+
 #####Top Priority
  * Add commands for permissions
  * Add permissions for allies
@@ -13,20 +15,19 @@ This is a factions plugin more similar to massivecraft factions built off of the
  * Write permissions documentation
  * Remove references to PluginMessages.java (***No one really used the translation feature and its a pain to maintain***)
 
+#####Ideas
+ * Make factions chat a separate plugin?
 
-#####Personal Notes on stuff that needs to be fixed
- * /f f while not in a faction claims you have the wrong syntax
- * Needs /f unstuck
+# Original readme: 
+
 
 ## Goals
  * Finish up TODOs left in the code
  * Add factions permissions and **Custom ranks in factions**
    * Maybe add advanced mode which is effectively pex (Always allow /f leave though)
- * Fix massive corruption issues
- * Make tags optional and make color dependent on relations
- * Make code conform to Intellij Idea's hellish style suggestions
- * More standard raiding restrictions
-   * Maybe add deal with the devil type situations (ex: double power but no protection while members are online)
+ * Fix massive corruption issues and lag from saving
+ * Remove tags (low priority)
+ * Maybe add deal with the devil type situations (ex: double power but no protection while members are online)
  * Make join back a thing!
    * Maybe /f templeave for member+ and still be able to rejoin without losing faction data like rank or titles. Also make it easier to do if your the only one online.
  * Make friendly fire a permission, not a flag (what could possibly go wrong)
