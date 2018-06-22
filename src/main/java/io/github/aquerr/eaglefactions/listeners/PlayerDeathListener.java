@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -30,7 +31,7 @@ public class PlayerDeathListener {
             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getPowerDecrement()) + "\n",
                     TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
 
-            Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
+            Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 
             if (MainLogic.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("WarZone"))) {
                 PlayerManager.setDeathInWarZone(player.getUniqueId(), true);
@@ -56,7 +57,7 @@ public class PlayerDeathListener {
                                     EagleFactions.BlockedHome.replace(player.getUniqueId(), seconds, seconds - 1);
                                 }
                             }
-                        }).submit(EagleFactions.getEagleFactions());
+                        }).submit(EagleFactions.getPlugin());
                     }
                 }
             }

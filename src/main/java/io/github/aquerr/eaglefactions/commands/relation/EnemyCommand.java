@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.commands.relation;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
 import io.github.aquerr.eaglefactions.entities.RelationType;
@@ -29,7 +30,7 @@ public class EnemyCommand implements CommandExecutor {
 
         Player player = (Player) source;
 
-        Optional<Faction> factionA = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
+        Optional<Faction> factionA = FactionsCache.getInstance().getInstance().getFactionByPlayer(player.getUniqueId());
         Optional<Faction> factionB = FactionLogic.getFactionByIdentifier(optionalFactionName);
 
         if (!factionA.isPresent()) {
@@ -39,7 +40,7 @@ public class EnemyCommand implements CommandExecutor {
         } else if (factionA.get().name.equals(factionB.get().name)) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not enemy your own faction!"));
         } else {
-            List<FactionRelation> relations = FactionLogic.getRelations();
+            List<FactionRelation> relations = FactionsCache.getInstance().getRelations();
             for (int i = 0; i < relations.size(); i++) {
                 if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
                     if (relations.get(i).type == RelationType.ENEMY) {
@@ -53,7 +54,6 @@ public class EnemyCommand implements CommandExecutor {
             relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ENEMY));
             FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has enemied ", TextColors.RED, factionB.get().name, TextColors.WHITE, "!"));
             FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.RED, factionA.get().name, TextColors.WHITE, " has enemied your faction!"));
-            FactionLogic.saveRelations();
         }
         return CommandResult.success();
     }

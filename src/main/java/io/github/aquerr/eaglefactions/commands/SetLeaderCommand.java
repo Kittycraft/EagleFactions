@@ -1,10 +1,10 @@
 package io.github.aquerr.eaglefactions.commands;
 
-import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -32,39 +32,26 @@ public class SetLeaderCommand implements CommandExecutor {
                     Faction playerFaction = optionalPlayerFaction.get();
 
                     if (optionalNewLeaderPlayerFaction.isPresent() && optionalNewLeaderPlayerFaction.get().name.equals(playerFaction.name)) {
-                        if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                            if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
-                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.name);
-                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_SET + " ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " " + PluginMessages.AS_YOUR_NEW + " ", TextColors.BLUE, PluginMessages.LEADER, TextColors.WHITE, "!"));
-                            } else {
-                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ALREADY_ARE_THE_LEADER_OF_THIS_FACTION));
-                            }
-
-                            return CommandResult.success();
-                        }else if (playerFaction.Leader.equals(player.getUniqueId().toString())) {
-                            if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
-                                FactionLogic.setLeader(newLeaderPlayer.getUniqueId(), playerFaction.name);
-                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, PluginMessages.YOU_SET + " ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " as your new ", TextColors.BLUE, "Leader", TextColors.WHITE, "!"));
-                            } else {
-                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_ALREADY_ARE_THE_LEADER_OF_THIS_FACTION));
-                            }
-
-                            return CommandResult.success();
+                        if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
+                            FactionPlayer newLeader = playerFaction.getMember(newLeaderPlayer.getUniqueId().toString());
+                            newLeader.clearGroups();
+                            newLeader.addGroup("leader");
+                            source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newLeaderPlayer.getName(), TextColors.WHITE, " as your new ", TextColors.BLUE, "Leader", TextColors.WHITE, "!"));
                         } else {
-                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not allow you to do this! (", TextColors.DARK_RED, "/f leave", TextColors.RED," is always available)"));
+                            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already the leader of this faction!"));
                         }
                     } else {
-                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
+                        source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "That player is not in the faction!"));
                     }
                 } else {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_MUST_BE_IN_FACTION_IN_ORDER_TO_USE_THIS_COMMAND));
+                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction to use this command!"));
                 }
             } else {
-                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.ONLY_IN_GAME_PLAYERS_CAN_USE_THIS_COMMAND));
+                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Only in game players can use this command!"));
             }
         } else {
-            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f setleader <player>"));
+            source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Wrong command arguments!"));
+            source.sendMessage(Text.of(TextColors.RED, "Usage: /f setleader <player>"));
         }
 
         return CommandResult.success();

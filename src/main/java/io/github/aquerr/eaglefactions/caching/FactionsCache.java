@@ -31,6 +31,10 @@ public class FactionsCache {
         return instance;
     }
 
+    public void requestSave(){
+        requireSave = true;
+    }
+
     public List<Faction> getFactions() {
         return factionsList;
     }
@@ -40,10 +44,15 @@ public class FactionsCache {
     }
 
     public void addOrSetClaim(FactionClaim claim){
+        Optional<FactionClaim> previousClaim = getClaim(claim.world, claim.chunk);
+        if(previousClaim.isPresent()){
+            getFaction(previousClaim.get().faction).get().claims.remove(previousClaim.get());
+        }
         if(!claims.containsKey(claim.world)){
             claims.put(claim.world, new HashMap<>());
         }
         claims.get(claim.world).put(claim.chunk, claim);
+        getFaction(claim.faction).get().claims.add(claim);
     }
 
     public Optional<FactionClaim> removeClaim(UUID world, Vector3i chunk){

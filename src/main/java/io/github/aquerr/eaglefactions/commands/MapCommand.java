@@ -186,7 +186,7 @@ public class MapCommand implements CommandExecutor {
                     if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.claims.size()) {
                         if (!playerFaction.claims.isEmpty()) {
                             if (playerFaction.name.equals("SafeZone") || playerFaction.name.equals("WarZone")) {
-                                FactionLogic.addClaim(playerFaction, world.getUniqueId(), chunk);
+                                FactionsCache.getInstance().addOrSetClaim(new FactionClaim(chunk, world.getUniqueId(), playerFaction.name));
                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                             } else {
                                 if (MainLogic.requireConnectedClaims()) {

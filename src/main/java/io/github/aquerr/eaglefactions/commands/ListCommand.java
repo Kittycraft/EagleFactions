@@ -1,5 +1,6 @@
 package io.github.aquerr.eaglefactions.commands;
 
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ListCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        HashSet<Faction> factionsList = new HashSet<>(FactionLogic.getFactions());
+        HashSet<Faction> factionsList = new HashSet<>(FactionsCache.getInstance().getFactions());
         List<Text> helpList = new ArrayList<>();
 
         Text tagPrefix = MainLogic.getFactionPrefixStart();
@@ -42,7 +43,7 @@ public class ListCommand implements CommandExecutor {
         }
 
         PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
-        PaginationList.Builder paginationBuilder = paginationService.builder().title(Text.of(TextColors.GREEN, PluginMessages.FACTIONS_LIST)).padding(Text.of("-")).contents(helpList);
+        PaginationList.Builder paginationBuilder = paginationService.builder().title(Text.of(TextColors.GREEN, "Faction list")).padding(Text.of("-")).contents(helpList);
         paginationBuilder.sendTo(source);
 
         return CommandResult.success();

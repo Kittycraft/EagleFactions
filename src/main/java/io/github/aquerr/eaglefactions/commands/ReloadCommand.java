@@ -15,10 +15,10 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         try {
-            EagleFactions.getEagleFactions().getConfiguration().load();
+            EagleFactions.getPlugin().getConfiguration().load();
             FactionLogic.reload();
 
-            source.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.CONFIGS_HAS_BEEN_RELOADED));
+            source.sendMessage(Text.of(PluginInfo.PluginPrefix, "Config has been reloaded."));
         } catch (Exception exception) {
             exception.printStackTrace();
         }

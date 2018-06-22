@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MainLogic;
@@ -62,7 +63,7 @@ public class CreateCommand implements CommandExecutor {
                         }
                     }
 
-                    if (FactionLogic.getFactionsNames().stream().noneMatch(x -> x.equalsIgnoreCase(factionName))) {
+                    if (FactionsCache.getInstance().getFactionNames().stream().noneMatch(x -> x.equalsIgnoreCase(factionName))) {
                         //Check uuid length
                         if (factionName.length() > MainLogic.getMaxNameLength()) {
                             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + MainLogic.getMaxNameLength() + " " + PluginMessages.CHARS + ")"));
@@ -99,6 +100,7 @@ public class CreateCommand implements CommandExecutor {
         return CommandResult.success();
     }
 
+    //TODO: Remove create by items?
     private CommandResult createByItems(String factionName, String factionTag, Player player) {
         HashMap<String, Integer> requiredItems = MainLogic.getRequiredItemsToCreate();
         Inventory inventory = player.getInventory();

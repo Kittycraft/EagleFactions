@@ -30,8 +30,6 @@ import static io.github.aquerr.eaglefactions.entities.RelationType.*;
  * Created by Aquerr on 2017-07-12.
  */
 public class FactionLogic {
-    //private static IStorage factionsStorage;
-    //private static List<FactionRelation> relations;
 
     @Deprecated
     public static void setup(Path configDir) {
@@ -42,44 +40,6 @@ public class FactionLogic {
     public static void reload() {
 //        factionsStorage.load();
     }
-
-//    public static Optional<Faction> getFactionByPlayerUUID(UUID playerUUID) {
-//        for (Faction faction : getFactions()) {
-//            if (faction.containsMember(playerUUID.toString())) {
-//                return Optional.of(faction);
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
-
-//    public static Optional<Faction> getFactionByChunk(UUID worldUUID, Vector3i chunk) {
-//        for (Faction faction : getFactions()) {
-//            if (faction.claims.contains(worldUUID.toString() + "|" + chunk.toString())) {
-//                return Optional.of(faction);
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
-
-//    public static @Nullable
-//    Faction getFactionByName(String factionName) {
-//        Faction faction = factionsStorage.getFaction(factionName);
-//
-//        if (faction != null) {
-//            return faction;
-//        }
-//
-//        return null;
-//    }
-
-//    public static List<FactionRelation> getRelations() {
-//        if (relations == null) {
-//            return relations = factionsStorage.getFactionRelations();
-//        }
-//        return relations;
-//    }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
         List<Player> factionPlayers = new ArrayList<>();
@@ -155,27 +115,6 @@ public class FactionLogic {
         getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
     }
 
-//    public static void saveRelations() {
-//        if (relations != null) {
-//            factionsStorage.updateRelations(relations);
-//        }
-//    }
-
-//    public static List<String> getFactionsNames() {
-//        List<Faction> factions = getFactions();
-//        List<String> namesList = new ArrayList<>();
-//
-//        for (Faction faction : factions) {
-//            namesList.add(faction.name);
-//        }
-//
-//        return namesList;
-//    }
-
-//    public static List<Faction> getFactions() {
-//        return factionsStorage.getFactions();
-//    }
-
     public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
         Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName));
         FactionsCache.getInstance().addFaction(faction);
@@ -188,21 +127,6 @@ public class FactionLogic {
             faction.get().members.remove(faction.get().getMember(playerUUID.toString()));
             FactionsCache.getInstance().removePlayer(playerUUID);
         }
-    }
-
-    public static void setLeader(UUID newLeaderUUID, String playerFactionName) {
-        Faction faction = getFactionByName(playerFactionName);
-        FactionPlayer player = faction.getMember(newLeaderUUID.toString());
-        player.clearGroups();
-        player.addGroup("leader");
-        faction.Leader = player;
-
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static void addClaim(Faction faction, UUID worldUUID, Vector3i claimedChunk) {
-        faction.claims.add(new FactionClaim(claimedChunk, worldUUID, faction.name));
-        factionsStorage.addOrUpdateFaction(faction);
     }
 
     public static boolean isClaimConnected(Faction faction, UUID worldUUID, Vector3i chunk) {
@@ -220,10 +144,6 @@ public class FactionLogic {
         return false;
     }
 
-    public static void saveFaction(Faction faction) {
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
     public static void setHome(@Nullable UUID worldUUID, Faction faction, @Nullable Vector3i home) {
         if (home != null && worldUUID != null) {
             faction.Home = new FactionHome(worldUUID, home);
@@ -231,11 +151,11 @@ public class FactionLogic {
             faction.Home = null;
         }
 
-        factionsStorage.addOrUpdateFaction(faction);
     }
 
+    @Deprecated
     public static List<String> getFactionsTags() {
-        List<Faction> factionsList = getFactions();
+        List<Faction> factionsList = FactionsCache.getInstance().getFactions();
         List<String> factionsTags = new ArrayList<>();
 
         for (Faction faction : factionsList) {
@@ -246,7 +166,6 @@ public class FactionLogic {
     }
 
     public static boolean hasOnlinePlayers(Faction faction) {
-
         for (FactionPlayer player : faction.members) {
             if (PlayerManager.isPlayerOnline(UUID.fromString(player.uuid))) {
                 return true;
@@ -256,13 +175,16 @@ public class FactionLogic {
     }
 
     public static void removeClaims(Faction faction) {
-        faction.claims = new ArrayList<>();
+        int num = faction.claims.size();
+        while (faction.claims.size() > 0) {
+            FactionsCache.getInstance().removeClaim(faction.claims.get(0).world, faction.claims.get(0).chunk);
+            num--;
+            if (num < 10) {
+                EagleFactions.getLogger().warn("Unable to remove all claims from faction \"" + faction.name + "\"");
+                break;
+            }
+        }
 
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    public static void kickPlayer(UUID playerUUID, String factionName) {
-        leaveFaction(playerUUID, factionName);
     }
 
     private static Consumer<Task> addClaimWithDelay(Player player, Faction faction, UUID worldUUID, Vector3i chunk) {
@@ -279,7 +201,8 @@ public class FactionLogic {
                             else
                                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_ENOUGH_RESOURCES_TO_CLAIM_A_TERRITORY));
                         } else {
-                            addClaim(faction, worldUUID, chunk);
+                            FactionsCache.getInstance().addOrSetClaim(new FactionClaim(chunk, worldUUID, faction.name));
+
                             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                         }
                     } else {
@@ -309,7 +232,7 @@ public class FactionLogic {
                     player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_DONT_HAVE_ENOUGH_RESOURCES_TO_CLAIM_A_TERRITORY));
             } else {
                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
-                addClaim(faction, worldUUID, chunk);
+                FactionsCache.getInstance().addOrSetClaim(new FactionClaim(chunk, worldUUID, faction.name));
             }
         }
     }
@@ -370,22 +293,21 @@ public class FactionLogic {
                     inventory.query(QueryOperationTypes.ITEM_TYPE.of(itemType.get())).poll(itemStack.getQuantity());
                 }
             }
-
-            addClaim(faction, worldUUID, chunk);
+            FactionsCache.getInstance().addOrSetClaim(new FactionClaim(chunk, worldUUID, faction.name));
             return true;
         } else return false;
     }
 
     public static Optional<Faction> getFactionByIdentifier(Optional<String> identifier) {
         if (identifier.isPresent()) {
-            Faction faction = getFactionByName(identifier.get());
-            if (faction != null) {
-                return Optional.of(faction);
+            Optional<Faction> faction = FactionsCache.getInstance().getFaction(identifier.get());
+            if (faction.isPresent()) {
+                return faction;
             }
 
             Optional<Player> player = Sponge.getGame().getServer().getPlayer(identifier.get());
             if (player.isPresent()) {
-                return getFactionByPlayerUUID(player.get().getUniqueId());
+                return FactionsCache.getInstance().getFactionByPlayer(player.get().getUniqueId());
             }
         }
         return Optional.empty();
@@ -393,32 +315,21 @@ public class FactionLogic {
     }
 
     public static void setMember(String playerUUID, String factionName) {
-        Faction faction = getFactionByName(factionName);
-        FactionPlayer player = faction.getMember(playerUUID);
-        System.out.println("UUID: " + playerUUID);
-        player.clearGroups();
-        player.addGroup("member");
-
-        factionsStorage.addOrUpdateFaction(faction);
+        Optional<Faction> faction = FactionsCache.getInstance().getFaction(factionName);
+        if (faction.isPresent()) {
+            FactionPlayer player = faction.get().getMember(playerUUID);
+            player.clearGroups();
+            player.addGroup("member");
+        }
     }
 
     public static void setOfficer(String playerUUID, String factionName) {
-        Faction faction = getFactionByName(factionName);
-        FactionPlayer player = faction.getMember(playerUUID);
-        player.clearGroups();
-        player.addGroup("officer");
-
-        factionsStorage.addOrUpdateFaction(faction);
-    }
-
-    //TODO: Recruit command because why not
-    public static void setRecruit(String playerUUID, String factionName) {
-        Faction faction = getFactionByName(factionName);
-        FactionPlayer player = faction.getMember(playerUUID);
-        player.clearGroups();
-        player.addGroup("recruit");
-
-        factionsStorage.addOrUpdateFaction(faction);
+        Optional<Faction> faction = FactionsCache.getInstance().getFaction(factionName);
+        if (faction.isPresent()) {
+            FactionPlayer player = faction.get().getMember(playerUUID);
+            player.clearGroups();
+            player.addGroup("officer");
+        }
     }
 
 }

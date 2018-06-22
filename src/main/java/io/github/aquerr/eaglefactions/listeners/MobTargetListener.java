@@ -1,5 +1,6 @@
 package io.github.aquerr.eaglefactions.listeners;
 
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import org.spongepowered.api.entity.living.player.Player;
@@ -12,7 +13,7 @@ public class MobTargetListener {
     @Listener
     public void onTargetChange(SetAITargetEvent event) {
         if (event.getTarget().isPresent() && event.getTarget().get() instanceof Player) {
-            Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(event.getTarget().get().getWorld().getUniqueId(), ((Player) event.getTarget().get()).getLocation().getChunkPosition());
+            Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(event.getTarget().get().getWorld().getUniqueId(), ((Player) event.getTarget().get()).getLocation().getChunkPosition());
             if (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("SafeZone")) {
                 event.setCancelled(true);
                 return;

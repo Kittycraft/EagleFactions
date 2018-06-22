@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -36,7 +37,7 @@ public class EntityDamageListener {
                 }
 
                 //Block all damage an attacked player would get if location is a SafeZone.
-                Optional<Faction> chunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), attackedPlayer.getLocation().getChunkPosition());
+                Optional<Faction> chunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), attackedPlayer.getLocation().getChunkPosition());
                 if (chunkFaction.isPresent() && chunkFaction.get().name.equals("SafeZone")) {
                     event.setBaseDamage(0);
                     event.setCancelled(true);
@@ -50,7 +51,7 @@ public class EntityDamageListener {
                         Player player = (Player) entityDamageSource.getSource();
 
                         //Block all damage a player could deal if location is SafeZone.
-                        Optional<Faction> playerChunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
+                        Optional<Faction> playerChunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
                         if (playerChunkFaction.isPresent() && playerChunkFaction.get().name.equals("SafeZone")) {
                             event.setBaseDamage(0);
                             event.setCancelled(true);

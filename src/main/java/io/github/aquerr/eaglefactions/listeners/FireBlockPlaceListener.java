@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import org.spongepowered.api.block.BlockTypes;
@@ -19,7 +20,7 @@ public class FireBlockPlaceListener {
             if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
                 event.getTransactions().forEach(x ->
                 {
-                    Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
+                    Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
 
                     if (x.getFinal().getState().getType() == BlockTypes.FIRE
                             && optionalChunkFaction.isPresent() && (optionalChunkFaction.get().name.equals("SafeZone")
@@ -31,7 +32,7 @@ public class FireBlockPlaceListener {
         } else {
             event.getTransactions().forEach(x ->
             {
-                Optional<Faction> optionalChunkFaction = FactionLogic.getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
+                Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(x.getFinal().getWorldUniqueId(), x.getFinal().getLocation().get().getChunkPosition());
 
                 if (x.getFinal().getState().getType() == BlockTypes.FIRE
                         && optionalChunkFaction.isPresent() && (optionalChunkFaction.get().name.equals("SafeZone")
