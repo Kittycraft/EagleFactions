@@ -2,12 +2,9 @@ package io.github.aquerr.eaglefactions.commands.assembly;
 
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.commands.annotations.AllowedGroups;
-import io.github.aquerr.eaglefactions.commands.annotations.RequiredRank;
 import io.github.aquerr.eaglefactions.commands.annotations.RequiresFaction;
-import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.style.StyleLayout;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -21,15 +18,14 @@ import java.util.logging.Logger;
 /**
  * Gets rid of all of the annoying repetitive checks so a command can contain what it really needs.
  */
-@RequiredRank
 @RequiresFaction
 @AllowedGroups
 public abstract class FactionPlayerCommand extends FactionCommand
 {
 
-    public FactionPlayerCommand(FactionsCache cache, Settings settings, FactionLogic factionLogic, Logger logger, StyleLayout styleLayout)
+    public FactionPlayerCommand(FactionsCache cache, FactionLogic factionLogic, Logger logger)
     {
-        super(cache, settings, factionLogic, logger, styleLayout);
+        super(cache, factionLogic, logger);
     }
 
     @Override

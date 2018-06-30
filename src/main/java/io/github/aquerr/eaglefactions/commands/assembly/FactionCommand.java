@@ -5,15 +5,10 @@ import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.commands.annotations.AllowedGroups;
-import io.github.aquerr.eaglefactions.commands.annotations.RequiredRank;
 import io.github.aquerr.eaglefactions.commands.annotations.RequiresFaction;
 import io.github.aquerr.eaglefactions.commands.enums.CommandUser;
-import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.entities.FactionMemberType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.managers.PlayerManager;
-import io.github.aquerr.eaglefactions.style.StyleLayout;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -35,18 +30,14 @@ import java.util.logging.Logger;
 public abstract class FactionCommand implements CommandExecutor
 {
     protected FactionsCache cache;
-    protected Settings settings;
     protected FactionLogic factionLogic;
     protected Logger logger;
-    protected StyleLayout styleLayout;
 
     @Inject
-    public FactionCommand(FactionsCache cache, Settings settings, FactionLogic factionLogic, Logger logger, StyleLayout styleLayout){
+    public FactionCommand(FactionsCache cache, FactionLogic factionLogic, Logger logger){
         this.cache = cache;
-        this.settings = settings;
         this.factionLogic = factionLogic;
         this.logger = logger;
-        this.styleLayout = styleLayout;
     }
 
     @Override
@@ -74,19 +65,11 @@ public abstract class FactionCommand implements CommandExecutor
             if(this instanceof RequiresFaction){
                 if(((RequiresFaction) this).value() != faction.isPresent()){
                     if(faction.isPresent()){
-                        source.sendMessage(styleLayout.MUST_LEAVE_FACTION.apply().build());
+                        source.sendMessage(Text.of(TextColors.RED, "You must leave your faction in order to use this command!"));
                     }else {
-                        source.sendMessage(styleLayout.REQUIRES_FACTION.apply().build());
+                        source.sendMessage(Text.of(TextColors.RED, "You must be in a faction in order to use this command!"));
                     }
                     return false;
-                }
-            }
-            if(faction.isPresent() && this instanceof RequiredRank){
-                FactionMemberType memberType = PlayerManager.getFactionMemberType((Player) source, faction.get());
-                if (memberType.compareTo(((RequiredRank) this).minimumRank()) > 0 && !EagleFactions.AdminList.contains(((Player) source).getUniqueId()))
-                {
-                    source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You need to be a ", TextColors.WHITE,
-                            memberType.toString().toLowerCase(), TextColors.RED, " in your faction to use this command!"));
                 }
             }
         }
