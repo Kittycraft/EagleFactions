@@ -25,6 +25,7 @@ package nl.riebie.mcclans.persistence.interfaces;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.entities.*;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
@@ -38,7 +39,7 @@ public abstract class DataLoader {
     private FactionsCache cache = FactionsCache.getInstance();
 
     public boolean load() {
-        if (initialize()) {
+        if (!Config.getBoolean(Config.SKIP_SAVE) && initialize()) {
             upgradeIfNeeded();
 
             loadFactions();

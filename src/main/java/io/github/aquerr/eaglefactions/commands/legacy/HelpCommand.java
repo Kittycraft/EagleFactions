@@ -1,7 +1,6 @@
-package io.github.aquerr.eaglefactions.commands;
+package io.github.aquerr.eaglefactions.commands.legacy;
 
 import com.google.common.collect.Lists;
-import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;

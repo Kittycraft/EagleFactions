@@ -1,4 +1,4 @@
-package io.github.aquerr.eaglefactions.commands;
+package io.github.aquerr.eaglefactions.commands.legacy;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
@@ -17,27 +17,27 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class OfficerCommand implements CommandExecutor {
+public class MemberCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
-        Optional<Player> optionalNewOfficerPlayer = context.<Player>getOne("player");
+        Optional<Player> optionalNewMemberPlayer = context.getOne("player");
 
-        if (optionalNewOfficerPlayer.isPresent()) {
+        if (optionalNewMemberPlayer.isPresent()) {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                Player newOfficerPlayer = optionalNewOfficerPlayer.get();
+                Player newMemberPlayer = optionalNewMemberPlayer.get();
                 Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
-                Optional<Faction> optionalNewOfficerFaction = FactionsCache.getInstance().getFactionByPlayer(newOfficerPlayer.getUniqueId());
+                Optional<Faction> optionalNewMemberFaction = FactionsCache.getInstance().getFactionByPlayer(newMemberPlayer.getUniqueId());
 
                 if (optionalPlayerFaction.isPresent()) {
                     Faction playerFaction = optionalPlayerFaction.get();
                     if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.owner.equals(newOfficerPlayer.getUniqueId().toString())) {
-                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
-                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
+                        if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().name.equals(playerFaction.name)) {
+                            if (!playerFaction.owner.equals(newMemberPlayer.getUniqueId().toString())) {
+                                FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.name);
+                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {
-                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_OFFICER));
+                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_MEMBER));
                             }
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
@@ -46,12 +46,12 @@ public class OfficerCommand implements CommandExecutor {
                         return CommandResult.success();
                     }
 
-                        if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.owner.equals(newOfficerPlayer.getUniqueId().toString())) {
-                                FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
-                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
+                        if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().name.equals(playerFaction.name)) {
+                            if (!playerFaction.owner.equals(newMemberPlayer.getUniqueId().toString())) {
+                                FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.name);
+                                source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {
-                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_OFFICER));
+                                source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_SET_FACTIONS_LEADER_AS_MEMBER));
                             }
                         } else {
                             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.THIS_PLAYER_IS_NOT_IN_YOUR_FACTION));
@@ -64,7 +64,7 @@ public class OfficerCommand implements CommandExecutor {
             }
         } else {
             source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.WRONG_COMMAND_ARGUMENTS));
-            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f officer <player>"));
+            source.sendMessage(Text.of(TextColors.RED, PluginMessages.USAGE + " /f member <player>"));
         }
 
         return CommandResult.success();

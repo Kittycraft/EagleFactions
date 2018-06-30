@@ -47,6 +47,9 @@ public abstract class DataSaver {
     }
 
     public boolean continueSave() {
+        if(!Config.getBoolean(Config.SKIP_SAVE)){
+            return true;
+        }
         try {
             saveStarted();
             storeFactions();

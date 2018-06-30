@@ -20,6 +20,7 @@ public class Config {
     public static final String DATABASE_SERVER_USER = "database-server-user";
     public static final String DATABASE_SERVER_PASSWORD = "database-server-password";
     public static final String DATABASE_QUICK_SAVE = "database-quick-save";
+    public static final String SKIP_SAVE = "skip-save";
 
 
     public static String getString(String node) {

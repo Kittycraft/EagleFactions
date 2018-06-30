@@ -1,4 +1,4 @@
-package io.github.aquerr.eaglefactions.commands;
+package io.github.aquerr.eaglefactions.commands.legacy;
 
 import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.commands.permission.PermAction;
@@ -10,15 +10,11 @@ import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
 import io.github.aquerr.eaglefactions.commands.relation.TruceCommand;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.parsers.FactionNameArgument;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SubcommandFactory {
 
@@ -33,6 +29,7 @@ public class SubcommandFactory {
 
     private static void createSubcommands(){
             //Help command should display all possible commands in plugin.
+        Subcommands = new HashMap<>();
             Subcommands.put(Collections.singletonList("help"), CommandSpec.builder()
                     .description(Text.of("Help"))
                     .permission(PluginPermissions.HelpCommand)

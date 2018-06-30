@@ -1,4 +1,4 @@
-package io.github.aquerr.eaglefactions.commands;
+package io.github.aquerr.eaglefactions.commands.legacy;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
@@ -12,19 +12,21 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class AdminCommand implements CommandExecutor {
+public class AutoMapCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         if (source instanceof Player) {
             Player player = (Player) source;
 
-            if (EagleFactions.AdminList.contains(player.getUniqueId())) {
-                EagleFactions.AdminList.remove(player.getUniqueId());
-                player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, PluginMessages.ADMIN_MODE, TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
+            if (EagleFactions.AutoMapList.contains(player.getUniqueId())) {
+                EagleFactions.AutoMapList.remove(player.getUniqueId());
+
+                player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoMap", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.OFF));
                 return CommandResult.success();
             } else {
-                EagleFactions.AdminList.add(player.getUniqueId());
-                player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, PluginMessages.ADMIN_MODE, TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.ON));
+                EagleFactions.AutoMapList.add(player.getUniqueId());
+
+                player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GOLD, "AutoMap", TextColors.WHITE, " " + PluginMessages.HAS_BEEN_TURNED + " ", TextColors.GOLD, PluginMessages.ON));
                 return CommandResult.success();
             }
         } else {

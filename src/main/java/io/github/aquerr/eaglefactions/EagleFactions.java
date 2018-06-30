@@ -5,8 +5,8 @@
 package io.github.aquerr.eaglefactions;
 
 import com.google.inject.Inject;
-import io.github.aquerr.eaglefactions.commands.HelpCommand;
-import io.github.aquerr.eaglefactions.commands.SubcommandFactory;
+import io.github.aquerr.eaglefactions.commands.legacy.HelpCommand;
+import io.github.aquerr.eaglefactions.commands.legacy.SubcommandFactory;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
@@ -31,7 +31,6 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -51,7 +50,6 @@ public class EagleFactions {
     private Configuration configuration;
     private PVPLogger pvpLogger;
     private boolean loadError = false;
-    private UserStorageService userStorageService = Sponge.getServiceManager().getRegistration(UserStorageService.class).get().getProvider();
     @Inject
     private Logger logger;
     @Inject

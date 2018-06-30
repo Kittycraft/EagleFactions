@@ -112,7 +112,6 @@ public class BadSaver extends DataSaver
         Gson gson = new Gson();
         gson.toJson(FactionsCache.getInstance(), FactionsCache.class, writer);
         writer.endObject();
-        writer.endObject();
     }
 
     @Override

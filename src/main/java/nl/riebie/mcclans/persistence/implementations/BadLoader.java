@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Config;
 import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
@@ -157,9 +158,12 @@ public class BadLoader extends DataLoader
     @Override
     public boolean load()
     {
-        FactionsCache.getInstance().setFactionsCache(gson.fromJson(reader, new TypeToken<FactionsCache>()
+        if (!Config.getBoolean(Config.SKIP_SAVE) && initialize())
         {
-        }.getType()));
+            FactionsCache.getInstance().setFactionsCache(gson.fromJson(reader, new TypeToken<FactionsCache>()
+            {
+            }.getType()));
+        }
         return true;
     }
 }

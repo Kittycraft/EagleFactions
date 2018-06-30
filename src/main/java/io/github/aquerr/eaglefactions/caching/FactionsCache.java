@@ -8,7 +8,8 @@ import io.github.aquerr.eaglefactions.entities.FactionRelation;
 
 import java.util.*;
 
-public class FactionsCache {
+public class FactionsCache
+{
 
     private List<Faction> factionsList = new LinkedList<>();
     private Map<String, Faction> factionNameMap = new HashMap<>();
@@ -20,106 +21,132 @@ public class FactionsCache {
     private static FactionsCache instance;
 
 
-    private FactionsCache() {
-        //Request DataLoader
+    private FactionsCache()
+    {
     }
 
-    public void setFactionsCache(FactionsCache factionsCache){
+    public void setFactionsCache(FactionsCache factionsCache)
+    {
         instance = factionsCache;
     }
 
-    public static FactionsCache getInstance() {
-        if (instance == null) {
+    public static FactionsCache getInstance()
+    {
+        if (instance == null)
+        {
             instance = new FactionsCache();
         }
         return instance;
     }
 
-    public void requestSave(){
+    public void requestSave()
+    {
         requireSave = true;
     }
 
-    public List<Faction> getFactions() {
+    public List<Faction> getFactions()
+    {
         return factionsList;
     }
 
-    public List<FactionRelation> getRelations() {
+    public List<FactionRelation> getRelations()
+    {
         return relations;
     }
 
-    public void addOrSetClaim(FactionClaim claim){
+    public void addOrSetClaim(FactionClaim claim)
+    {
         Optional<FactionClaim> previousClaim = getClaim(claim.world, claim.chunk);
-        if(previousClaim.isPresent()){
+        if (previousClaim.isPresent())
+        {
             getFaction(previousClaim.get().faction).get().claims.remove(previousClaim.get());
         }
-        if(!claims.containsKey(claim.world)){
+        if (!claims.containsKey(claim.world))
+        {
             claims.put(claim.world, new HashMap<>());
         }
         claims.get(claim.world).put(claim.chunk, claim);
         getFaction(claim.faction).get().claims.add(claim);
     }
 
-    public Optional<FactionClaim> removeClaim(UUID world, Vector3i chunk){
-        if(claims.containsKey(world)){
+    public Optional<FactionClaim> removeClaim(UUID world, Vector3i chunk)
+    {
+        if (claims.containsKey(world))
+        {
             return Optional.ofNullable(claims.get(world).remove(chunk));
         }
         return Optional.empty();
     }
 
-    public Optional<FactionClaim> getClaim(UUID world, Vector3i chunk) {
+    public Optional<FactionClaim> getClaim(UUID world, Vector3i chunk)
+    {
         return Optional.ofNullable(claims.getOrDefault(world, new HashMap<>()).get(chunk));
     }
 
-    public void addFaction(Faction faction) {
+    public void addFaction(Faction faction)
+    {
         factionsList.add(faction);
         factionNameMap.put(faction.name.toLowerCase(), faction);
     }
 
-    public void removePlayer(UUID uuid){
+    public void removePlayer(UUID uuid)
+    {
         playerUUIDMap.remove(uuid);
     }
 
-    public void updatePlayer(String player, String newFaction){
+    public void updatePlayer(String player, String newFaction)
+    {
         playerUUIDMap.put(player, getFaction(newFaction).get());
     }
 
-    public void removeFaction(String factionName) {
+    public void removeFaction(String factionName)
+    {
         final String faction = factionName.toLowerCase();
         Optional<Faction> optionalFaction = factionsList.stream().filter(x -> x.name.equals(faction)).findFirst();
-        if (optionalFaction.isPresent()) {
+        if (optionalFaction.isPresent())
+        {
             factionsList.remove(optionalFaction.get());
             factionNameMap.remove(faction);
-            for(FactionPlayer player : optionalFaction.get().members){
+            for (FactionPlayer player : optionalFaction.get().members)
+            {
                 playerUUIDMap.remove(player.uuid);
             }
         }
     }
 
-    public Optional<Faction> getFaction(String factionName) {
-        if(!factionNameMap.containsKey(factionName.toLowerCase())){
+    public Optional<Faction> getFaction(String factionName)
+    {
+        if (!factionNameMap.containsKey(factionName.toLowerCase()))
+        {
             return Optional.empty();
         }
         return Optional.of(factionNameMap.get(factionName.toLowerCase()));
     }
 
-    public Optional<Faction> getFactionByPlayer(String uuid) {
-        if(!playerUUIDMap.containsKey(uuid)){
+    public Optional<Faction> getFactionByPlayer(String uuid)
+    {
+        if (!playerUUIDMap.containsKey(uuid))
+        {
             return Optional.empty();
         }
         return Optional.of(playerUUIDMap.get(uuid));
     }
 
-    public Optional<Faction> getFactionByPlayer(UUID uuid) {
+    public Optional<Faction> getFactionByPlayer(UUID uuid)
+    {
         return getFactionByPlayer(uuid.toString());
     }
 
-    public Set<String> getFactionNames(){
+    public Set<String> getFactionNames()
+    {
         return factionNameMap.keySet();
     }
 
-    public Optional<Faction> getFactionByChunk(UUID world, Vector3i chunk){
+    public Optional<Faction> getFactionByChunk(UUID world, Vector3i chunk)
+    {
         Optional<FactionClaim> claim = getClaim(world, chunk);
-        if(claim.isPresent()){
+        if (claim.isPresent())
+        {
             return getFaction(claim.get().faction);
         }
         return Optional.empty();
