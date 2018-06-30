@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.commands.relation;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
 import io.github.aquerr.eaglefactions.entities.RelationType;
@@ -40,7 +41,7 @@ public class TruceCommand implements CommandExecutor {
         } else if (factionA.get().name.equals(factionB.get().name)) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not truce your own faction!"));
         } else {
-            List<FactionRelation> relations = FactionLogic.getRelations();
+            List<FactionRelation> relations = FactionsCache.getInstance().getRelations();
             RelationType pre = FactionLogic.getRelation(factionA.get().name, factionB.get().name);
             for (int i = 0; i < relations.size(); i++) {
                 if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
@@ -65,7 +66,6 @@ public class TruceCommand implements CommandExecutor {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now truced to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has accepted your truce request!"));
             }
-            FactionLogic.saveRelations();
         }
         return CommandResult.success();
     }

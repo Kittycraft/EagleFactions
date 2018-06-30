@@ -33,7 +33,7 @@ public class MemberCommand implements CommandExecutor {
                     Faction playerFaction = optionalPlayerFaction.get();
                     if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                         if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.Leader.uuid.equals(newMemberPlayer.getUniqueId().toString())) {
+                            if (!playerFaction.owner.equals(newMemberPlayer.getUniqueId().toString())) {
                                 FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {
@@ -47,7 +47,7 @@ public class MemberCommand implements CommandExecutor {
                     }
 
                         if (optionalNewMemberFaction.isPresent() && optionalNewMemberFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.Leader.uuid.equals(newMemberPlayer.getUniqueId().toString())) {
+                            if (!playerFaction.owner.equals(newMemberPlayer.getUniqueId().toString())) {
                                 FactionLogic.setMember(newMemberPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newMemberPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.MEMBERS, TextColors.WHITE, "!"));
                             } else {

@@ -311,7 +311,6 @@ public class FactionLogic {
             }
         }
         return Optional.empty();
-
     }
 
     public static void setMember(String playerUUID, String factionName) {

@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
@@ -42,7 +43,7 @@ public class InfoCommand implements CommandExecutor {
             if (source instanceof Player && FactionsCache.getInstance().getFactionByPlayer(((Player) source).getUniqueId()).isPresent()) {
                 faction = FactionsCache.getInstance().getFactionByPlayer(((Player) source).getUniqueId()).get();
             } else {
-                faction = FactionLogic.getFactionByName("wilderness");
+                faction = FactionsCache.getInstance().getFaction("wilderness").get();
             }
         }
         if(faction == null){

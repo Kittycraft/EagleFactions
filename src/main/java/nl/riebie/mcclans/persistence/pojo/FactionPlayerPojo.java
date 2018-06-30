@@ -24,15 +24,28 @@ package nl.riebie.mcclans.persistence.pojo;
 
 import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 
+import java.util.List;
+
 /**
  * Created by Kippers on 28/03/2016.
  */
 public class FactionPlayerPojo {
 
+    public String name;
+    public String uuid;
+    public String faction;
+    public List<String> groups;
+    public List<String> nodes;
+    public long lastTimeOnline;
 
     public static FactionPlayerPojo from(FactionPlayer player) {
         FactionPlayerPojo factionPlayerPojo = new FactionPlayerPojo();
-
+        factionPlayerPojo.name = player.name;
+        factionPlayerPojo.uuid = player.uuid;
+        factionPlayerPojo.faction = player.faction;
+        factionPlayerPojo.groups = player.inherit;
+        factionPlayerPojo.nodes = player.nodes;
+        factionPlayerPojo.lastTimeOnline = player.lastOnline;
         return factionPlayerPojo;
     }
 

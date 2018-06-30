@@ -25,11 +25,12 @@ public class FactionPlayer extends PermObject {
         }
     }
 
-    public FactionPlayer(String uuid, String name, String faction, List<String> inherit, List<String> nodes) {
+    public FactionPlayer(String uuid, String name, String faction, List<String> inherit, List<String> nodes, long lastOnline) {
         super(inherit, nodes);
         this.uuid = uuid;
         this.name = name;
         this.faction = faction;
+        this.lastOnline = lastOnline;
     }
 
     public int getPriority(Faction context) {
@@ -61,7 +62,7 @@ public class FactionPlayer extends PermObject {
 
     @Override
     public FactionPlayer clone() {
-        return new FactionPlayer(uuid, name, faction, (List<String>) ((ArrayList) inherit).clone(), (List<String>) ((ArrayList) nodes).clone());
+        return new FactionPlayer(uuid, name, faction, (List<String>) ((ArrayList) inherit).clone(), (List<String>) ((ArrayList) nodes).clone(), lastOnline);
     }
 
     public long getLastOnline(){

@@ -22,41 +22,30 @@
 
 package nl.riebie.mcclans.persistence.interfaces;
 
+import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.entities.*;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionTooHighException;
 import nl.riebie.mcclans.persistence.upgrade.DataUpgradeComparator;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.world.Location;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 public abstract class DataLoader {
 
-    private Map<Integer, ClanImpl> clans = new HashMap<Integer, ClanImpl>();
-    private Map<Integer, ClanPlayerImpl> clanPlayers = new HashMap<Integer, ClanPlayerImpl>();
-    private Map<Integer, RankImpl> ranks = new HashMap<Integer, RankImpl>();
-
-    private Map<Integer, Integer> clanOwners = new HashMap();
+    private FactionsCache cache = FactionsCache.getInstance();
 
     public boolean load() {
         if (initialize()) {
             upgradeIfNeeded();
 
-            loadClans();
-            loadRanks();
-            loadClanPlayers();
-            loadAllies();
-
-            setOwners();
-
-            ClansImpl.getInstance().setHighestUsedClanID(highestUsedClanID);
-            ClansImpl.getInstance().setHighestUsedClanPlayerID(highestUsedClanPlayerID);
-            ClansImpl.getInstance().setHighestUsedRankID(highestUsedRankID);
-
-            setResults();
+            loadFactions();
+            loadGroups();
+            loadPlayers();
+            loadRelations();
+            loadClaims();
 
             return true;
         } else {
@@ -93,107 +82,46 @@ public abstract class DataLoader {
         }
     }
 
-    protected abstract void loadClans();
+    protected abstract void loadFactions();
 
-    protected abstract void loadRanks();
+    protected abstract void loadGroups();
 
-    protected abstract void loadClanPlayers();
+    protected abstract void loadPlayers();
 
-    protected abstract void loadAllies();
+    protected abstract void loadRelations();
 
-    protected void loadedClan(int clanID, String clanTag, String clanName, int ownerID, String tagColorId, boolean allowAllyInvites,
-                              boolean ffProtection, long creationTime, String homeWorld, double homeX, double homeY, double homeZ, float homeYaw, float homePitch,
-                              int homeSetTimes, long homeLastSetTimeStamp, String bankId) {
-        ClanImpl clan = new ClanImpl.Builder(clanID, clanTag, clanName).tagColor(Utils.getTextColorById(tagColorId, Config.getColor(Config.CLAN_TAG_DEFAULT_COLOR))).acceptAllyInvites(allowAllyInvites)
-                .ffProtection(ffProtection).creationTime(creationTime).homeSetTimes(homeSetTimes).homeLastSetTimeStamp(homeLastSetTimeStamp).bankId(bankId).build();
-        if (homeWorld != null && Sponge.getServer().getWorld(UUID.fromString(homeWorld)).isPresent()) {
-            // TODO SPONGE homeYaw, homePitch
-            clan.setHomeInternal(new Location<>(Sponge.getServer().getWorld(UUID.fromString(homeWorld)).get(), homeX, homeY, homeZ));
-        }
+    protected abstract void loadClaims();
 
-        clan.addRank(RankFactory.getInstance().createOwner());
-        clan.addRank(RankFactory.getInstance().createRecruit());
-
-        clanOwners.put(clanID, ownerID);
-        clans.put(clanID, clan);
-
-        checkHighestUsedClanID(clanID);
+    protected void loadedFaction(String name, String owner, FactionHome home, long creationTime) {
+        cache.addFaction(new Faction(name, owner, new ArrayList<>(), new ArrayList<>(), home, new HashMap<>(), creationTime));
     }
 
-    protected void loadedRank(int rankID, int clanID, String rankName, String permissions, boolean changeable) {
-
-        RankImpl.Builder builder = new RankImpl.Builder(rankID, rankName);
-        if (!changeable) {
-            builder.unchangeable();
-        }
-        RankImpl rank = builder.build();
-
-        rank.setPermissions(new ArrayList<>(Arrays.asList(permissions.split(","))));
-
-        clans.get(clanID).addRank(rank);
-        ranks.put(rankID, rank);
-
-        checkHighestUsedRankID(rankID);
-    }
-
-    protected void loadedClanPlayer(int clanPlayerID, long uuidMostSigBits, long uuidLeastSigBits, String playerName, int clanID, int rankID,
-                                    int killsHigh, int killsMedium, int killsLow, int deathsHigh, int deathsMedium, int deathsLow, boolean ffProtection, long lastOnlineTime) {
-        ClanImpl clan = null;
-        RankImpl rankImpl = null;
-
-        if (clanID != -1 && rankID != -1) {
-            clan = clans.get(clanID);
-            if (rankID == RankFactory.getOwnerID()) {
-                rankImpl = RankFactory.getInstance().createOwner();
-            } else if (rankID == RankFactory.getRecruitID()) {
-                rankImpl = RankFactory.getInstance().createRecruit();
-            } else {
-                rankImpl = ranks.get(rankID);
-            }
-        }
-
-        ClanPlayerImpl cp = new ClanPlayerImpl.Builder(clanPlayerID, new UUID(uuidMostSigBits, uuidLeastSigBits), playerName).clan(clan)
-                .rank(rankImpl).kills(killsHigh, killsMedium, killsLow).deaths(deathsHigh, deathsMedium, deathsLow).ffProtection(ffProtection)
-                .lastOnline(new LastOnlineImpl(lastOnlineTime)).build();
-
-        clanPlayers.put(clanPlayerID, cp);
-        if (clan != null) {
-            clan.addMember(cp);
-        }
-
-        checkHighestUsedClanPlayerID(clanPlayerID);
-    }
-
-    protected void loadedAlly(int clanID, int clanIDAlly) {
-        ClanImpl clan = clans.get(clanID);
-        ClanImpl ally = clans.get(clanIDAlly);
-        if (clan != null && ally != null) {
-            clan.addAlly(ally);
-        } else {
-            MCClans.getPlugin().getLogger().warn("Cannot load ally relation, could not find clan. Clan: " + clanID + " ally: " + clanIDAlly, false);
+    protected void loadedGroup(String factionName, String group, int priority, List<String> parents, List<String> nodes) {
+        Optional<Faction> faction = cache.getFaction(factionName);
+        if(faction.isPresent()){
+            faction.get().groups.put(group, new Group(group, priority, parents, nodes));
         }
     }
 
-    private void setOwners() {
-        for (Entry<Integer, Integer> entry : clanOwners.entrySet()) {
-            ClanImpl clan = clans.get(entry.getKey());
-            ClanPlayerImpl clanPlayer = clanPlayers.get(entry.getValue());
-            clan.setLoadedOwner(clanPlayer);
+    protected void loadedPlayer(String name, String uuid, String factionName, List<String> parents, List<String> nodes, long lastOnline) {
+        Optional<Faction> faction = cache.getFaction(factionName);
+        if(faction.isPresent()){
+            faction.get().members.add(new FactionPlayer(uuid, name, factionName, parents, nodes, lastOnline));
+            cache.updatePlayer(uuid, factionName);
         }
     }
 
-    private void setResults() {
-        Map<UUID, ClanPlayerImpl> finishedClanPlayers = new HashMap<UUID, ClanPlayerImpl>();
-        Map<String, ClanImpl> finishedClans = new HashMap<String, ClanImpl>();
-
-        for (ClanImpl clan : clans.values()) {
-            finishedClans.put(clan.getTag().toLowerCase(), clan);
-        }
-        for (ClanPlayerImpl clanPlayer : clanPlayers.values()) {
-            finishedClanPlayers.put(clanPlayer.getUUID(), clanPlayer);
-        }
-
-        ClansImpl.getInstance().setClanPlayers(finishedClanPlayers);
-        ClansImpl.getInstance().setClans(finishedClans);
+    protected void loadedRelation(String factionA, String factionB, RelationType type) {
+        cache.getRelations().add(new FactionRelation(factionA, factionB, type));
     }
+
+    protected void loadedClaim(Vector3i chunk, UUID world, String faction) {
+        cache.addOrSetClaim(new FactionClaim(chunk, world, faction));
+    }
+
+    //For json loader
+    protected void loadedClaim(FactionClaim claim) {
+        cache.addOrSetClaim(claim);
+    }
+
 }

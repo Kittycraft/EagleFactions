@@ -39,7 +39,7 @@ public class FactionPojo {
     public static FactionPojo from(Faction faction) {
         FactionPojo factionPojo = new FactionPojo();
         factionPojo.name = faction.name;
-        factionPojo.ownerUUID = faction.Leader.uuid;
+        factionPojo.ownerUUID = faction.owner;
         factionPojo.creationTime = faction.creationTime;
         return factionPojo;
     }

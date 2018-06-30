@@ -32,7 +32,7 @@ public class SetLeaderCommand implements CommandExecutor {
                     Faction playerFaction = optionalPlayerFaction.get();
 
                     if (optionalNewLeaderPlayerFaction.isPresent() && optionalNewLeaderPlayerFaction.get().name.equals(playerFaction.name)) {
-                        if (!playerFaction.Leader.equals(newLeaderPlayer.getUniqueId().toString())) {
+                        if (!playerFaction.owner.equals(newLeaderPlayer.getUniqueId().toString())) {
                             FactionPlayer newLeader = playerFaction.getMember(newLeaderPlayer.getUniqueId().toString());
                             newLeader.clearGroups();
                             newLeader.addGroup("leader");

@@ -22,9 +22,9 @@
 
 package nl.riebie.mcclans.persistence.interfaces;
 
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.entities.*;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
 
 import java.util.List;
 
@@ -34,8 +34,8 @@ public abstract class DataSaver {
     private List<FactionRelation> retrievedRelations;
 
     public boolean save() {
-        retrievedFactions = FactionLogic.getFactions();
-        retrievedRelations = FactionLogic.getRelations();
+        retrievedFactions = FactionsCache.getInstance().getFactions();
+        retrievedRelations = FactionsCache.getInstance().getRelations();
         return continueSave();
     }
 

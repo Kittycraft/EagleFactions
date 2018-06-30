@@ -26,7 +26,7 @@ public class LeaveCommand implements CommandExecutor {
             Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             if (optionalPlayerFaction.isPresent()) {
-                if (!optionalPlayerFaction.get().Leader.equals(player.getUniqueId().toString())) {
+                if (!optionalPlayerFaction.get().owner.equals(player.getUniqueId().toString())) {
                     FactionLogic.informFaction(optionalPlayerFaction.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE,
                             player.getDisplayNameData().displayName().get(), TextColors.GREEN, " left the faction!"));
                     FactionLogic.leaveFaction(player.getUniqueId(), optionalPlayerFaction.get().name);

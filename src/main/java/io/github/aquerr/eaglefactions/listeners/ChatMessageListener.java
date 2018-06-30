@@ -1,6 +1,7 @@
 package io.github.aquerr.eaglefactions.listeners;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RelationType;

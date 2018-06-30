@@ -14,9 +14,10 @@ import java.util.Map;
 public class Faction implements Cloneable {
     public String name;
     @Deprecated
-    public Text Tag;
+    public Text Tag = Text.of("Deprecated");
     public List<FactionPlayer> members;
     public FactionPlayer Leader;
+    public String owner;
     public List<FactionClaim> claims;
     public FactionHome Home;
     public Map<String, Group> groups;
@@ -25,8 +26,7 @@ public class Faction implements Cloneable {
     //Constructor used while creating a new faction.
     public Faction(String factionName, String factionTag, FactionPlayer factionLeader) {
         this.name = factionName;
-        this.Tag = Text.of(TextColors.GREEN, factionTag);
-        this.Leader = factionLeader;
+        this.owner = factionLeader.uuid;
         this.members = new ArrayList<>();
         this.members.add(factionLeader);
         this.claims = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Faction implements Cloneable {
 
         groups.put("leader", new Group("leader", 1, "[^-]"));
         groups.put("officer", new Group("officer", 10, "f ally",
-                "f enemy", "f kick", "f invite", "f *claim", "f member", "f sethome"));
+                "f enemy", "f kick", "f invite", "f claim", "f autoclaim", "f member", "f sethome"));
         groups.put("member", new Group("member", 20, "f home", "build", "interact"));
         groups.put("recruit", new Group("recruit", 30, "f ((chat)|(c))",
                 "f top", "f list", "f help", "f ((info)|(i)|(f)|(faction)|(show))", "f *map", "f"));
@@ -49,10 +49,9 @@ public class Faction implements Cloneable {
     }
 
     //Constructor used while getting a faction from storage.
-    public Faction(String factionName, Text factionTag, FactionPlayer factionLeader, List<FactionPlayer> members, List<FactionClaim> claims, FactionHome home, Map<String, Group> groups, long creationTime) {
+    public Faction(String factionName, String factionLeader, List<FactionPlayer> members, List<FactionClaim> claims, FactionHome home, Map<String, Group> groups, long creationTime) {
         this.name = factionName;
-        this.Tag = factionTag;
-        this.Leader = factionLeader;
+        this.owner = factionLeader;
         this.members = members;
         this.claims = claims;
         this.Home = home;
@@ -103,6 +102,6 @@ public class Faction implements Cloneable {
 
     @Override
     public Faction clone(){
-        return new Faction(name, Text.of(name), Leader.clone(), cloneMembers(), (List)((ArrayList)claims).clone(), Home, cloneGroups(), creationTime);
+        return new Faction(name, owner, cloneMembers(), (List)((ArrayList)claims).clone(), Home, cloneGroups(), creationTime);
     }
 }

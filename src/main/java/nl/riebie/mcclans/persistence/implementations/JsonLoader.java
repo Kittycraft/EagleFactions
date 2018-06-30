@@ -175,8 +175,7 @@ public class JsonLoader extends DataLoader {
         }.getType());
 
         for (FactionPojo clan : clans.list) {
-            super.loadedClan(clan.clanID, clan.clanTag, clan.clanName, clan.ownerID, clan.tagColorId, clan.allowAllyInvites, clan.ffProtection, clan.creationTime, clan.homeWorld,
-                    clan.homeX, clan.homeY, clan.homeZ, clan.homeYaw, clan.homePitch, clan.homeSetTimes, clan.homeSetTimeStamp, clan.bankId);
+            super.lo
         }
 
         try {

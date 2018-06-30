@@ -35,7 +35,7 @@ public class KickCommand implements CommandExecutor {
                         Optional<Faction> optionalSelectedPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(selectedPlayer.getUniqueId());
 
                         if (optionalSelectedPlayerFaction.isPresent() && optionalSelectedPlayerFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.Leader.equals(selectedPlayer.getUniqueId().toString())) {
+                            if (!playerFaction.owner.equals(selectedPlayer.getUniqueId().toString())) {
                                 if (playerFaction.getMember(player.getUniqueId().toString()).getPriority(playerFaction) > playerFaction.getMember(selectedPlayer.getUniqueId().toString()).getPriority(playerFaction)) {
                                     FactionLogic.leaveFaction(selectedPlayer.getUniqueId(), playerFaction.name);
 

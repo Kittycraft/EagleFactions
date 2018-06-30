@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.commands;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -32,7 +33,7 @@ public class OfficerCommand implements CommandExecutor {
                     Faction playerFaction = optionalPlayerFaction.get();
                     if (EagleFactions.AdminList.contains(player.getUniqueId())) {
                         if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
+                            if (!playerFaction.owner.equals(newOfficerPlayer.getUniqueId().toString())) {
                                 FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
                             } else {
@@ -46,7 +47,7 @@ public class OfficerCommand implements CommandExecutor {
                     }
 
                         if (optionalNewOfficerFaction.isPresent() && optionalNewOfficerFaction.get().name.equals(playerFaction.name)) {
-                            if (!playerFaction.Leader.equals(newOfficerPlayer.getUniqueId().toString())) {
+                            if (!playerFaction.owner.equals(newOfficerPlayer.getUniqueId().toString())) {
                                 FactionLogic.setOfficer(newOfficerPlayer.getUniqueId().toString(), playerFaction.name);
                                 source.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You set ", TextColors.GOLD, newOfficerPlayer.getName(), TextColors.WHITE, "'s rank the the faction to ", TextColors.BLUE, PluginMessages.OFFICER, TextColors.WHITE, "!"));
                             } else {

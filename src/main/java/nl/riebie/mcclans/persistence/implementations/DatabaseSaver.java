@@ -37,7 +37,7 @@ public class DatabaseSaver extends DataSaver {
     protected void saveFaction(Faction faction) throws Exception {
         databaseConnectionOwner.executeTransactionStatement(QueryGenerator.createInsertQuery("ef_factions",
                 databaseConnectionOwner.getConnection()).value("faction_name", faction.name)
-                .value("faction_owner", faction.Leader == null ? null : faction.Leader.uuid).value("faction_name", faction.name)
+                .value("faction_owner", faction.owner == null ? null : faction.owner).value("faction_name", faction.name)
                 .value("faction_home", faction.Home == null ? null : faction.Home.toString()).value("creation_time", faction.creationTime)
                 .create());
     }
@@ -138,7 +138,7 @@ public class DatabaseSaver extends DataSaver {
 
     public static PreparedStatement getUpdateFactionQuery(Faction faction) {
         return QueryGenerator.createUpdateQuery("ef_factions", databaseConnectionOwner.getConnection())
-                .value("faction_owner", faction.Leader == null ? null : faction.Leader.uuid).value("faction_home", faction.Home == null ? null : faction.Home.toString())
+                .value("faction_owner", faction.owner == null ? null : faction.owner).value("faction_home", faction.Home == null ? null : faction.Home.toString())
                 .where("faction_name", faction.name).create();
     }
 

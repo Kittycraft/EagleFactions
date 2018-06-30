@@ -23,6 +23,7 @@
 package nl.riebie.mcclans.persistence;
 
 import io.github.aquerr.eaglefactions.EagleFactions;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
@@ -160,10 +161,10 @@ public class DatabaseHandler {
     public void backup() {
         EagleFactions.getLogger().info("System backup commencing...", false);
 
-        List<Faction> retrievedFactions = FactionLogic.getFactions();
+        List<Faction> retrievedFactions = FactionsCache.getInstance().getFactions();
 
         final List<Faction> factions = new ArrayList<>();
-        final List<FactionRelation> relations = (List)((ArrayList)FactionLogic.getRelations()).clone();
+        final List<FactionRelation> relations = (List)((ArrayList)FactionsCache.getInstance().getRelations()).clone();
 
         for (Faction retrievedFaction : retrievedFactions) {
             factions.add(retrievedFaction.clone());

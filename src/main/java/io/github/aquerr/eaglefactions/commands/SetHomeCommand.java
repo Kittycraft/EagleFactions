@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions.commands;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
@@ -39,7 +40,7 @@ public class SetHomeCommand implements CommandExecutor {
                 }
 
 //                if (playerFaction.isAllowed(player.getUniqueId().toString(), PluginPermissions.SetHomeCommand)) {
-                    Optional<Faction> chunkFaction = FactionLogic.getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
+                    Optional<Faction> chunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), player.getLocation().getChunkPosition());
 
                     if (chunkFaction.isPresent() && chunkFaction.get().name.equals(playerFaction.name)) {
                         Vector3i home = new Vector3i(player.getLocation().getBlockPosition());

@@ -22,6 +22,7 @@
 
 package nl.riebie.mcclans.persistence.implementations;
 
+import io.github.aquerr.eaglefactions.entities.FactionHome;
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.exceptions.DataVersionNotFoundException;
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
@@ -31,17 +32,23 @@ import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseLoader extends DataLoader {
 
-    private static final String GET_DATAVERSION_QUERY = "SELECT * FROM mcc_dataversion";
-    private static final String GET_CLANS_QUERY = "SELECT * FROM mcc_clans";
-    private static final String GET_CLANS_ALLIES_QUERY = "SELECT * FROM mcc_clans_allies";
-    private static final String GET_CLANPLAYERS_QUERY = "SELECT * FROM mcc_clanplayers";
-    private static final String GET_RANKS_QUERY = "SELECT * FROM mcc_ranks";
+    private static final String GET_DATAVERSION_QUERY = "SELECT * FROM ef_dataversion";
+    private static final String GET_FACTIONS_QUERY = "SELECT * FROM ef_factions";
+    private static final String GET_RELATIONS_QUERY = "SELECT * FROM ef_relations";
+    private static final String GET_PLAYERS_QUERY = "SELECT * FROM ef_players";
+    private static final String GET_GROUPS_QUERY = "SELECT * FROM ef_groups";
+    private static final String GET_CLAIMS_QUERY = "SELECT * FROM ef_claims";
 
     private final DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
+
+    public DatabaseLoader(){
+        throw new UnsupportedOperationException("Database support is not completed yet.");
+    }
 
     @Override
     protected boolean initialize() {
@@ -72,34 +79,26 @@ public class DatabaseLoader extends DataLoader {
     }
 
     @Override
-    protected void loadClans() {
-        ResultSet clansResultSet = databaseConnectionOwner.executeQuery(GET_CLANS_QUERY);
-        if (clansResultSet != null) {
+    protected void loadRelations() {
+
+    }
+
+    @Override
+    protected void loadClaims() {
+
+    }
+
+    @Override
+    protected void loadFactions() {
+        ResultSet resultSet = databaseConnectionOwner.executeQuery(GET_FACTIONS_QUERY);
+        if (resultSet != null) {
             try {
-                while (clansResultSet.next()) {
-                    int clanID = clansResultSet.getInt("clan_id");
-                    String clanTag = clansResultSet.getString("clantag");
-                    String clanName = clansResultSet.getString("clanname");
-                    int ownerID = clansResultSet.getInt("clanplayer_id_owner");
-                    String tagColorId = clansResultSet.getString("tagcolor");
-                    boolean allowAllyInvites = clansResultSet.getBoolean("allow_ally_invites");
-                    boolean ffProtection = clansResultSet.getBoolean("ff_protection");
-                    long creationTime = clansResultSet.getLong("creation_time");
-
-                    String homeWorld = clansResultSet.getString("clanhome_world");
-                    double homeX = clansResultSet.getDouble("clanhome_x");
-                    double homeY = clansResultSet.getDouble("clanhome_y");
-                    double homeZ = clansResultSet.getDouble("clanhome_z");
-                    float homeYaw = clansResultSet.getFloat("clanhome_yaw");
-                    float homePitch = clansResultSet.getFloat("clanhome_pitch");
-
-                    int homeSetTimes = clansResultSet.getInt("clanhome_set_times");
-                    long homeLastSetTimeStamp = clansResultSet.getLong("clanhome_set_timestamp");
-
-                    String bankId = clansResultSet.getString("bank_id");
-
-                    super.loadedClan(clanID, clanTag, clanName, ownerID, tagColorId, allowAllyInvites, ffProtection, creationTime, homeWorld, homeX,
-                            homeY, homeZ, homeYaw, homePitch, homeSetTimes, homeLastSetTimeStamp, bankId);
+                while (resultSet.next()) {
+                    String name = resultSet.getString("faction_name");
+                    String owner = resultSet.getString("faction_owner");
+                    String home = resultSet.getString("faction_home");
+                    long time = resultSet.getLong("creation_time");
+                    super.loadedFaction(name, owner, new FactionHome(home), time);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -108,18 +107,18 @@ public class DatabaseLoader extends DataLoader {
     }
 
     @Override
-    protected void loadRanks() {
-        ResultSet ranksResultSet = databaseConnectionOwner.executeQuery(GET_RANKS_QUERY);
-        if (ranksResultSet != null) {
+    protected void loadGroups() {
+        ResultSet resultSet = databaseConnectionOwner.executeQuery(GET_GROUPS_QUERY);
+        if (resultSet != null) {
             try {
-                while (ranksResultSet.next()) {
-                    int rankID = ranksResultSet.getInt("rank_id");
-                    int clanID = ranksResultSet.getInt("clan_id");
-                    String rankName = ranksResultSet.getString("rankname");
-                    String permissions = ranksResultSet.getString("permissions");
-                    boolean changeable = ranksResultSet.getBoolean("changeable");
+                while (resultSet.next()) {
+                    String faction = resultSet.getString("faction");
+                    String name = resultSet.getString("group_name");
+                    String nodes = resultSet.getString("group_nodes");
+                    String parents = resultSet.getString("group_parents");
+                    int priority = resultSet.getInt("priority");
 
-                    super.loadedRank(rankID, clanID, rankName, permissions, changeable);
+                    super.loadedGroup(faction, name, priority, Arrays.asList(parents.split(",")), Arrays.asList(nodes.split("\n")));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -128,8 +127,8 @@ public class DatabaseLoader extends DataLoader {
     }
 
     @Override
-    protected void loadClanPlayers() {
-        ResultSet clanPlayersResultSet = databaseConnectionOwner.executeQuery(GET_CLANPLAYERS_QUERY);
+    protected void loadPlayers() {
+        ResultSet clanPlayersResultSet = databaseConnectionOwner.executeQuery(GET_PLAYERS_QUERY);
         if (clanPlayersResultSet != null) {
             try {
                 while (clanPlayersResultSet.next()) {
@@ -148,8 +147,8 @@ public class DatabaseLoader extends DataLoader {
                     boolean ffProtection = clanPlayersResultSet.getBoolean("ff_protection");
                     long lastOnlineTime = clanPlayersResultSet.getLong("last_online_time");
 
-                    super.loadedClanPlayer(clanPlayerID, uuidMostSigBits, uuidLeastSigBits, playerName, clanID, rankID, killsHigh, killsMedium,
-                            killsLow, deathsHigh, deathsMedium, deathsLow, ffProtection, lastOnlineTime);
+//                    super.loadedClanPlayer(clanPlayerID, uuidMostSigBits, uuidLeastSigBits, playerName, clanID, rankID, killsHigh, killsMedium,
+//                            killsLow, deathsHigh, deathsMedium, deathsLow, ffProtection, lastOnlineTime);
                 }
 
             } catch (Exception e) {
@@ -158,21 +157,4 @@ public class DatabaseLoader extends DataLoader {
         }
     }
 
-    @Override
-    protected void loadAllies() {
-        ResultSet clansResultSet = databaseConnectionOwner.executeQuery(GET_CLANS_ALLIES_QUERY);
-        if (clansResultSet != null) {
-            try {
-                while (clansResultSet.next()) {
-                    int clanID = clansResultSet.getInt("clan_id");
-                    int clanIDAlly = clansResultSet.getInt("clan_id_ally");
-
-                    super.loadedAlly(clanID, clanIDAlly);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 }
