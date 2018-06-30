@@ -1,6 +1,5 @@
 package io.github.aquerr.eaglefactions.config;
 
-import io.github.aquerr.eaglefactions.logic.MainLogic;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -67,7 +66,7 @@ public class Configuration {
     }
 
     private void checkNodes() {
-        Method[] methods = MainLogic.class.getDeclaredMethods();
+        Method[] methods = Settings.class.getDeclaredMethods();
         for (Method method : methods) {
             if (!method.getName().equals("setup") && !method.getName().equals("addWorld")) {
 
@@ -84,7 +83,7 @@ public class Configuration {
     public void load() {
         try {
             configNode = configLoader.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true));
-            MainLogic.setup(this);
+            Settings.setup(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,13 +1,14 @@
 package io.github.aquerr.eaglefactions.listeners;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
@@ -21,19 +22,29 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class PlayerBlockPlaceListener {
+@Singleton
+public class PlayerBlockPlaceListener extends GenericListener
+{
+
+    @Inject
+    PlayerBlockPlaceListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    {
+        super(cache, settings, eagleFactions);
+    }
+
     @Listener
-    public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player) {
+    public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player)
+    {
         if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
             Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
             for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
                 World world = player.getWorld();
 
-                if (MainLogic.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_BUILD)) {
+                if (settings.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_BUILD)) {
                     return;
                 }
-                if (MainLogic.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_BUILD)) {
+                if (settings.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_BUILD)) {
                     return;
                 }
 

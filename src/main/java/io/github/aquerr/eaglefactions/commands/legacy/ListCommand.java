@@ -2,9 +2,7 @@ package io.github.aquerr.eaglefactions.commands.legacy;
 
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
-import io.github.aquerr.eaglefactions.logic.PluginMessages;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -27,8 +25,8 @@ public class ListCommand implements CommandExecutor {
         HashSet<Faction> factionsList = new HashSet<>(FactionsCache.getInstance().getFactions());
         List<Text> helpList = new ArrayList<>();
 
-        Text tagPrefix = MainLogic.getFactionPrefixStart();
-        Text tagSufix = MainLogic.getFactionPrefixEnd();
+        Text tagPrefix = Settings.getFactionPrefixStart();
+        Text tagSufix = Settings.getFactionPrefixEnd();
 
         for (Faction faction : factionsList) {
             Text tag = Text.builder().append(tagPrefix).append(faction.Tag).append(tagSufix, Text.of(" ")).build();

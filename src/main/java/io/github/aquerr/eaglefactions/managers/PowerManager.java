@@ -3,7 +3,7 @@ package io.github.aquerr.eaglefactions.managers;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionPlayer;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.config.Settings;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -55,8 +55,8 @@ public class PowerManager {
 
             CommentedConfigurationNode playerNode = configLoader.load();
 
-            playerNode.getNode("power").setValue(MainLogic.getStartingPower());
-            playerNode.getNode("maxpower").setValue(MainLogic.getGlobalMaxPower());
+            playerNode.getNode("power").setValue(Settings.getStartingPower());
+            playerNode.getNode("maxpower").setValue(Settings.getGlobalMaxPower());
             configLoader.save(playerNode);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -140,9 +140,9 @@ public class PowerManager {
 
                 return playerMaxPower;
             } else {
-                playerNode.getNode("maxpower").setValue(MainLogic.getGlobalMaxPower());
+                playerNode.getNode("maxpower").setValue(Settings.getGlobalMaxPower());
 
-                return MainLogic.getGlobalMaxPower();
+                return Settings.getGlobalMaxPower();
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -161,12 +161,12 @@ public class PowerManager {
 
             BigDecimal playerPower = new BigDecimal(playerNode.getNode("power").getString());
 
-            if (PowerManager.getPlayerPower(playerUUID).add(MainLogic.getPowerIncrement()).doubleValue() < PowerManager.getPlayerMaxPower(playerUUID).doubleValue()) {
+            if (PowerManager.getPlayerPower(playerUUID).add(Settings.getPowerIncrement()).doubleValue() < PowerManager.getPlayerMaxPower(playerUUID).doubleValue()) {
                 if (isKillAward) {
-                    BigDecimal killAward = MainLogic.getKillAward();
+                    BigDecimal killAward = Settings.getKillAward();
                     playerNode.getNode("power").setValue(playerPower.add(killAward));
                 } else {
-                    playerNode.getNode("power").setValue(playerPower.add(MainLogic.getPowerIncrement()));
+                    playerNode.getNode("power").setValue(playerPower.add(Settings.getPowerIncrement()));
                 }
 
                 configLoader.save(playerNode);
@@ -200,7 +200,7 @@ public class PowerManager {
             public void accept(Task task) {
                 if (!PlayerManager.isPlayerOnline(playerUUID)) task.cancel();
 
-                if (PowerManager.getPlayerPower(playerUUID).add(MainLogic.getPowerIncrement()).doubleValue() < PowerManager.getPlayerMaxPower(playerUUID).doubleValue()) {
+                if (PowerManager.getPlayerPower(playerUUID).add(Settings.getPowerIncrement()).doubleValue() < PowerManager.getPlayerMaxPower(playerUUID).doubleValue()) {
                     PowerManager.addPower(playerUUID, false);
                 } else {
                     PowerManager.setPower(playerUUID, PowerManager.getPlayerMaxPower(playerUUID));
@@ -210,7 +210,7 @@ public class PowerManager {
     }
 
     public static void decreasePower(UUID playerUUID) {
-        if (PowerManager.getPlayerPower(playerUUID).subtract(MainLogic.getPowerDecrement()).doubleValue() > BigDecimal.ZERO.doubleValue()) {
+        if (PowerManager.getPlayerPower(playerUUID).subtract(Settings.getPowerDecrement()).doubleValue() > BigDecimal.ZERO.doubleValue()) {
             Path playerFile = Paths.get(playersPath + "/" + playerUUID.toString() + ".conf");
 
             try {
@@ -220,7 +220,7 @@ public class PowerManager {
 
                 BigDecimal playerPower = new BigDecimal(playerNode.getNode("power").getString());
 
-                playerNode.getNode("power").setValue(playerPower.subtract(MainLogic.getPowerDecrement()));
+                playerNode.getNode("power").setValue(playerPower.subtract(Settings.getPowerDecrement()));
                 configLoader.save(playerNode);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -240,7 +240,7 @@ public class PowerManager {
 
             BigDecimal playerPower = new BigDecimal(playerNode.getNode("power").getString());
 
-            BigDecimal penalty = MainLogic.getPenalty();
+            BigDecimal penalty = Settings.getPenalty();
 
             if (playerPower.doubleValue() - penalty.doubleValue() > 0) {
                 playerNode.getNode("power").setValue(playerPower.subtract(penalty));

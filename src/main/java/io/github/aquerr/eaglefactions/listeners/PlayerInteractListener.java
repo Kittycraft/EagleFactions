@@ -2,13 +2,14 @@ package io.github.aquerr.eaglefactions.listeners;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -21,17 +22,27 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class PlayerInteractListener {
+@Singleton
+public class PlayerInteractListener extends GenericListener
+{
+
+    @Inject
+    PlayerInteractListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    {
+        super(cache, settings, eagleFactions);
+    }
+
     @Listener
-    public void onPlayerInteract(HandInteractEvent event, @Root Player player) {
+    public void onPlayerInteract(HandInteractEvent event, @Root Player player)
+    {
         if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
             if (event.getInteractionPoint().isPresent()) {
                 World world = player.getWorld();
 
-                if (MainLogic.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
+                if (settings.getSafeZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.SAFE_ZONE_INTERACT)) {
                     return;
                 }
-                if (MainLogic.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
+                if (settings.getWarZoneWorldNames().contains(world.getName()) && player.hasPermission(PluginPermissions.WAR_ZONE_INTERACT)) {
                     return;
                 }
 

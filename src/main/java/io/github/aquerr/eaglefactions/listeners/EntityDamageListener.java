@@ -1,12 +1,14 @@
 package io.github.aquerr.eaglefactions.listeners;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.entity.EntityTypes;
@@ -21,16 +23,25 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-//TODO: Review this. May need to be re-written to account for truce.
-public class EntityDamageListener {
+@Singleton
+public class EntityDamageListener extends GenericListener
+{
+
+    @Inject
+    public EntityDamageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    {
+        super(cache, settings, eagleFactions);
+    }
+
     @Listener
-    public void onEntityDamage(DamageEntityEvent event) {
+    public void onEntityDamage(DamageEntityEvent event)
+    {
         if (event.getCause().root() instanceof DamageSource) {
             if (event.getTargetEntity().getType() == EntityTypes.PLAYER) {
                 Player attackedPlayer = (Player) event.getTargetEntity();
                 World world = attackedPlayer.getWorld();
 
-                if (MainLogic.getSafeZoneWorldNames().contains(world.getName())) {
+                if (settings.getSafeZoneWorldNames().contains(world.getName())) {
                     event.setBaseDamage(0);
                     event.setCancelled(true);
                     return;
@@ -68,14 +79,14 @@ public class EntityDamageListener {
                                     RelationType relation = FactionLogic.getRelation(optionalPlayerFaction.get().name, optionalAttackedPlayerFaction.get().name);
                                     if (relation == RelationType.SAME) {
                                         //If friendlyfire is off the block the damage.
-                                        if (!MainLogic.isFactionFriendlyFire()) {
+                                        if (!settings.isFactionFriendlyFire()) {
                                             event.setBaseDamage(0);
                                             event.setCancelled(true);
                                             return;
                                         } else {
                                             //If friendlyfire is on and damage will kill attackedPlayer then penalty the player.
                                             if (event.willCauseDeath()) {
-                                                player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getPenalty()) + "\n",
+                                                player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getPenalty()) + "\n",
                                                         TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
                                                 PowerManager.penalty(player.getUniqueId());
                                                 return;
@@ -83,7 +94,7 @@ public class EntityDamageListener {
                                         }
                                         //TODO: Add option to cherry pick friendly fire in permissions.
                                     } else if (relation == RelationType.ALLY || relation == RelationType.TRUCE) {
-                                        if (!MainLogic.isAllianceFriendlyFire()) {
+                                        if (!settings.isAllianceFriendlyFire()) {
                                             event.setBaseDamage(0);
                                             event.setCancelled(true);
                                             return;
@@ -91,7 +102,7 @@ public class EntityDamageListener {
                                             if (EagleFactions.getEagleFactions().getPVPLogger().isActive())
                                                 EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                             if (event.willCauseDeath()) {
-                                                player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getPenalty()) + "\n",
+                                                player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getPenalty()) + "\n",
                                                         TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
                                                 PowerManager.penalty(player.getUniqueId());
                                                 return;
@@ -101,7 +112,7 @@ public class EntityDamageListener {
                                         if (EagleFactions.getEagleFactions().getPVPLogger().isActive())
                                             EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                         if (event.willCauseDeath()) {
-                                            player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getKillAward()) + "\n",
+                                            player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
                                                     TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
                                             PowerManager.addPower(player.getUniqueId(), true);
                                             return;
@@ -111,7 +122,7 @@ public class EntityDamageListener {
                                     if (EagleFactions.getEagleFactions().getPVPLogger().isActive())
                                         EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                     if (event.willCauseDeath()) {
-                                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getKillAward()) + "\n",
+                                        player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
                                                 TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
                                         PowerManager.addPower(player.getUniqueId(), true);
                                         return;
@@ -121,7 +132,7 @@ public class EntityDamageListener {
                                 if (EagleFactions.getEagleFactions().getPVPLogger().isActive())
                                     EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                 if (event.willCauseDeath()) {
-                                    player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(MainLogic.getKillAward()) + "\n",
+                                    player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
                                             TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
                                     PowerManager.addPower(player.getUniqueId(), true);
                                     return;

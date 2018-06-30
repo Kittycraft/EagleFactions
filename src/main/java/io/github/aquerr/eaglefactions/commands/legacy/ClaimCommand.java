@@ -7,7 +7,7 @@ import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionClaim;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.command.CommandException;
@@ -38,7 +38,7 @@ public class ClaimCommand implements CommandExecutor {
 
                     Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(world.getUniqueId(), chunk);
 
-                    if (MainLogic.getClaimableWorldNames().contains(player.getWorld().getName())) {
+                    if (Settings.getClaimableWorldNames().contains(player.getWorld().getName())) {
                         if (!optionalChunkFaction.isPresent()) {
                             if (PowerManager.getFactionPower(playerFaction).doubleValue() > playerFaction.claims.size()) {
                                 if (!playerFaction.claims.isEmpty()) {
@@ -48,7 +48,7 @@ public class ClaimCommand implements CommandExecutor {
 
                                         return CommandResult.success();
                                     } else {
-                                        if (MainLogic.requireConnectedClaims()) {
+                                        if (Settings.requireConnectedClaims()) {
                                             if (FactionLogic.isClaimConnected(playerFaction, world.getUniqueId(), chunk)) {
                                                 FactionLogic.startClaiming(player, playerFaction, world.getUniqueId(), chunk);
                                                 return CommandResult.success();

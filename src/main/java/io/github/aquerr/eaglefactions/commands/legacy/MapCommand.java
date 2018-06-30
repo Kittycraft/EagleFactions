@@ -7,7 +7,7 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionClaim;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.command.CommandException;
@@ -33,7 +33,7 @@ public class MapCommand implements CommandExecutor {
     public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
         if (source instanceof Player) {
             Player player = (Player) source;
-            if (MainLogic.getClaimableWorldNames().contains(player.getWorld().getName())) {
+            if (Settings.getClaimableWorldNames().contains(player.getWorld().getName())) {
                 generateMap(player);
             } else {
                 source.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_VIEW_MAP_IN_THIS_WORLD));
@@ -128,7 +128,7 @@ public class MapCommand implements CommandExecutor {
                         }
                     }
                 } else {
-                    if (!MainLogic.isDelayedClaimingToggled()) {
+                    if (!Settings.isDelayedClaimingToggled()) {
                         textBuilder.append(notCapturedMark.toBuilder().onClick(TextActions.executeCallback(claimByMap(player, chunk))).build());
                     } else {
                         textBuilder.append(notCapturedMark).build();
@@ -189,7 +189,7 @@ public class MapCommand implements CommandExecutor {
                                 FactionsCache.getInstance().addOrSetClaim(new FactionClaim(chunk, world.getUniqueId(), playerFaction.name));
                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                             } else {
-                                if (MainLogic.requireConnectedClaims()) {
+                                if (Settings.requireConnectedClaims()) {
                                     if (FactionLogic.isClaimConnected(playerFaction, world.getUniqueId(), chunk)) {
                                         FactionLogic.startClaiming(player, playerFaction, world.getUniqueId(), chunk);
                                     } else {

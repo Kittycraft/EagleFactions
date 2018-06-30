@@ -1,10 +1,13 @@
 package io.github.aquerr.eaglefactions.listeners;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
+import io.github.aquerr.eaglefactions.logic.PVPLogger;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -16,18 +19,28 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class SendCommandListener {
+@Singleton
+public class SendCommandListener extends GenericListener {
+
+    private PVPLogger pvpLogger;
+
+    @Inject
+    SendCommandListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PVPLogger pvpLogger)
+    {
+        super(cache, settings, eagleFactions);
+        this.pvpLogger = pvpLogger;
+    }
+
     @Listener(order = Order.EARLY)
     public void onCommandSend(SendCommandEvent event, @Root Player player) {
-        if (EagleFactions.getEagleFactions().getPVPLogger().isActive() && EagleFactions.getEagleFactions().getPVPLogger().shouldBlockCommand(player, event.getCommand() + " " + event.getArguments())) {
+        if (pvpLogger.isActive() && pvpLogger.shouldBlockCommand(player, event.getCommand() + " " + event.getArguments())) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.YOU_CANT_USE_COMMAND_WHILE_BEING_IN_A_FIGHT));
-            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.TIME_LEFT + " ", TextColors.YELLOW, EagleFactions.getEagleFactions().getPVPLogger().getPlayerBlockTime(player) + " " + PluginMessages.SECONDS));
+            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.TIME_LEFT + " ", TextColors.YELLOW, pvpLogger.getPlayerBlockTime(player) + " " + PluginMessages.SECONDS));
             event.setCancelled(true);
             return;
         }
 
         //Analyze command with perms
-
         //Always leave a way out
         if (event.getCommand().matches("^(f)|(factions)|(faction)$") && (event.getArguments().equals("leave") || event.getArguments().equals("disband"))) {
             return;

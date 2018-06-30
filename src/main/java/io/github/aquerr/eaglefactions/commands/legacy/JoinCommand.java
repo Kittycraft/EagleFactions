@@ -7,7 +7,7 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import io.github.aquerr.eaglefactions.entities.Invite;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -47,8 +47,8 @@ public class JoinCommand implements CommandExecutor {
                             for (Invite invite : EagleFactions.InviteList) {
                                 if (invite.getPlayerUUID().equals(player.getUniqueId()) && invite.getFactionName().equals(faction.get().name)) {
                                     try {
-                                        if (MainLogic.isPlayerLimit()) {
-                                            if (faction.get().members.size() >= MainLogic.getPlayerLimit()) {
+                                        if (Settings.isPlayerLimit()) {
+                                            if (faction.get().members.size() >= Settings.getPlayerLimit()) {
                                                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not join this faction because it has reached the player limit!"));
                                                 return CommandResult.success();
                                             }

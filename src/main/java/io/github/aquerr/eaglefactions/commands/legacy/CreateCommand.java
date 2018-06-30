@@ -4,7 +4,7 @@ import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
-import io.github.aquerr.eaglefactions.logic.MainLogic;
+import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
@@ -53,28 +53,28 @@ public class CreateCommand implements CommandExecutor {
                         return CommandResult.success();
                     } else {
                         //Check tag length
-                        if (factionTag.length() > MainLogic.getMaxTagLength()) {
-                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_TAG_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + MainLogic.getMaxTagLength() + " " + PluginMessages.CHARS + ")"));
+                        if (factionTag.length() > Settings.getMaxTagLength()) {
+                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_TAG_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + Settings.getMaxTagLength() + " " + PluginMessages.CHARS + ")"));
                             return CommandResult.success();
                         }
-                        if (factionTag.length() < MainLogic.getMinTagLength()) {
-                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_TAG_IS_TOO_SHORT + " (" + PluginMessages.MIN + " " + MainLogic.getMinTagLength() + " " + PluginMessages.CHARS + ")"));
+                        if (factionTag.length() < Settings.getMinTagLength()) {
+                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_TAG_IS_TOO_SHORT + " (" + PluginMessages.MIN + " " + Settings.getMinTagLength() + " " + PluginMessages.CHARS + ")"));
                             return CommandResult.success();
                         }
                     }
 
                     if (FactionsCache.getInstance().getFactionNames().stream().noneMatch(x -> x.equalsIgnoreCase(factionName))) {
                         //Check uuid length
-                        if (factionName.length() > MainLogic.getMaxNameLength()) {
-                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + MainLogic.getMaxNameLength() + " " + PluginMessages.CHARS + ")"));
+                        if (factionName.length() > Settings.getMaxNameLength()) {
+                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_LONG + " (" + PluginMessages.MAX + " " + Settings.getMaxNameLength() + " " + PluginMessages.CHARS + ")"));
                             return CommandResult.success();
                         }
-                        if (factionName.length() < MainLogic.getMinNameLength()) {
-                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_SHORT + " (" + PluginMessages.MIN + " " + MainLogic.getMinNameLength() + " " + PluginMessages.CHARS + ")"));
+                        if (factionName.length() < Settings.getMinNameLength()) {
+                            player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, PluginMessages.PROVIDED_FACTION_NAME_IS_TOO_SHORT + " (" + PluginMessages.MIN + " " + Settings.getMinNameLength() + " " + PluginMessages.CHARS + ")"));
                             return CommandResult.success();
                         }
 
-                        if (MainLogic.getCreateByItems()) {
+                        if (Settings.getCreateByItems()) {
                             return createByItems(factionName, factionTag, player);
                         } else {
                             FactionLogic.createFaction(factionName, factionTag, player.getUniqueId());
@@ -102,7 +102,7 @@ public class CreateCommand implements CommandExecutor {
 
     //TODO: Remove create by items?
     private CommandResult createByItems(String factionName, String factionTag, Player player) {
-        HashMap<String, Integer> requiredItems = MainLogic.getRequiredItemsToCreate();
+        HashMap<String, Integer> requiredItems = Settings.getRequiredItemsToCreate();
         Inventory inventory = player.getInventory();
         int allRequiredItems = requiredItems.size();
         int foundItems = 0;
