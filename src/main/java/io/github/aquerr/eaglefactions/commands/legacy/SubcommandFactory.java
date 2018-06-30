@@ -1,5 +1,7 @@
 package io.github.aquerr.eaglefactions.commands.legacy;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import io.github.aquerr.eaglefactions.PluginPermissions;
 import io.github.aquerr.eaglefactions.commands.permission.PermAction;
 import io.github.aquerr.eaglefactions.commands.permission.PermCommand;
@@ -10,6 +12,7 @@ import io.github.aquerr.eaglefactions.commands.relation.NeutralCommand;
 import io.github.aquerr.eaglefactions.commands.relation.TruceCommand;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.parsers.FactionNameArgument;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
@@ -270,7 +273,5 @@ public class SubcommandFactory {
                     .permission(PluginPermissions.PermissionCommand)
                     .executor(new PermCommand())
                     .build());
-
-            //TODO: Tag color depends on relation!
     }
 }

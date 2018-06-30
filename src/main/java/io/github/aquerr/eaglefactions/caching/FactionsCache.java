@@ -1,6 +1,8 @@
 package io.github.aquerr.eaglefactions.caching;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionClaim;
 import io.github.aquerr.eaglefactions.entities.FactionPlayer;
@@ -8,6 +10,7 @@ import io.github.aquerr.eaglefactions.entities.FactionRelation;
 
 import java.util.*;
 
+@Singleton
 public class FactionsCache
 {
 
@@ -20,8 +23,8 @@ public class FactionsCache
 
     private static FactionsCache instance;
 
-
-    private FactionsCache()
+    @Inject
+    FactionsCache()
     {
     }
 

@@ -38,6 +38,7 @@ public class SubcommandFactory extends AbstractModule
             }
             subcommands.put(Arrays.asList(instance.aliases()), builder.build());
         }
+        subcommands.putAll(io.github.aquerr.eaglefactions.commands.legacy.SubcommandFactory.getSubcommands());
     }
 
     @Override

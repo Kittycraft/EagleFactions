@@ -1,5 +1,7 @@
 package io.github.aquerr.eaglefactions.logic;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.config.Settings;
@@ -16,19 +18,21 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+@Singleton
 public class PVPLogger {
     private Map<UUID, Integer> _attackedPlayers;
     private boolean _isActive;
     private int _blockTime;
     private List<String> _blockedCommandsDuringFight;
 
-    public PVPLogger() {
-        _isActive = Settings.isPVPLoggerActive();
+    @Inject
+    public PVPLogger(Settings settings) {
+        _isActive = settings.isPVPLoggerActive();
 
         if (_isActive) {
             _attackedPlayers = new HashMap<>();
-            _blockTime = Settings.getPVPLoggerTime();
-            _blockedCommandsDuringFight = Settings.getBlockedCommandsDuringFight();
+            _blockTime = settings.getPVPLoggerTime();
+            _blockedCommandsDuringFight = settings.getBlockedCommandsDuringFight();
         }
     }
 

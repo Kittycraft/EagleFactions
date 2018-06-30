@@ -4,7 +4,10 @@
  */
 package io.github.aquerr.eaglefactions;
 
-import com.google.inject.Inject;
+import com.google.inject.*;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
+import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.commands.legacy.HelpCommand;
 import io.github.aquerr.eaglefactions.commands.legacy.SubcommandFactory;
 import io.github.aquerr.eaglefactions.config.Config;
@@ -35,10 +38,12 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 
 @Plugin(id = PluginInfo.Id, name = PluginInfo.Name, version = PluginInfo.Version, description = PluginInfo.Description, authors = PluginInfo.Author)
-public class EagleFactions {
+public class EagleFactions extends AbstractModule
+{
     public static List<Invite> InviteList = new ArrayList<>();
     public static List<UUID> AutoClaimList = new ArrayList<>();
     public static List<UUID> AutoMapList = new ArrayList<>();
@@ -50,24 +55,47 @@ public class EagleFactions {
     private Configuration configuration;
     private PVPLogger pvpLogger;
     private boolean loadError = false;
+    private Injector injector;
     @Inject
     private Logger logger;
     @Inject
     @ConfigDir(sharedRoot = false)
-    private File configDir;
+    private Path configDir;
 
-    //TODO: Phase out this function in favor of get plugin
     @Deprecated
     public static EagleFactions getEagleFactions() {
         return eagleFactions;
     }
 
-    public static EagleFactions getPlugin(){
+    @Provides
+    @Named("config dir")
+    public Path getConfigDir()
+    {
+        return configDir;
+    }
+
+    @Provides
+    public static EagleFactions getPlugin()
+    {
         return eagleFactions;
     }
 
-    public static Logger getLogger() {
-        return EagleFactions.getPlugin().logger;
+    @Provides
+    @Named("main injector")
+    Injector getInjector(){
+        return injector;
+    }
+
+    @Provides
+    @Named("factions")
+    public static Logger getLogger()
+    {
+        return eagleFactions.logger;
+    }
+
+    @Provides
+    List<Invite> getInviteList(){
+        return InviteList;
     }
 
     @Listener
@@ -76,7 +104,14 @@ public class EagleFactions {
 
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.AQUA, "Preparing wings..."));
 
-        SetupConfigs();
+        injector = Guice.createInjector(this);
+        injector.getInstance(FactionLogic.class);
+        injector.getInstance(PlayerManager.class);
+        injector.getInstance(PowerManager.class);
+        injector.getInstance(MessageLoader.class);
+        injector.getInstance(PVPLogger.class);
+        injector = injector.createChildInjector(injector.getInstance(io.github.aquerr.eaglefactions.commands.assembly.SubcommandFactory.class));
+        //SetupConfigs();
 
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.AQUA, "Configs loaded..."));
 
@@ -86,8 +121,8 @@ public class EagleFactions {
         //Build all commands
         CommandSpec commandEagleFactions = CommandSpec.builder()
                 .description(Text.of("Help Command"))
-                .executor(new HelpCommand())
-                .children(SubcommandFactory.getSubcommands())
+                .executor(injector.getInstance(HelpCommand.class))
+                .children(injector.getInstance(Key.get(HashMap.class, Names.named("subcommands"))))
                 .build();
 
         //Register commands
@@ -142,12 +177,12 @@ public class EagleFactions {
 
 
         //Register listeners
-        Arrays.asList(new EntityDamageListener(), new PlayerJoinListener(), new PlayerDeathListener(),
-                new PlayerBlockPlaceListener(), new BlockBreakListener(), new PlayerInteractListener(),
-                new PlayerMoveListener(), new ChatMessageListener(), new EntitySpawnListener(),
-                new FireBlockPlaceListener(), new PlayerDisconnectListener(), new MobTargetListener(),
-                new SendCommandListener())
-                .forEach(e -> Sponge.getEventManager().registerListeners(this, e));
+//        Arrays.asList(new EntityDamageListener(), new PlayerJoinListener(), new PlayerDeathListener(),
+//                new PlayerBlockPlaceListener(), new BlockBreakListener(), new PlayerInteractListener(),
+//                new PlayerMoveListener(), new ChatMessageListener(), new EntitySpawnListener(),
+//                new FireBlockPlaceListener(), new PlayerDisconnectListener(), new MobTargetListener(),
+//                new SendCommandListener())
+//                .forEach(e -> Sponge.getEventManager().registerListeners(this, e));
 
         //Display some info text in the console.
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.GREEN, "=========================================="));
@@ -164,11 +199,11 @@ public class EagleFactions {
     }
 
     public File getDataFolder(){
-        return new File(configDir, "data");
+        return new File(configDir.toFile(), "data");
     }
 
     private void registerBackupTask() {
-        File backupFolder = new File(new File(configDir, "data"), "backup");
+        File backupFolder = new File(new File(configDir.toFile(), "data"), "backup");
         File lastBackup = FileUtils.getLastModifiedFileInFolder(backupFolder);
         long nextBackupInTicks;
         if (lastBackup != null) {
@@ -243,15 +278,15 @@ public class EagleFactions {
 
 
     // Create configs
-    private void SetupConfigs() {
-        configuration = new Configuration(configDir);
-
-        FactionLogic.setup(configDir.toPath());
-        PlayerManager.setup(configDir.toPath());
-        PowerManager.setup(configDir.toPath());
-
-        MessageLoader messageLoader = new MessageLoader(configDir.toPath());
-    }
+//    private void SetupConfigs() {
+//        configuration = new Configuration(configDir);
+//
+//        FactionLogic.setup(configDir.toPath());
+//        PlayerManager.setup(configDir.toPath());
+//        PowerManager.setup(configDir.toPath());
+//
+//        MessageLoader messageLoader = new MessageLoader(configDir.toPath());
+//    }
 
 
     public Configuration getConfiguration() {
@@ -260,5 +295,11 @@ public class EagleFactions {
 
     public PVPLogger getPVPLogger() {
         return this.pvpLogger;
+    }
+
+    @Override
+    protected void configure()
+    {
+
     }
 }

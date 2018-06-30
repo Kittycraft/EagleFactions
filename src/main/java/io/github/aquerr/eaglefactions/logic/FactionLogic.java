@@ -1,12 +1,15 @@
 package io.github.aquerr.eaglefactions.logic;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.*;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.player.Player;
@@ -20,7 +23,6 @@ import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nullable;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -30,16 +32,19 @@ import static io.github.aquerr.eaglefactions.entities.RelationType.*;
 /**
  * Created by Aquerr on 2017-07-12.
  */
+@Singleton
 public class FactionLogic {
 
-    @Deprecated
-    public static void setup(Path configDir) {
-        //factionsStorage = new HOCONFactionStorage(configDir);
-    }
+    private static Settings settings;
+    private static FactionsCache cache;
+    private Game game;
 
-    @Deprecated
-    public static void reload() {
-//        factionsStorage.load();
+    @Inject
+    FactionLogic(Settings settings, FactionsCache cache, Game game)
+    {
+        FactionLogic.settings = settings;
+        FactionLogic.cache = cache;
+        this.game = game;
     }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
@@ -195,8 +200,8 @@ public class FactionLogic {
             @Override
             public void accept(Task task) {
                 if (chunk.toString().equals(player.getLocation().getChunkPosition().toString())) {
-                    if (seconds >= Settings.getClaimingDelay()) {
-                        if (Settings.shouldClaimByItems()) {
+                    if (seconds >= settings.getClaimingDelay()) {
+                        if (settings.shouldClaimByItems()) {
                             if (addClaimByItems(player, faction, worldUUID, chunk))
                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                             else
@@ -219,14 +224,14 @@ public class FactionLogic {
     }
 
     public static void startClaiming(Player player, Faction faction, UUID worldUUID, Vector3i chunk) {
-        if (Settings.isDelayedClaimingToggled()) {
-            player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.CLAIMING_HAS_BEEN_STARTED + " " + PluginMessages.STAY_IN_THE_CHUNK_FOR + " ", TextColors.GOLD, Settings.getClaimingDelay() + " " + PluginMessages.SECONDS, TextColors.GREEN, " " + PluginMessages.TO_CLAIM_IT));
+        if (settings.isDelayedClaimingToggled()) {
+            player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.CLAIMING_HAS_BEEN_STARTED + " " + PluginMessages.STAY_IN_THE_CHUNK_FOR + " ", TextColors.GOLD, settings.getClaimingDelay() + " " + PluginMessages.SECONDS, TextColors.GREEN, " " + PluginMessages.TO_CLAIM_IT));
 
             Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
 
             taskBuilder.delay(1, TimeUnit.SECONDS).interval(1, TimeUnit.SECONDS).execute(addClaimWithDelay(player, faction, worldUUID, chunk)).submit(EagleFactions.getEagleFactions());
         } else {
-            if (Settings.shouldClaimByItems()) {
+            if (settings.shouldClaimByItems()) {
                 if (addClaimByItems(player, faction, worldUUID, chunk))
                     player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.LAND + " ", TextColors.GOLD, chunk.toString(), TextColors.WHITE, " " + PluginMessages.HAS_BEEN_SUCCESSFULLY + " ", TextColors.GOLD, PluginMessages.CLAIMED, TextColors.WHITE, "!"));
                 else
@@ -239,7 +244,7 @@ public class FactionLogic {
     }
 
     private static boolean addClaimByItems(Player player, Faction faction, UUID worldUUID, Vector3i chunk) {
-        HashMap<String, Integer> requiredItems = Settings.getRequiredItemsToClaim();
+        HashMap<String, Integer> requiredItems = settings.getRequiredItemsToClaim();
         PlayerInventory inventory = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(PlayerInventory.class));
         int allRequiredItems = requiredItems.size();
         int foundItems = 0;
