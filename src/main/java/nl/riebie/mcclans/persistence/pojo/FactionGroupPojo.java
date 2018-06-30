@@ -43,7 +43,7 @@ public class FactionGroupPojo {
         FactionGroupPojo groupPojo = new FactionGroupPojo();
         groupPojo.faction = factionName;
         groupPojo.group = group.name;
-        groupPojo.inherit = group.perms.inherit;
+        groupPojo.inherit = group.perms.parents;
         groupPojo.nodes = group.perms.nodes;
         groupPojo.priority = group.priority;
         return groupPojo;

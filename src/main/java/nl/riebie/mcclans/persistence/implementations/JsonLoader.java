@@ -170,71 +170,49 @@ public class JsonLoader extends DataLoader {
     }
 
     @Override
-    protected void loadClans() {
-        RootPojo<FactionPojo> clans = gson.fromJson(clansReader, new TypeToken<RootPojo<FactionPojo>>() {
-        }.getType());
+    protected void loadFactions()
+    {
 
-        for (FactionPojo clan : clans.list) {
-            super.lo
-        }
-
-        try {
-            clansReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // No runtime crash needed here
-        }
     }
 
     @Override
-    protected void loadRanks() {
-        RootPojo<FactionGroupPojo> ranks = gson.fromJson(ranksReader, new TypeToken<RootPojo<FactionGroupPojo>>() {
-        }.getType());
+    protected void loadGroups()
+    {
 
-        for (FactionGroupPojo rank : ranks.list) {
-            super.loadedRank(rank.rankID, rank.clanID, rank.rankName, rank.permissions, rank.changeable);
-        }
-
-        try {
-            ranksReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // No runtime crash needed here
-        }
     }
 
     @Override
-    protected void loadClanPlayers() {
-        RootPojo<FactionPlayerPojo> clanPlayers = gson.fromJson(clanPlayersReader, new TypeToken<RootPojo<FactionPlayerPojo>>() {
-        }.getType());
+    protected void loadPlayers()
+    {
 
-        for (FactionPlayerPojo clanPlayer : clanPlayers.list) {
-            super.loadedClanPlayer(clanPlayer.clanPlayerID, clanPlayer.uuidMostSigBits, clanPlayer.uuidLeastSigBits, clanPlayer.playerName, clanPlayer.clanID, clanPlayer.rankID, clanPlayer.killsHigh, clanPlayer.killsMedium,
-                    clanPlayer.killsLow, clanPlayer.deathsHigh, clanPlayer.deathsMedium, clanPlayer.deathsLow, clanPlayer.ffProtection, clanPlayer.lastOnlineTime);
-        }
-
-        try {
-            clanPlayersReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // No runtime crash needed here
-        }
     }
 
     @Override
-    protected void loadAllies() {
-        RootPojo<AllyPojo> allies = gson.fromJson(alliesReader, new TypeToken<RootPojo<AllyPojo>>() {
-        }.getType());
+    protected void loadRelations()
+    {
 
-        for (AllyPojo ally : allies.list) {
-            super.loadedAlly(ally.clanID, ally.clanIDAlly);
-        }
-
-        try {
-            alliesReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // No runtime crash needed here
-        }
     }
+
+    @Override
+    protected void loadClaims()
+    {
+
+    }
+
+//    @Override
+//    protected void loadClans() {
+//        RootPojo<FactionPojo> clans = gson.fromJson(clansReader, new TypeToken<RootPojo<FactionPojo>>() {
+//        }.getType());
+//
+//        for (FactionPojo clan : clans.list) {
+//            super.lo
+//        }
+//
+//        try {
+//            clansReader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // No runtime crash needed here
+//        }
+//    }
 }

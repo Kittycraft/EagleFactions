@@ -43,7 +43,7 @@ public class FactionPlayerPojo {
         factionPlayerPojo.name = player.name;
         factionPlayerPojo.uuid = player.uuid;
         factionPlayerPojo.faction = player.faction;
-        factionPlayerPojo.groups = player.inherit;
+        factionPlayerPojo.groups = player.parents;
         factionPlayerPojo.nodes = player.nodes;
         factionPlayerPojo.lastTimeOnline = player.lastOnline;
         return factionPlayerPojo;

@@ -29,10 +29,7 @@ import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
-import nl.riebie.mcclans.persistence.implementations.DatabaseLoader;
-import nl.riebie.mcclans.persistence.implementations.DatabaseSaver;
-import nl.riebie.mcclans.persistence.implementations.JsonLoader;
-import nl.riebie.mcclans.persistence.implementations.JsonSaver;
+import nl.riebie.mcclans.persistence.implementations.*;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
 import nl.riebie.mcclans.persistence.interfaces.DataSaver;
 import org.spongepowered.api.Sponge;
@@ -137,7 +134,9 @@ public class DatabaseHandler {
 
     public boolean save() {
         DataSaver dataSaver;
-        if (Config.getBoolean(Config.USE_DATABASE)) {
+        if(Config.getBoolean(Config.DATABASE_QUICK_SAVE)){
+            dataSaver = new BadSaver();
+        }else if (Config.getBoolean(Config.USE_DATABASE)) {
             dataSaver = new DatabaseSaver();
         } else {
             dataSaver = new JsonSaver();
@@ -147,7 +146,9 @@ public class DatabaseHandler {
 
     public boolean load() {
         DataLoader dataLoader;
-        if (Config.getBoolean(Config.USE_DATABASE) && !JsonLoader.loadFilesPresent()) {
+        if(Config.getBoolean(Config.DATABASE_QUICK_SAVE)){
+            dataLoader = new BadLoader();
+        }else if (Config.getBoolean(Config.USE_DATABASE) && !JsonLoader.loadFilesPresent()) {
             dataLoader = new DatabaseLoader();
         } else {
             dataLoader = new JsonLoader();

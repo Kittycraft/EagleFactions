@@ -105,8 +105,8 @@ public class DatabaseSaver extends DataSaver {
 
     public static PreparedStatement getInsertPlayerQuery(FactionPlayer player) {
         String playerGroups = "";
-        for (int i = 0; i < player.inherit.size(); i++) {
-            playerGroups += player.inherit.get(i) + (i != player.inherit.size() - 1 ? "," : "");
+        for (int i = 0; i < player.parents.size(); i++) {
+            playerGroups += player.parents.get(i) + (i != player.parents.size() - 1 ? "," : "");
         }
         String playerNodes = "";
         for (int i = 0; i < player.nodes.size(); i++) {
@@ -119,8 +119,8 @@ public class DatabaseSaver extends DataSaver {
 
     public static PreparedStatement getUpdatePlayerQuery(FactionPlayer player) {
         String playerGroups = "";
-        for (int i = 0; i < player.inherit.size(); i++) {
-            playerGroups += player.inherit.get(i) + (i != player.inherit.size() - 1 ? "," : "");
+        for (int i = 0; i < player.parents.size(); i++) {
+            playerGroups += player.parents.get(i) + (i != player.parents.size() - 1 ? "," : "");
         }
         String playerNodes = "";
         for (int i = 0; i < player.nodes.size(); i++) {
@@ -148,8 +148,8 @@ public class DatabaseSaver extends DataSaver {
 
     public static PreparedStatement getInsertGroupQuery(String factionName, Group group) {
         String parents = "";
-        for (int i = 0; i < group.perms.inherit.size(); i++) {
-            parents += group.perms.inherit.get(i) + (i != group.perms.inherit.size() - 1 ? "," : "");
+        for (int i = 0; i < group.perms.parents.size(); i++) {
+            parents += group.perms.parents.get(i) + (i != group.perms.parents.size() - 1 ? "," : "");
         }
         String nodes = "";
         for (int i = 0; i < group.perms.nodes.size(); i++) {
@@ -162,8 +162,8 @@ public class DatabaseSaver extends DataSaver {
 
     public static PreparedStatement getUpdateGroupQuery(Group group, String factionName) {
         String parents = "";
-        for (int i = 0; i < group.perms.inherit.size(); i++) {
-            parents += group.perms.inherit.get(i) + (i != group.perms.inherit.size() - 1 ? "," : "");
+        for (int i = 0; i < group.perms.parents.size(); i++) {
+            parents += group.perms.parents.get(i) + (i != group.perms.parents.size() - 1 ? "," : "");
         }
         String nodes = "";
         for (int i = 0; i < group.perms.nodes.size(); i++) {

@@ -2,19 +2,20 @@ package io.github.aquerr.eaglefactions.entities;
 
 import java.util.*;
 
-public class PermObject {
+public class PermissionsObject
+{
 
     public transient static final Group empty = new Group("", Integer.MAX_VALUE);
 
     public List<String> nodes = new ArrayList<>();
-    public List<String> inherit = new ArrayList<>();
+    public List<String> parents = new ArrayList<>();
 
-    public PermObject(){
+    public PermissionsObject(){
         nodes.add("-r ^(?!-)(?!(f($|( .*)|(action($|( .*)|(s($|( .*)))))))|(build)|(interact)).*");
     }
 
-    PermObject(List<String> inherit, List<String> nodes){
-        this.inherit = inherit;
+    public PermissionsObject(List<String> parents, List<String> nodes){
+        this.parents = parents;
         this.nodes = nodes;
     }
 
@@ -22,8 +23,8 @@ public class PermObject {
         if(containsPersonalNode(node) && !containsPersonalNode("-" + node)){
             return true;
         }
-        for(String groupName : inherit) {
-            PermObject group = parent.groups.getOrDefault(groupName, empty).perms;
+        for(String groupName : parents) {
+            PermissionsObject group = parent.groups.getOrDefault(groupName, empty).perms;
             if (group.containsPersonalNode(node) && !group.containsPersonalNode("-" + node)) {
                 return true;
             }
@@ -45,19 +46,19 @@ public class PermObject {
     }
 
     public void addGroup(String groupName){
-        if(!inherit.contains(groupName)) {
-            inherit.add(groupName);
+        if(!parents.contains(groupName)) {
+            parents.add(groupName);
         }
     }
 
     public void removeGroup(String groupName){
-        if(inherit.contains(groupName)) {
-            inherit.remove(groupName);
+        if(parents.contains(groupName)) {
+            parents.remove(groupName);
         }
     }
 
     public void clearGroups(){
-        inherit.clear();
+        parents.clear();
     }
 
     public void addNode(String node){
@@ -65,20 +66,20 @@ public class PermObject {
     }
 
     public void removeNode(String node){
-        if(inherit.contains(node)) {
-            inherit.remove(node);
+        if(parents.contains(node)) {
+            parents.remove(node);
         }
     }
 
     public Collection<String> getInheritedNodes(Faction context){
         Collection<String> set = new HashSet<>();
-        inherit.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
+        parents.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
         return set;
     }
 
     private void addAllNodesToSet(Collection<String> set, Faction context){
         set.addAll(nodes);
-        inherit.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
+        parents.forEach(e -> context.groups.get(e).perms.addAllNodesToSet(set, context));
     }
 
 }

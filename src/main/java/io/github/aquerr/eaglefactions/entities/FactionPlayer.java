@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionPlayer extends PermObject {
+public class FactionPlayer extends PermissionsObject
+{
 
     public final String uuid, name, faction;
     //TODO: Make a better way to store last online for players that are not in a faction.
@@ -35,7 +36,7 @@ public class FactionPlayer extends PermObject {
 
     public int getPriority(Faction context) {
         int best = Integer.MAX_VALUE;
-        for (String s : inherit) {
+        for (String s : parents) {
             if (context.groups.getOrDefault(s, empty).priority < best) {
                 best = context.groups.getOrDefault(s, empty).priority;
             }
@@ -44,8 +45,8 @@ public class FactionPlayer extends PermObject {
     }
 
     public String getPrimaryGroup() {
-        if (inherit.size() > 0) {
-            return inherit.get(inherit.size() - 1);
+        if (parents.size() > 0) {
+            return parents.get(parents.size() - 1);
         }
         return "NO-GROUP";
     }
@@ -62,7 +63,7 @@ public class FactionPlayer extends PermObject {
 
     @Override
     public FactionPlayer clone() {
-        return new FactionPlayer(uuid, name, faction, (List<String>) ((ArrayList) inherit).clone(), (List<String>) ((ArrayList) nodes).clone(), lastOnline);
+        return new FactionPlayer(uuid, name, faction, (List<String>) ((ArrayList) parents).clone(), (List<String>) ((ArrayList) nodes).clone(), lastOnline);
     }
 
     public long getLastOnline(){

@@ -24,6 +24,10 @@ public class FactionsCache {
         //Request DataLoader
     }
 
+    public void setFactionsCache(FactionsCache factionsCache){
+        instance = factionsCache;
+    }
+
     public static FactionsCache getInstance() {
         if (instance == null) {
             instance = new FactionsCache();
