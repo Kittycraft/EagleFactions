@@ -1,7 +1,5 @@
 package nl.riebie.mcclans.persistence.query.table;
 
-import nl.riebie.mcclans.persistence.query.table.TableQuery;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,7 +17,7 @@ public class DropQuery extends TableQuery {
     public PreparedStatement create() {
         try {
             String query = "DROP TABLE " + getTableName();
-             return  getConnection().prepareStatement(query);
+            return getConnection().prepareStatement(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }

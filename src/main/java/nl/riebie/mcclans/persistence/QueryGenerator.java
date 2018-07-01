@@ -22,23 +22,23 @@
 
 package nl.riebie.mcclans.persistence;
 
-import java.sql.Connection;
-
 import nl.riebie.mcclans.persistence.query.DeleteQuery;
 import nl.riebie.mcclans.persistence.query.InsertQuery;
 import nl.riebie.mcclans.persistence.query.UpdateQuery;
 
+import java.sql.Connection;
+
 public class QueryGenerator {
 
-	public static InsertQuery createInsertQuery(String tableName, Connection connection) {
-		return new InsertQuery(tableName, connection);
-	}
+    public static InsertQuery createInsertQuery(String tableName, Connection connection) {
+        return new InsertQuery(tableName, connection);
+    }
 
-	public static UpdateQuery createUpdateQuery(String tableName, Connection connection) {
-		return new UpdateQuery(tableName, connection);
-	}
+    public static UpdateQuery createUpdateQuery(String tableName, Connection connection) {
+        return new UpdateQuery(tableName, connection);
+    }
 
-	public static DeleteQuery createDeleteQuery(String tableName, Connection connection) {
-		return new DeleteQuery(tableName, connection);
-	}
+    public static DeleteQuery createDeleteQuery(String tableName, Connection connection) {
+        return new DeleteQuery(tableName, connection);
+    }
 }

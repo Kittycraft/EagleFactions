@@ -12,7 +12,6 @@ import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
 import io.github.aquerr.eaglefactions.entities.Invite;
-import io.github.aquerr.eaglefactions.listeners.*;
 import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.logic.MessageLoader;
 import io.github.aquerr.eaglefactions.logic.PVPLogger;
@@ -40,8 +39,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 @Plugin(id = PluginInfo.Id, name = PluginInfo.Name, version = PluginInfo.Version, description = PluginInfo.Description, authors = PluginInfo.Author)
-public class EagleFactions extends AbstractModule
-{
+public class EagleFactions extends AbstractModule {
     public static List<Invite> InviteList = new ArrayList<>();
     public static List<UUID> AutoClaimList = new ArrayList<>();
     public static List<UUID> AutoMapList = new ArrayList<>();
@@ -66,38 +64,35 @@ public class EagleFactions extends AbstractModule
     }
 
     @Provides
-    @Named("config dir")
-    public Path getConfigDir()
-    {
-        return configDir;
-    }
-
-    @Provides
-    public static EagleFactions getPlugin()
-    {
+    public static EagleFactions getPlugin() {
         return eagleFactions;
     }
 
     @Provides
-    @Named("main injector")
-    Injector getInjector(){
-        return injector;
-    }
-
-    @Provides
     @Named("factions")
-    public static Logger getLogger()
-    {
+    public static Logger getLogger() {
         return eagleFactions.logger;
     }
 
     @Provides
-    List<Invite> getInviteList(){
+    @Named("config dir")
+    public Path getConfigDir() {
+        return configDir;
+    }
+
+    @Provides
+    @Named("main injector")
+    Injector getInjector() {
+        return injector;
+    }
+
+    @Provides
+    List<Invite> getInviteList() {
         return InviteList;
     }
 
     @Provides
-    FactionsCache getCache(){
+    FactionsCache getCache() {
         return FactionsCache.getInstance();
     }
 
@@ -198,7 +193,7 @@ public class EagleFactions extends AbstractModule
         }
     }
 
-    public File getDataFolder(){
+    public File getDataFolder() {
         return new File(configDir.toFile(), "data");
     }
 
@@ -298,8 +293,7 @@ public class EagleFactions extends AbstractModule
     }
 
     @Override
-    protected void configure()
-    {
+    protected void configure() {
 
     }
 }

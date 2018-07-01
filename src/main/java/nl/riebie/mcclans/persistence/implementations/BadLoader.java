@@ -19,8 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public class BadLoader extends DataLoader
-{
+public class BadLoader extends DataLoader {
 
     private static final File recentDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "recent");
     private static final File loadDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "load");
@@ -29,35 +28,28 @@ public class BadLoader extends DataLoader
 
     private JsonReader reader;
 
-    public static boolean recentFilesPresent()
-    {
+    public static boolean recentFilesPresent() {
         File dataFile = new File(recentDataFolder, "quickSave.json");
 
-        if (dataFile.exists())
-        {
+        if (dataFile.exists()) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
     }
 
-    public static boolean loadFilesPresent()
-    {
+    public static boolean loadFilesPresent() {
         loadDataFolder.mkdirs();
         File loadClansFile = new File(loadDataFolder, "quickSave.json");
-        if (loadClansFile.exists())
-        {
+        if (loadClansFile.exists()) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
     }
 
     @Override
-    protected boolean initialize()
-    {
+    protected boolean initialize() {
         recentDataFolder.mkdirs();
         loadDataFolder.mkdirs();
 
@@ -65,28 +57,22 @@ public class BadLoader extends DataLoader
 
         File clansFile = new File(recentDataFolder, "quickSave.json");
 
-        if (loadFilesPresent())
-        {
+        if (loadFilesPresent()) {
             EagleFactions.getLogger().info("Found data in 'load' folder. Loading this data instead", true);
-            try
-            {
+            try {
                 FileUtils.moveFile(loadClansFile, clansFile);
 
                 loadClansFile.delete();
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new WrappedDataException(e);
             }
         }
 
         boolean recentFilesPresent = recentFilesPresent();
-        if (recentFilesPresent)
-        {
-            try
-            {
+        if (recentFilesPresent) {
+            try {
                 reader = new JsonReader(new FileReader(clansFile));
-            } catch (FileNotFoundException e)
-            {
+            } catch (FileNotFoundException e) {
                 throw new WrappedDataException(e);
             }
         }
@@ -95,10 +81,8 @@ public class BadLoader extends DataLoader
     }
 
     @Override
-    protected int getDataVersion()
-    {
-        try
-        {
+    protected int getDataVersion() {
+        try {
             File clansFile = new File(recentDataFolder, "quickSave.json");
 
             JsonReader clansReader = new JsonReader(new FileReader(clansFile));
@@ -107,61 +91,50 @@ public class BadLoader extends DataLoader
 
             clansReader.close();
 
-            if (data.dataVersion == -1)
-            {
+            if (data.dataVersion == -1) {
                 throw new GetDataVersionFailedException("dataVersion still has the default value of -1");
             }
 
             return data.dataVersion;
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new WrappedDataException(e);
         }
     }
 
     @Override
-    protected List<DataUpgrade> getDataUpgrades(List<DataUpgrade> dataUpgrades)
-    {
+    protected List<DataUpgrade> getDataUpgrades(List<DataUpgrade> dataUpgrades) {
         return dataUpgrades;
     }
 
     @Override
-    protected void loadFactions()
-    {
+    protected void loadFactions() {
 
     }
 
     @Override
-    protected void loadGroups()
-    {
+    protected void loadGroups() {
 
     }
 
     @Override
-    protected void loadPlayers()
-    {
+    protected void loadPlayers() {
 
     }
 
     @Override
-    protected void loadRelations()
-    {
+    protected void loadRelations() {
 
     }
 
     @Override
-    protected void loadClaims()
-    {
+    protected void loadClaims() {
 
     }
 
     @Override
-    public boolean load()
-    {
-        if (!Config.getBoolean(Config.SKIP_SAVE) && initialize())
-        {
-            FactionsCache.getInstance().setFactionsCache(gson.fromJson(reader, new TypeToken<FactionsCache>()
-            {
+    public boolean load() {
+        if (!Config.getBoolean(Config.SKIP_SAVE) && initialize()) {
+            FactionsCache.getInstance().setFactionsCache(gson.fromJson(reader, new TypeToken<FactionsCache>() {
             }.getType()));
         }
         return true;

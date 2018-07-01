@@ -23,18 +23,15 @@ import org.spongepowered.api.world.World;
 import java.util.Optional;
 
 @Singleton
-public class PlayerInteractListener extends GenericListener
-{
+public class PlayerInteractListener extends GenericListener {
 
     @Inject
-    PlayerInteractListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    PlayerInteractListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         super(cache, settings, eagleFactions);
     }
 
     @Listener
-    public void onPlayerInteract(HandInteractEvent event, @Root Player player)
-    {
+    public void onPlayerInteract(HandInteractEvent event, @Root Player player) {
         if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
             if (event.getInteractionPoint().isPresent()) {
                 World world = player.getWorld();

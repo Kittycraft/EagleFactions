@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionPlayer extends PermissionsObject
-{
+public class FactionPlayer extends PermissionsObject {
 
     public final String uuid, name, faction;
     //TODO: Make a better way to store last online for players that are not in a faction.
@@ -66,8 +65,8 @@ public class FactionPlayer extends PermissionsObject
         return new FactionPlayer(uuid, name, faction, (List<String>) ((ArrayList) parents).clone(), (List<String>) ((ArrayList) nodes).clone(), lastOnline);
     }
 
-    public long getLastOnline(){
-        if(PlayerManager.isPlayerOnline(UUID.fromString(uuid))){
+    public long getLastOnline() {
+        if (PlayerManager.isPlayerOnline(UUID.fromString(uuid))) {
             lastOnline = System.currentTimeMillis();
         }
         return lastOnline;

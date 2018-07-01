@@ -46,7 +46,7 @@ public class DatabaseLoader extends DataLoader {
 
     private final DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
 
-    public DatabaseLoader(){
+    public DatabaseLoader() {
         throw new UnsupportedOperationException("Database support is not completed yet.");
     }
 

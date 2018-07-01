@@ -55,14 +55,14 @@ public class TruceCommand implements CommandExecutor {
             }
             relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.TRUCE));
             RelationType post = FactionLogic.getRelation(factionA.get().name, factionB.get().name);
-            if(pre == RelationType.ALLY){
+            if (pre == RelationType.ALLY) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now truced to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has changed their relation from ally to truce!"));
-            } else if(post == RelationType.ENEMY || post == RelationType.NEUTRAL){
+            } else if (post == RelationType.ENEMY || post == RelationType.NEUTRAL) {
                 TextColor color = FactionLogic.getRelationColor(factionA.get().name, factionB.get().name);
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has sent an truce request to ", color, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().name, TextColors.WHITE, " has requested a truce!"));
-            }else{
+            } else {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now truced to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has accepted your truce request!"));
             }

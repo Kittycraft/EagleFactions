@@ -24,20 +24,17 @@ import org.spongepowered.api.world.World;
 import java.util.Optional;
 
 @Singleton
-public class EntityDamageListener extends GenericListener
-{
+public class EntityDamageListener extends GenericListener {
     private PowerManager powerManager;
 
     @Inject
-    public EntityDamageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
-    {
+    public EntityDamageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager) {
         super(cache, settings, eagleFactions);
         this.powerManager = powerManager;
     }
 
     @Listener
-    public void onEntityDamage(DamageEntityEvent event)
-    {
+    public void onEntityDamage(DamageEntityEvent event) {
         if (event.getCause().root() instanceof DamageSource) {
             if (event.getTargetEntity().getType() == EntityTypes.PLAYER) {
                 Player attackedPlayer = (Player) event.getTargetEntity();

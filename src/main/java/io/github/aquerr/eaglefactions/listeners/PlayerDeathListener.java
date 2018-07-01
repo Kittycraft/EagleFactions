@@ -22,21 +22,18 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
-public class PlayerDeathListener extends GenericListener
-{
+public class PlayerDeathListener extends GenericListener {
 
     private PowerManager powerManager;
 
     @Inject
-    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
-    {
+    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager) {
         super(cache, settings, eagleFactions);
         this.powerManager = powerManager;
     }
 
     @Listener
-    public void onPlayerDeath(DestructEntityEvent.Death event)
-    {
+    public void onPlayerDeath(DestructEntityEvent.Death event) {
         if (event.getTargetEntity() instanceof Player) {
             Player player = (Player) event.getTargetEntity();
 

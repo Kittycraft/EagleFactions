@@ -99,14 +99,14 @@ public abstract class DataLoader {
 
     protected void loadedGroup(String factionName, String group, int priority, List<String> parents, List<String> nodes) {
         Optional<Faction> faction = cache.getFaction(factionName);
-        if(faction.isPresent()){
+        if (faction.isPresent()) {
             faction.get().groups.put(group, new Group(group, priority, parents, nodes));
         }
     }
 
     protected void loadedPlayer(String name, String uuid, String factionName, List<String> parents, List<String> nodes, long lastOnline) {
         Optional<Faction> faction = cache.getFaction(factionName);
-        if(faction.isPresent()){
+        if (faction.isPresent()) {
             faction.get().members.add(new FactionPlayer(uuid, name, factionName, parents, nodes, lastOnline));
             cache.updatePlayer(uuid, factionName);
         }

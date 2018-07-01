@@ -20,19 +20,16 @@ import java.util.logging.Logger;
  */
 @RequiresFaction
 @AllowedGroups
-public abstract class FactionPlayerCommand extends FactionCommand
-{
+public abstract class FactionPlayerCommand extends FactionCommand {
 
-    public FactionPlayerCommand(FactionsCache cache, FactionLogic factionLogic, Logger logger)
-    {
+    public FactionPlayerCommand(FactionsCache cache, FactionLogic factionLogic, Logger logger) {
         super(cache, factionLogic, logger);
     }
 
     @Override
-    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException
-    {
-        if(verifyConstraints(source)){
-            if(!executeCommand((Player) source, cache.getFactionByPlayer(((Player) source).getUniqueId()).get(), context)){
+    public CommandResult execute(CommandSource source, CommandContext context) throws CommandException {
+        if (verifyConstraints(source)) {
+            if (!executeCommand((Player) source, cache.getFactionByPlayer(((Player) source).getUniqueId()).get(), context)) {
                 throw new CommandException(Text.of(TextColors.RED, "Something went wrong in ", getClass().getCanonicalName()));
             }
         }
@@ -40,8 +37,7 @@ public abstract class FactionPlayerCommand extends FactionCommand
     }
 
     @Override
-    protected boolean executeCommand(CommandSource source, CommandContext context)
-    {
+    protected boolean executeCommand(CommandSource source, CommandContext context) {
         return true;
     }
 

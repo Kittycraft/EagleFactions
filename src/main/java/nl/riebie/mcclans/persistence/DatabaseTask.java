@@ -26,13 +26,13 @@ import java.sql.PreparedStatement;
 
 public class DatabaseTask {
 
-	private PreparedStatement query;
+    private PreparedStatement query;
 
-	public DatabaseTask(PreparedStatement query) {
-		this.query = query;
-	}
+    public DatabaseTask(PreparedStatement query) {
+        this.query = query;
+    }
 
-	public PreparedStatement getQuery() {
-		return query;
-	}
+    public PreparedStatement getQuery() {
+        return query;
+    }
 }

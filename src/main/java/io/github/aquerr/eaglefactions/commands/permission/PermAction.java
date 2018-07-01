@@ -9,7 +9,7 @@ public enum PermAction {
 
     static {
         choices = new HashMap<>();
-        for(PermAction action : PermAction.values()){
+        for (PermAction action : PermAction.values()) {
             choices.put(action.name(), action);
         }
     }

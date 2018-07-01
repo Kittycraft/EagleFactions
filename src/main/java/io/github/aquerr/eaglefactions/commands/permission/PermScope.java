@@ -9,7 +9,7 @@ public enum PermScope {
 
     static {
         choices = new HashMap<>();
-        for(PermScope scope : PermScope.values()){
+        for (PermScope scope : PermScope.values()) {
             choices.put(scope.name(), scope);
         }
     }

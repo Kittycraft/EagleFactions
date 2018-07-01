@@ -1,7 +1,6 @@
 package io.github.aquerr.eaglefactions.parsers;
 
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -10,7 +9,9 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FactionNameArgument extends CommandElement {

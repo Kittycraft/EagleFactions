@@ -2,12 +2,10 @@ package nl.riebie.mcclans.persistence.query.table;
 
 import nl.riebie.mcclans.persistence.query.DataType;
 
-import java.sql.PreparedStatement;
-
 /**
  * Created by riebie on 30/04/2016.
  */
-public class CreateQueryColumn <T>{
+public class CreateQueryColumn<T> {
 
     private final CreateQuery createQuery;
     private final String key;
@@ -31,11 +29,6 @@ public class CreateQueryColumn <T>{
         return this;
     }
 
-    public CreateQueryColumn<T> setDefaultValue(T defaultValue) {
-        this.defaultValue = defaultValue;
-        return this;
-    }
-
     public <T> CreateQueryColumn<T> column(String key, DataType<T> dataType) {
         return createQuery.column(key, dataType);
     }
@@ -52,7 +45,12 @@ public class CreateQueryColumn <T>{
         return defaultValue;
     }
 
-    public String getKey(){
+    public CreateQueryColumn<T> setDefaultValue(T defaultValue) {
+        this.defaultValue = defaultValue;
+        return this;
+    }
+
+    public String getKey() {
         return key;
     }
 }

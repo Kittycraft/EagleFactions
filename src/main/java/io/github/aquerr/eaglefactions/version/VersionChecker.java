@@ -25,7 +25,7 @@ public class VersionChecker {
     private static final boolean ignoreUpdate = true;
 
     public static boolean isLatest(String version) {
-        if(ignoreUpdate){
+        if (ignoreUpdate) {
             return true;
         }
         String latest = "https://api.github.com/repos/Aquerr/EagleFactions/releases";

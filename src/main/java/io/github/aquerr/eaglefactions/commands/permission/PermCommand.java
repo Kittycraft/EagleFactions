@@ -3,7 +3,6 @@ package io.github.aquerr.eaglefactions.commands.permission;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.entities.Faction;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import io.github.aquerr.eaglefactions.entities.Group;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -24,6 +23,10 @@ public class PermCommand implements CommandExecutor {
     private static final TextColor constant = TextColors.GOLD;
     private static final TextColor fillIn = TextColors.WHITE;
 
+    //TODO: Write help for permissions
+    private static void printHelp(CommandSource source) {
+        source.sendMessage(Text.of("This is a placeholder for the help"));
+    }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -86,17 +89,11 @@ public class PermCommand implements CommandExecutor {
             } else {
                 //TODO if scope is user
             }
-        }else {
+        } else {
             printHelp(src);
         }
 
 
         return CommandResult.success();
-    }
-
-
-    //TODO: Write help for permissions
-    private static void printHelp(CommandSource source) {
-        source.sendMessage(Text.of("This is a placeholder for the help"));
     }
 }

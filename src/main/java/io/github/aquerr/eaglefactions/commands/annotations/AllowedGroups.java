@@ -7,7 +7,6 @@ import java.lang.annotation.*;
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AllowedGroups
-{
+public @interface AllowedGroups {
     CommandUser[] getGroups() default CommandUser.PLAYER;
 }

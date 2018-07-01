@@ -22,11 +22,6 @@
 
 package nl.riebie.mcclans.persistence.upgrade.interfaces;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import nl.riebie.mcclans.persistence.DatabaseConnectionOwner;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.query.Query;
@@ -35,6 +30,11 @@ import nl.riebie.mcclans.persistence.query.table.AlterQuery;
 import nl.riebie.mcclans.persistence.query.table.CreateQuery;
 import nl.riebie.mcclans.persistence.query.table.DropQuery;
 import nl.riebie.mcclans.persistence.query.table.TableQuery;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DatabaseUpgrade extends DataUpgrade {
 

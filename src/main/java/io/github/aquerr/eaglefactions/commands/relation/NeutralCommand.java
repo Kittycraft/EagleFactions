@@ -55,10 +55,10 @@ public class NeutralCommand implements CommandExecutor {
                 player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already neutral with that faction!"));
                 return CommandResult.success();
             }
-            if(pre == RelationType.NEUTRAL){
+            if (pre == RelationType.NEUTRAL) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has dropped their ally/truce request with ", TextColors.GRAY, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().name, TextColors.WHITE, " has removed their ally/truce request!"));
-            } else if(pre == RelationType.ALLY || pre == RelationType.TRUCE) {
+            } else if (pre == RelationType.ALLY || pre == RelationType.TRUCE) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction is no longer allied/truced with ", TextColors.GRAY, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GRAY, factionA.get().name, TextColors.WHITE, " no longer wishes to be allied/truced with your faction!"));
             } else {

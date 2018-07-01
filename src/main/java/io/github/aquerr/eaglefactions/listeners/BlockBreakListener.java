@@ -21,18 +21,15 @@ import org.spongepowered.api.world.World;
 import java.util.Optional;
 
 @Singleton
-public class BlockBreakListener extends GenericListener
-{
+public class BlockBreakListener extends GenericListener {
 
     @Inject
-    public BlockBreakListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    public BlockBreakListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         super(cache, settings, eagleFactions);
     }
 
     @Listener
-    public void onBlockBreak(ChangeBlockEvent.Break event)
-    {
+    public void onBlockBreak(ChangeBlockEvent.Break event) {
         if (event.getCause().root() instanceof Player) {
             Player player = (Player) event.getCause().root();
 

@@ -5,11 +5,11 @@ public enum RelationType {
 
     public final int identifier;
 
-    RelationType(int identifier){
+    RelationType(int identifier) {
         this.identifier = identifier;
     }
 
-    public static RelationType parseType(String type){
+    public static RelationType parseType(String type) {
         try {
             switch (Integer.valueOf(type)) {
                 case 0:
@@ -25,7 +25,7 @@ public enum RelationType {
                 default:
                     return RelationType.NEUTRAL;
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return RelationType.NEUTRAL;
         }
     }

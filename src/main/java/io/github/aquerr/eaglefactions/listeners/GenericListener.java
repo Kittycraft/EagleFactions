@@ -10,24 +10,22 @@ import org.spongepowered.api.Sponge;
 
 import java.util.Set;
 
-public abstract class GenericListener
-{
+public abstract class GenericListener {
 
     protected FactionsCache cache;
     protected Settings settings;
 
     @Inject
-    GenericListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    GenericListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         this.cache = cache;
         this.settings = settings;
         Sponge.getEventManager().registerListeners(eagleFactions, this);
     }
 
-    public static void initListeners(Injector injector){
+    public static void initListeners(Injector injector) {
         Reflections reflections = new Reflections("io.github.aquerr.eaglefactions");
         Set<Class<? extends GenericListener>> subTypes = reflections.getSubTypesOf(GenericListener.class);
-        for(Class<?> listener : subTypes){
+        for (Class<?> listener : subTypes) {
             injector.getInstance(listener);
         }
     }

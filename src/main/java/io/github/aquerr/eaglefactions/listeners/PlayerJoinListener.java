@@ -17,42 +17,35 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 @Singleton
-public class PlayerJoinListener extends GenericListener
-{
+public class PlayerJoinListener extends GenericListener {
 
     private PowerManager powerManager;
+
     @Inject
-    PlayerJoinListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
-    {
+    PlayerJoinListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager) {
         super(cache, settings, eagleFactions);
         this.powerManager = powerManager;
     }
 
     @Listener
-    public void onPlayerJoin(ClientConnectionEvent.Join event)
-    {
+    public void onPlayerJoin(ClientConnectionEvent.Join event) {
 
-        if (event.getCause().root() instanceof Player)
-        {
+        if (event.getCause().root() instanceof Player) {
             Player player = (Player) event.getCause().root();
 
-            if (player.hasPermission(PluginPermissions.VersionNotify) && !VersionChecker.isLatest(PluginInfo.Version))
-            {
+            if (player.hasPermission(PluginPermissions.VersionNotify) && !VersionChecker.isLatest(PluginInfo.Version)) {
                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.A_NEW_VERSION_OF + " ", TextColors.AQUA, "Eagle Factions", TextColors.GREEN, " " + PluginMessages.IS_AVAILABLE));
             }
 
-            if (powerManager.checkIfPlayerExists(player.getUniqueId()))
-            {
+            if (powerManager.checkIfPlayerExists(player.getUniqueId())) {
                 powerManager.startIncreasingPower(player.getUniqueId());
-            } else
-            {
+            } else {
                 //Create player file and set power.
                 powerManager.addPlayer(player.getUniqueId());
             }
 
             //Check if the world that player is connecting to is already in the config file
-            if (!settings.getDetectedWorldNames().contains(player.getWorld().getName()))
-            {
+            if (!settings.getDetectedWorldNames().contains(player.getWorld().getName())) {
                 settings.addWorld(player.getWorld().getName());
             }
         }

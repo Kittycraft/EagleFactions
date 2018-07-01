@@ -5,7 +5,7 @@ public class FactionRelation implements Cloneable {
     public final String factionA, factionB;
     public final RelationType type;
 
-    public FactionRelation(String factionA, String factionB, RelationType type){
+    public FactionRelation(String factionA, String factionB, RelationType type) {
         this.factionA = factionA;
         this.factionB = factionB;
         this.type = type;
@@ -13,7 +13,7 @@ public class FactionRelation implements Cloneable {
 
     public FactionRelation(String data) throws Exception {
         String[] components = data.split(",");
-        if(components.length != 3){
+        if (components.length != 3) {
             throw new Exception();
         }
         factionA = components[0];

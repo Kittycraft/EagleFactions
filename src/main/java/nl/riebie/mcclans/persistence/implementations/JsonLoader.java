@@ -23,7 +23,6 @@
 package nl.riebie.mcclans.persistence.implementations;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import nl.riebie.mcclans.persistence.FileUtils;
@@ -31,7 +30,7 @@ import nl.riebie.mcclans.persistence.exceptions.FlatFileVersionsNotEqualExceptio
 import nl.riebie.mcclans.persistence.exceptions.GetDataVersionFailedException;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
-import nl.riebie.mcclans.persistence.pojo.*;
+import nl.riebie.mcclans.persistence.pojo.VersionPojo;
 import nl.riebie.mcclans.persistence.upgrade.interfaces.DataUpgrade;
 
 import java.io.File;
@@ -170,32 +169,27 @@ public class JsonLoader extends DataLoader {
     }
 
     @Override
-    protected void loadFactions()
-    {
+    protected void loadFactions() {
 
     }
 
     @Override
-    protected void loadGroups()
-    {
+    protected void loadGroups() {
 
     }
 
     @Override
-    protected void loadPlayers()
-    {
+    protected void loadPlayers() {
 
     }
 
     @Override
-    protected void loadRelations()
-    {
+    protected void loadRelations() {
 
     }
 
     @Override
-    protected void loadClaims()
-    {
+    protected void loadClaims() {
 
     }
 

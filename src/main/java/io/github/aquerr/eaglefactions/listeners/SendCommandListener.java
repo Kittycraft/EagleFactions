@@ -25,8 +25,7 @@ public class SendCommandListener extends GenericListener {
     private PVPLogger pvpLogger;
 
     @Inject
-    SendCommandListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PVPLogger pvpLogger)
-    {
+    SendCommandListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PVPLogger pvpLogger) {
         super(cache, settings, eagleFactions);
         this.pvpLogger = pvpLogger;
     }

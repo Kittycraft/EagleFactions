@@ -47,7 +47,7 @@ public abstract class DataSaver {
     }
 
     public boolean continueSave() {
-        if(!Config.getBoolean(Config.SKIP_SAVE)){
+        if (!Config.getBoolean(Config.SKIP_SAVE)) {
             return true;
         }
         try {
@@ -66,7 +66,7 @@ public abstract class DataSaver {
     }
 
     private void storeFactionRelations() throws Exception {
-        for(FactionRelation relation : retrievedRelations){
+        for (FactionRelation relation : retrievedRelations) {
             saveFactionRelation(relation);
         }
     }
@@ -74,13 +74,13 @@ public abstract class DataSaver {
     private void storeFactions() throws Exception {
         for (Faction faction : retrievedFactions) {
             saveFaction(faction);
-            for(Group group : faction.groups.values()){
+            for (Group group : faction.groups.values()) {
                 saveGroup(faction.name, group);
             }
-            for(FactionPlayer player : faction.members){
+            for (FactionPlayer player : faction.members) {
                 savePlayer(player);
             }
-            for(FactionClaim claim : faction.claims){
+            for (FactionClaim claim : faction.claims) {
                 saveFactionClaim(claim);
             }
         }

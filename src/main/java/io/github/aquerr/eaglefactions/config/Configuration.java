@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by Aquerr on 2017-07-12.
@@ -115,7 +114,7 @@ public class Configuration {
         return configNode.getNode(nodePath).getList(input -> input instanceof String ? (String) input : null, defaultValue);
     }
 
-    public void setValue(Object value, Object... nodePath){
+    public void setValue(Object value, Object... nodePath) {
         configNode.getNode(nodePath).setValue(value);
     }
 

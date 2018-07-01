@@ -22,6 +22,8 @@
 
 package nl.riebie.mcclans.persistence.query.table;
 
+import nl.riebie.mcclans.persistence.query.DataType;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -30,8 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import nl.riebie.mcclans.persistence.query.DataType;
 
 public class AlterQuery extends TableQuery {
 
@@ -74,7 +74,7 @@ public class AlterQuery extends TableQuery {
     private String getAddedColumnQueryPart() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Entry<String, DataType> keyValuePair : addedColumns.entrySet()) {
-            if(stringBuilder.length() != 0){
+            if (stringBuilder.length() != 0) {
                 stringBuilder.append(",");
             }
             stringBuilder.append(String.format("ADD COLUMN `%s` %s", keyValuePair.getKey(), keyValuePair.getValue().getDatabaseType()));

@@ -5,8 +5,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.text.Text;
 
-public enum BasicCommandArgument
-{
+public enum BasicCommandArgument {
     PLAYER(GenericArguments.player(Text.of("player"))),
     FACTION(new FactionNameArgument(Text.of("faction"))),
     IDENTIFIER(GenericArguments.string(Text.of("identifier"))),
@@ -23,12 +22,11 @@ public enum BasicCommandArgument
 
     private final CommandElement value;
 
-    BasicCommandArgument(CommandElement value)
-    {
+    BasicCommandArgument(CommandElement value) {
         this.value = value;
     }
 
-    public CommandElement toCommandElement(){
+    public CommandElement toCommandElement() {
         return value;
     }
 }

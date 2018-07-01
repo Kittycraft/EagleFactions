@@ -40,8 +40,7 @@ public class FactionLogic {
     private Game game;
 
     @Inject
-    FactionLogic(Settings settings, FactionsCache cache, Game game)
-    {
+    FactionLogic(Settings settings, FactionsCache cache, Game game) {
         FactionLogic.settings = settings;
         FactionLogic.cache = cache;
         this.game = game;

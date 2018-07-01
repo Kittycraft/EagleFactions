@@ -13,19 +13,15 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 @Singleton
-public class PlayerDisconnectListener extends GenericListener
-{
+public class PlayerDisconnectListener extends GenericListener {
     @Inject
-    PlayerDisconnectListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    PlayerDisconnectListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         super(cache, settings, eagleFactions);
     }
 
     @Listener
-    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Root Player player)
-    {
-        if (EagleFactions.getPlugin().getPVPLogger().isActive() && EagleFactions.getPlugin().getPVPLogger().isPlayerBlocked(player))
-        {
+    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Root Player player) {
+        if (EagleFactions.getPlugin().getPVPLogger().isActive() && EagleFactions.getPlugin().getPVPLogger().isPlayerBlocked(player)) {
             player.damage(1000, DamageSource.builder().type(DamageTypes.ATTACK).build());
             EagleFactions.getPlugin().getPVPLogger().removePlayer(player);
         }

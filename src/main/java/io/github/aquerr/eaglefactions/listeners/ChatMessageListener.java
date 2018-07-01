@@ -23,18 +23,15 @@ import java.util.Optional;
 import java.util.Set;
 
 @Singleton
-public class ChatMessageListener extends GenericListener
-{
+public class ChatMessageListener extends GenericListener {
 
     @Inject
-    public ChatMessageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    public ChatMessageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         super(cache, settings, eagleFactions);
     }
 
     @Listener
-    public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player)
-    {
+    public void onChatMessage(MessageChannelEvent.Chat event, @Root Player player) {
         Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
         if (optionalPlayerFaction.isPresent()) {

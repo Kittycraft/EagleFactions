@@ -9,18 +9,13 @@ import io.github.aquerr.eaglefactions.entities.*;
 import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.interfaces.DataSaver;
-import nl.riebie.mcclans.persistence.pojo.FactionGroupPojo;
-import nl.riebie.mcclans.persistence.pojo.FactionPlayerPojo;
-import nl.riebie.mcclans.persistence.pojo.FactionPojo;
-import nl.riebie.mcclans.persistence.pojo.FactionRelationPojo;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
-public class BadSaver extends DataSaver
-{
+public class BadSaver extends DataSaver {
     private File saveDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "recent");
     private File tempDataFolder = new File(EagleFactions.getPlugin().getDataFolder(), "temp");
 

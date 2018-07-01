@@ -27,7 +27,6 @@ import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
-import io.github.aquerr.eaglefactions.logic.FactionLogic;
 import nl.riebie.mcclans.persistence.exceptions.WrappedDataException;
 import nl.riebie.mcclans.persistence.implementations.*;
 import nl.riebie.mcclans.persistence.interfaces.DataLoader;
@@ -43,33 +42,25 @@ import java.util.List;
 public class DatabaseHandler {
 
     public static final int CURRENT_DATA_VERSION = 1;
-
-    private final String CREATE_TABLE_DATAVERSION_QUERY = "CREATE TABLE IF NOT EXISTS `ef_dataversion` " + "( "
-            + "`dataversion` INT(11) NOT NULL, " + "PRIMARY KEY (`dataversion`) " + ") ENGINE=InnoDB;";
-
     private static final String COUNT_DATAVERSION_QUERY = "SELECT COUNT(*) FROM `ef_dataversion`";
     private static final String INSERT_DATAVERSION_QUERY = "INSERT INTO `ef_dataversion` VALUES (" + CURRENT_DATA_VERSION + ")";
-
+    private static DatabaseHandler instance;
+    private final String CREATE_TABLE_DATAVERSION_QUERY = "CREATE TABLE IF NOT EXISTS `ef_dataversion` " + "( "
+            + "`dataversion` INT(11) NOT NULL, " + "PRIMARY KEY (`dataversion`) " + ") ENGINE=InnoDB;";
     private final String CREATE_TABLE_FACTIONS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_factions` "
             + "( `faction_name` VARCHAR(255) NOT NULL, `faction_owner` VARCHAR(255) NULL, `faction_home` VARCHAR(255) NULL, `creation_time` BIGINT NOT NULL," +
             "PRIMARY KEY (`faction_name`) " + ") ENGINE=InnoDB;";
-
     private final String CREATE_TABLE_FACTION_RELATIONS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_relations` " + "( "
             + "`factionA` VARCHAR(255) NOT NULL,`factionB` VARCHAR(255) NOT NULL,`relation` INT(11) NOT NULL, " + "PRIMARY KEY (`factionA`, `factionB`) " + ") ENGINE=InnoDB;";
-
     private final String CREATE_TABLE_PLAYERS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_players` "
             + "( `player_uuid` VARCHAR(255) NOT NULL,`player_name` VARCHAR(255) NOT NULL, "
             + "`player_faction` VARCHAR(255) NOT NULL,`player_groups` TEXT NOT NULL,`player_nodes` TEXT NOT NULL,`last_online_time` BIGINT NOT NULL, "
             + "PRIMARY KEY (`player_uuid`) " + ") ENGINE=InnoDB;";
-
     private final String CREATE_TABLE_GROUPS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_groups` " + "( "
             + "`faction` VARCHAR(255) NOT NULL, " + "`group_name` VARCHAR(255) NOT NULL, `group_nodes` STRING NOT NULL," +
             " `group_parents` STRING NOT NULL, `priority` INT(11) NOT NULL, " + "PRIMARY KEY (`faction`, `group_name`) " + ") ENGINE=InnoDB;";
-
     private final String CREATE_TABLE_CLAIMS_QUERY = "CREATE TABLE IF NOT EXISTS `ef_claims` " + "( "
             + "`claim_x` INT(11) NOT NULL,`claim_z` INT(11) NOT NULL, " + "`faction_name` VARCHAR(255) NOT NULL, PRIMARY KEY (`claim_x`, `claim_z`) " + ") ENGINE=InnoDB;";
-
-    private static DatabaseHandler instance;
 
     protected DatabaseHandler() {
     }
@@ -134,9 +125,9 @@ public class DatabaseHandler {
 
     public boolean save() {
         DataSaver dataSaver;
-        if(Config.getBoolean(Config.DATABASE_QUICK_SAVE)){
+        if (Config.getBoolean(Config.DATABASE_QUICK_SAVE)) {
             dataSaver = new BadSaver();
-        }else if (Config.getBoolean(Config.USE_DATABASE)) {
+        } else if (Config.getBoolean(Config.USE_DATABASE)) {
             dataSaver = new DatabaseSaver();
         } else {
             dataSaver = new JsonSaver();
@@ -146,9 +137,9 @@ public class DatabaseHandler {
 
     public boolean load() {
         DataLoader dataLoader;
-        if(Config.getBoolean(Config.DATABASE_QUICK_SAVE)){
+        if (Config.getBoolean(Config.DATABASE_QUICK_SAVE)) {
             dataLoader = new BadLoader();
-        }else if (Config.getBoolean(Config.USE_DATABASE) && !JsonLoader.loadFilesPresent()) {
+        } else if (Config.getBoolean(Config.USE_DATABASE) && !JsonLoader.loadFilesPresent()) {
             dataLoader = new DatabaseLoader();
         } else {
             dataLoader = new JsonLoader();
@@ -165,7 +156,7 @@ public class DatabaseHandler {
         List<Faction> retrievedFactions = FactionsCache.getInstance().getFactions();
 
         final List<Faction> factions = new ArrayList<>();
-        final List<FactionRelation> relations = (List)((ArrayList)FactionsCache.getInstance().getRelations()).clone();
+        final List<FactionRelation> relations = (List) ((ArrayList) FactionsCache.getInstance().getRelations()).clone();
 
         for (Faction retrievedFaction : retrievedFactions) {
             factions.add(retrievedFaction.clone());

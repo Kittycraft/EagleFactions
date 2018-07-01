@@ -34,55 +34,6 @@ public class DatabaseSaver extends DataSaver {
 
     private final static DatabaseConnectionOwner databaseConnectionOwner = DatabaseConnectionOwner.getInstance();
 
-    protected void saveFaction(Faction faction) throws Exception {
-        databaseConnectionOwner.executeTransactionStatement(QueryGenerator.createInsertQuery("ef_factions",
-                databaseConnectionOwner.getConnection()).value("faction_name", faction.name)
-                .value("faction_owner", faction.owner == null ? null : faction.owner).value("faction_name", faction.name)
-                .value("faction_home", faction.Home == null ? null : faction.Home.toString()).value("creation_time", faction.creationTime)
-                .create());
-    }
-
-    protected void savePlayer(FactionPlayer player) throws Exception {
-        PreparedStatement query = getInsertPlayerQuery(player);
-        databaseConnectionOwner.executeTransactionStatement(query);
-    }
-
-    protected void saveGroup(String factionName, Group group) throws Exception {
-        PreparedStatement query = getInsertGroupQuery(factionName, group);
-        databaseConnectionOwner.executeTransactionStatement(query);
-    }
-
-    protected void saveFactionRelation(FactionRelation relation) throws Exception {
-        PreparedStatement query = getInsertFactionRelationQuery(relation);
-        databaseConnectionOwner.executeTransactionStatement(query);
-    }
-
-    @Override
-    protected void saveFactionClaim(FactionClaim claim) throws Exception {
-        PreparedStatement query = getInsertClaimQuery(claim);
-        databaseConnectionOwner.executeTransactionStatement(query);
-    }
-
-    @Override
-    protected void saveStarted() throws Exception {
-        databaseConnectionOwner.startTransaction();
-        DatabaseHandler.getInstance().truncateDatabase();
-
-        // Store data version
-        PreparedStatement query = getInsertDataVersionQuery(DatabaseHandler.CURRENT_DATA_VERSION);
-        databaseConnectionOwner.executeTransactionStatement(query);
-    }
-
-    @Override
-    protected void saveFinished() throws Exception {
-        databaseConnectionOwner.commitTransaction();
-    }
-
-    @Override
-    protected void saveCancelled() {
-        databaseConnectionOwner.cancelTransaction();
-    }
-
     public static PreparedStatement getInsertDataVersionQuery(int dataVersion) {
         return QueryGenerator.createInsertQuery(
                 "mcc_dataversion",
@@ -93,12 +44,12 @@ public class DatabaseSaver extends DataSaver {
         ).create();
     }
 
-    public static PreparedStatement getInsertClaimQuery(FactionClaim claim){
+    public static PreparedStatement getInsertClaimQuery(FactionClaim claim) {
         return QueryGenerator.createInsertQuery("ef_claims", databaseConnectionOwner.getConnection()).value("claim_x", claim.chunk.getX())
                 .value("claim_z", claim.chunk.getZ()).value("faction_name", claim.faction).create();
     }
 
-    public static PreparedStatement getDeleteClaimQuery(FactionClaim claim){
+    public static PreparedStatement getDeleteClaimQuery(FactionClaim claim) {
         return QueryGenerator.createDeleteQuery("ef_claims", databaseConnectionOwner.getConnection()).where("claim_x", claim.chunk.getX())
                 .and("claim_z", claim.chunk.getZ()).create();
     }
@@ -186,5 +137,54 @@ public class DatabaseSaver extends DataSaver {
     public static PreparedStatement getDeleteFactionRelationQuery(String factionA, String factionB) {
         return QueryGenerator.createDeleteQuery("ef_relations", databaseConnectionOwner.getConnection()).value("factionA", factionA)
                 .value("factionB", factionB).create();
+    }
+
+    protected void saveFaction(Faction faction) throws Exception {
+        databaseConnectionOwner.executeTransactionStatement(QueryGenerator.createInsertQuery("ef_factions",
+                databaseConnectionOwner.getConnection()).value("faction_name", faction.name)
+                .value("faction_owner", faction.owner == null ? null : faction.owner).value("faction_name", faction.name)
+                .value("faction_home", faction.Home == null ? null : faction.Home.toString()).value("creation_time", faction.creationTime)
+                .create());
+    }
+
+    protected void savePlayer(FactionPlayer player) throws Exception {
+        PreparedStatement query = getInsertPlayerQuery(player);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    protected void saveGroup(String factionName, Group group) throws Exception {
+        PreparedStatement query = getInsertGroupQuery(factionName, group);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    protected void saveFactionRelation(FactionRelation relation) throws Exception {
+        PreparedStatement query = getInsertFactionRelationQuery(relation);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    @Override
+    protected void saveFactionClaim(FactionClaim claim) throws Exception {
+        PreparedStatement query = getInsertClaimQuery(claim);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    @Override
+    protected void saveStarted() throws Exception {
+        databaseConnectionOwner.startTransaction();
+        DatabaseHandler.getInstance().truncateDatabase();
+
+        // Store data version
+        PreparedStatement query = getInsertDataVersionQuery(DatabaseHandler.CURRENT_DATA_VERSION);
+        databaseConnectionOwner.executeTransactionStatement(query);
+    }
+
+    @Override
+    protected void saveFinished() throws Exception {
+        databaseConnectionOwner.commitTransaction();
+    }
+
+    @Override
+    protected void saveCancelled() {
+        databaseConnectionOwner.cancelTransaction();
     }
 }

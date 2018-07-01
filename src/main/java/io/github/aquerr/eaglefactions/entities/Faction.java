@@ -1,7 +1,6 @@
 package io.github.aquerr.eaglefactions.entities;
 
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +11,7 @@ import java.util.Map;
  * Created by Aquerr on 2017-07-13.
  */
 public class Faction implements Cloneable {
+    public final long creationTime;
     public String name;
     @Deprecated
     public Text Tag = Text.of("Deprecated");
@@ -21,7 +21,6 @@ public class Faction implements Cloneable {
     public List<FactionClaim> claims;
     public FactionHome Home;
     public Map<String, Group> groups;
-    public final long creationTime;
 
     //Constructor used while creating a new faction.
     public Faction(String factionName, String factionTag, FactionPlayer factionLeader) {
@@ -86,22 +85,22 @@ public class Faction implements Cloneable {
         return false;
     }
 
-    private List<FactionPlayer> cloneMembers(){
+    private List<FactionPlayer> cloneMembers() {
         List<FactionPlayer> list2 = new ArrayList<>();
-        for(FactionPlayer player : members){
+        for (FactionPlayer player : members) {
             list2.add(player.clone());
         }
         return list2;
     }
 
-    private Map<String, Group> cloneGroups(){
+    private Map<String, Group> cloneGroups() {
         Map<String, Group> map = new HashMap<>();
         groups.forEach((a, b) -> map.put(a, b.clone()));
         return map;
     }
 
     @Override
-    public Faction clone(){
-        return new Faction(name, owner, cloneMembers(), (List)((ArrayList)claims).clone(), Home, cloneGroups(), creationTime);
+    public Faction clone() {
+        return new Faction(name, owner, cloneMembers(), (List) ((ArrayList) claims).clone(), Home, cloneGroups(), creationTime);
     }
 }

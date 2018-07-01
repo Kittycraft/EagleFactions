@@ -53,10 +53,10 @@ public class AllyCommand implements CommandExecutor {
                 }
             }
             relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ALLY));
-            if(FactionLogic.getOneWayRelation(factionB.get().name, factionA.get().name) == RelationType.ALLY){
+            if (FactionLogic.getOneWayRelation(factionB.get().name, factionA.get().name) == RelationType.ALLY) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now allied to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has accepted your alliance request!"));
-            }else {
+            } else {
                 TextColor color = FactionLogic.getRelationColor(factionA.get().name, factionB.get().name);
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has sent an alliance request to ", color, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", color, factionA.get().name, TextColors.WHITE, " has requested an alliance!"));

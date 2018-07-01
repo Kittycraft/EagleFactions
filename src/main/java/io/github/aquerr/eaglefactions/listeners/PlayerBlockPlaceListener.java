@@ -23,18 +23,15 @@ import org.spongepowered.api.world.World;
 import java.util.Optional;
 
 @Singleton
-public class PlayerBlockPlaceListener extends GenericListener
-{
+public class PlayerBlockPlaceListener extends GenericListener {
 
     @Inject
-    PlayerBlockPlaceListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
-    {
+    PlayerBlockPlaceListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions) {
         super(cache, settings, eagleFactions);
     }
 
     @Listener
-    public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player)
-    {
+    public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player) {
         if (!EagleFactions.AdminList.contains(player.getUniqueId())) {
             Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 
