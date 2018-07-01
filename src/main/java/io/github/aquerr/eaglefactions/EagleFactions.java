@@ -8,8 +8,6 @@ import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
-import io.github.aquerr.eaglefactions.commands.legacy.HelpCommand;
-import io.github.aquerr.eaglefactions.commands.legacy.SubcommandFactory;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
@@ -98,6 +96,11 @@ public class EagleFactions extends AbstractModule
         return InviteList;
     }
 
+    @Provides
+    FactionsCache getCache(){
+        return FactionsCache.getInstance();
+    }
+
     @Listener
     public void onServerInitialization(GameInitializationEvent event) {
         eagleFactions = this;
@@ -114,9 +117,6 @@ public class EagleFactions extends AbstractModule
         //SetupConfigs();
 
         Sponge.getServer().getConsole().sendMessage(Text.of(TextColors.AQUA, "Configs loaded..."));
-
-        //PVPLogger
-        pvpLogger = new PVPLogger();
 
         //Build all commands
         CommandSpec commandEagleFactions = CommandSpec.builder()

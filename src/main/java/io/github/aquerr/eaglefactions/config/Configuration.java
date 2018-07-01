@@ -1,5 +1,8 @@
 package io.github.aquerr.eaglefactions.config;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -19,32 +22,21 @@ import java.util.function.Function;
  * Created by Aquerr on 2017-07-12.
  */
 
+@Singleton
 public class Configuration {
-    //TODO: This class should have only one instance. Rework it to singleton.
-    // :( Dependency injection black magic
 
-    private static Function<Object, String> objectToStringTransformer = input ->
-    {
-        if (input instanceof String) {
-            return (String) input;
-        } else {
-            return null;
-        }
-    };
     private Path configPath;
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
     private CommentedConfigurationNode configNode;
 
-    public Configuration(File configDir) {
-        setup(configDir);
-    }
-
-    public void setup(File configDir) {
+    @Inject
+    public Configuration(@Named("config dir") Path config) {
+        File configDir = config.toFile();
         if (!configDir.exists()) {
             configDir.mkdir();
         }
 
-        configPath = configDir.toPath().resolve("Settings.conf");
+        configPath = config.resolve("Settings.conf");
 
         if (!Files.exists(configPath)) {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("Settings.conf");
@@ -83,7 +75,6 @@ public class Configuration {
     public void load() {
         try {
             configNode = configLoader.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true));
-            Settings.setup(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,7 +112,7 @@ public class Configuration {
     }
 
     public List<String> getListOfStrings(List<String> defaultValue, Object... nodePath) {
-        return configNode.getNode(nodePath).getList(objectToStringTransformer, defaultValue);
+        return configNode.getNode(nodePath).getList(input -> input instanceof String ? (String) input : null, defaultValue);
     }
 
     public void setValue(Object value, Object... nodePath){

@@ -20,10 +20,12 @@ import org.spongepowered.api.text.format.TextColors;
 public class PlayerJoinListener extends GenericListener
 {
 
+    private PowerManager powerManager;
     @Inject
-    PlayerJoinListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    PlayerJoinListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
     {
         super(cache, settings, eagleFactions);
+        this.powerManager = powerManager;
     }
 
     @Listener
@@ -39,13 +41,13 @@ public class PlayerJoinListener extends GenericListener
                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, TextColors.GREEN, PluginMessages.A_NEW_VERSION_OF + " ", TextColors.AQUA, "Eagle Factions", TextColors.GREEN, " " + PluginMessages.IS_AVAILABLE));
             }
 
-            if (PowerManager.checkIfPlayerExists(player.getUniqueId()))
+            if (powerManager.checkIfPlayerExists(player.getUniqueId()))
             {
-                PowerManager.startIncreasingPower(player.getUniqueId());
+                powerManager.startIncreasingPower(player.getUniqueId());
             } else
             {
                 //Create player file and set power.
-                PowerManager.addPlayer(player.getUniqueId());
+                powerManager.addPlayer(player.getUniqueId());
             }
 
             //Check if the world that player is connecting to is already in the config file

@@ -11,7 +11,6 @@ import io.github.aquerr.eaglefactions.logic.PluginMessages;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
 import io.github.aquerr.eaglefactions.managers.PowerManager;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.ai.task.AbstractAITask;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
@@ -26,10 +25,13 @@ import java.util.concurrent.TimeUnit;
 public class PlayerDeathListener extends GenericListener
 {
 
+    private PowerManager powerManager;
+
     @Inject
-    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
     {
         super(cache, settings, eagleFactions);
+        this.powerManager = powerManager;
     }
 
     @Listener
@@ -38,10 +40,10 @@ public class PlayerDeathListener extends GenericListener
         if (event.getTargetEntity() instanceof Player) {
             Player player = (Player) event.getTargetEntity();
 
-            PowerManager.decreasePower(player.getUniqueId());
+            powerManager.decreasePower(player.getUniqueId());
 
             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getPowerDecrement()) + "\n",
-                    TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
+                    TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
 
             Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 

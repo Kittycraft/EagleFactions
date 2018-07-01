@@ -2,6 +2,7 @@ package io.github.aquerr.eaglefactions.caching;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.github.aquerr.eaglefactions.entities.Faction;
 import io.github.aquerr.eaglefactions.entities.FactionClaim;
@@ -23,9 +24,9 @@ public class FactionsCache
 
     private static FactionsCache instance;
 
-    @Inject
     FactionsCache()
     {
+        instance = this;
     }
 
     public void setFactionsCache(FactionsCache factionsCache)

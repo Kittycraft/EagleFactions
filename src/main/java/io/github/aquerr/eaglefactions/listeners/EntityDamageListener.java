@@ -26,11 +26,13 @@ import java.util.Optional;
 @Singleton
 public class EntityDamageListener extends GenericListener
 {
+    private PowerManager powerManager;
 
     @Inject
-    public EntityDamageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions)
+    public EntityDamageListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager)
     {
         super(cache, settings, eagleFactions);
+        this.powerManager = powerManager;
     }
 
     @Listener
@@ -87,8 +89,8 @@ public class EntityDamageListener extends GenericListener
                                             //If friendlyfire is on and damage will kill attackedPlayer then penalty the player.
                                             if (event.willCauseDeath()) {
                                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getPenalty()) + "\n",
-                                                        TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
-                                                PowerManager.penalty(player.getUniqueId());
+                                                        TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
+                                                powerManager.penalty(player.getUniqueId());
                                                 return;
                                             }
                                         }
@@ -103,8 +105,8 @@ public class EntityDamageListener extends GenericListener
                                                 EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                             if (event.willCauseDeath()) {
                                                 player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_DECREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getPenalty()) + "\n",
-                                                        TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
-                                                PowerManager.penalty(player.getUniqueId());
+                                                        TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
+                                                powerManager.penalty(player.getUniqueId());
                                                 return;
                                             }
                                         }
@@ -113,8 +115,8 @@ public class EntityDamageListener extends GenericListener
                                             EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                         if (event.willCauseDeath()) {
                                             player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
-                                                    TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
-                                            PowerManager.addPower(player.getUniqueId(), true);
+                                                    TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
+                                            powerManager.addPower(player.getUniqueId(), true);
                                             return;
                                         }
                                     }
@@ -123,8 +125,8 @@ public class EntityDamageListener extends GenericListener
                                         EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                     if (event.willCauseDeath()) {
                                         player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
-                                                TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
-                                        PowerManager.addPower(player.getUniqueId(), true);
+                                                TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
+                                        powerManager.addPower(player.getUniqueId(), true);
                                         return;
                                     }
                                 }
@@ -133,8 +135,8 @@ public class EntityDamageListener extends GenericListener
                                     EagleFactions.getEagleFactions().getPVPLogger().addOrUpdatePlayer(attackedPlayer);
                                 if (event.willCauseDeath()) {
                                     player.sendMessage(Text.of(PluginInfo.PluginPrefix, PluginMessages.YOUR_POWER_HAS_BEEN_INCREASED_BY + " ", TextColors.GOLD, String.valueOf(settings.getKillAward()) + "\n",
-                                            TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(PowerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(PowerManager.getPlayerMaxPower(player.getUniqueId()))));
-                                    PowerManager.addPower(player.getUniqueId(), true);
+                                            TextColors.GRAY, PluginMessages.CURRENT_POWER + " ", String.valueOf(powerManager.getPlayerPower(player.getUniqueId())) + "/" + String.valueOf(powerManager.getPlayerMaxPower(player.getUniqueId()))));
+                                    powerManager.addPower(player.getUniqueId(), true);
                                     return;
                                 }
                             }
