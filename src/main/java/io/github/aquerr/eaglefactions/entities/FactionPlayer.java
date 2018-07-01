@@ -1,6 +1,8 @@
 package io.github.aquerr.eaglefactions.entities;
 
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.service.user.UserStorageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class FactionPlayer extends PermissionsObject {
     }
 
     public long getLastOnline() {
-        if (PlayerManager.isPlayerOnline(UUID.fromString(uuid))) {
+        if (Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(UUID.fromString(uuid)).isPresent()) {
             lastOnline = System.currentTimeMillis();
         }
         return lastOnline;

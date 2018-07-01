@@ -36,11 +36,12 @@ import static io.github.aquerr.eaglefactions.entities.RelationType.*;
 public class FactionLogic {
 
     private static Settings settings;
+    private static PlayerManager playerManager;
     private static FactionsCache cache;
     private Game game;
 
     @Inject
-    FactionLogic(Settings settings, FactionsCache cache, Game game) {
+    FactionLogic(Settings settings, FactionsCache cache, Game game, PlayerManager playerManager) {
         FactionLogic.settings = settings;
         FactionLogic.cache = cache;
         this.game = game;
@@ -50,8 +51,8 @@ public class FactionLogic {
         List<Player> factionPlayers = new ArrayList<>();
 
         for (FactionPlayer uuid : faction.members) {
-            if (!uuid.uuid.equals("") && PlayerManager.isPlayerOnline(UUID.fromString(uuid.uuid))) {
-                factionPlayers.add(PlayerManager.getPlayer(UUID.fromString(uuid.uuid)).get());
+            if (!uuid.uuid.equals("") && playerManager.isPlayerOnline(UUID.fromString(uuid.uuid))) {
+                factionPlayers.add(playerManager.getPlayer(UUID.fromString(uuid.uuid)).get());
             }
         }
 
@@ -121,7 +122,7 @@ public class FactionLogic {
     }
 
     public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
-        Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), PlayerManager.getPlayerName(playerUUID).get(), factionName));
+        Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), playerManager.getPlayerName(playerUUID).get(), factionName));
         FactionsCache.getInstance().addFaction(faction);
         FactionsCache.getInstance().updatePlayer(playerUUID.toString(), factionName);
     }
@@ -172,7 +173,7 @@ public class FactionLogic {
 
     public static boolean hasOnlinePlayers(Faction faction) {
         for (FactionPlayer player : faction.members) {
-            if (PlayerManager.isPlayerOnline(UUID.fromString(player.uuid))) {
+            if (playerManager.isPlayerOnline(UUID.fromString(player.uuid))) {
                 return true;
             }
         }

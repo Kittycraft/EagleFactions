@@ -25,11 +25,13 @@ import java.util.concurrent.TimeUnit;
 public class PlayerDeathListener extends GenericListener {
 
     private PowerManager powerManager;
+    private PlayerManager playerManager;
 
     @Inject
-    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager) {
+    PlayerDeathListener(FactionsCache cache, Settings settings, EagleFactions eagleFactions, PowerManager powerManager, PlayerManager playerManager) {
         super(cache, settings, eagleFactions);
         this.powerManager = powerManager;
+        this.playerManager = playerManager;
     }
 
     @Listener
@@ -45,7 +47,7 @@ public class PlayerDeathListener extends GenericListener {
             Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 
             if (settings.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("WarZone"))) {
-                PlayerManager.setDeathInWarZone(player.getUniqueId(), true);
+                playerManager.setDeathInWarZone(player.getUniqueId(), true);
             }
 
             if (settings.shouldBlockHomeAfterDeathInOwnFaction()) {

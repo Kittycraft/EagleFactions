@@ -24,13 +24,15 @@ import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class PowerManager {
-    private static CommentedConfigurationNode _factionsNode;
-    private static Path playersPath;
+    private CommentedConfigurationNode _factionsNode;
+    private Path playersPath;
+    private PlayerManager playerManager;
     private Settings settings;
 
     @Inject
-    PowerManager(@Named("config dir") Path configDir, Settings settings) {
+    PowerManager(@Named("config dir") Path configDir, Settings settings, PlayerManager playerManager) {
         this.settings = settings;
+        this.playerManager = playerManager;
         try {
             _factionsNode = HoconConfigurationLoader.builder().setPath(Paths.get(configDir.resolve("data") + "/factions.conf")).build().load();
             playersPath = configDir.resolve("players");
@@ -200,7 +202,7 @@ public class PowerManager {
         Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
 
         taskBuilder.interval(1, TimeUnit.MINUTES).execute(task -> {
-            if (!PlayerManager.isPlayerOnline(playerUUID)) task.cancel();
+            if (!playerManager.isPlayerOnline(playerUUID)) task.cancel();
 
             if (getPlayerPower(playerUUID).add(settings.getPowerIncrement()).doubleValue() < getPlayerMaxPower(playerUUID).doubleValue()) {
                 addPower(playerUUID, false);

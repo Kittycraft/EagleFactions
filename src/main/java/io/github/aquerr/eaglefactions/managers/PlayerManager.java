@@ -1,5 +1,8 @@
 package io.github.aquerr.eaglefactions.managers;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -18,10 +21,12 @@ import java.util.UUID;
 /**
  * Created by Aquerr on 2017-08-04.
  */
+@Singleton
 public class PlayerManager {
-    private static Path playersPath;
+    private Path playersPath;
 
-    public static void setup(Path configDir) {
+    @Inject
+    PlayerManager(@Named("config dir") Path configDir) {
         try {
             playersPath = configDir.resolve("players");
             if (!Files.exists(playersPath)) Files.createDirectory(playersPath);
@@ -30,19 +35,19 @@ public class PlayerManager {
         }
     }
 
-    public static Optional<String> getPlayerName(UUID playerUUID) {
+    public Optional<String> getPlayerName(UUID playerUUID) {
         Optional<User> oUser = getUser(playerUUID);
 
         return Optional.of(oUser.get().getName());
     }
 
-    public static Optional<Player> getPlayer(UUID playerUUID) {
+    public Optional<Player> getPlayer(UUID playerUUID) {
         Optional<User> oUser = getUser(playerUUID);
 
         return oUser.get().getPlayer();
     }
 
-    private static Optional<User> getUser(UUID playerUUID) {
+    private Optional<User> getUser(UUID playerUUID) {
         UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         Optional<User> oUser = userStorageService.get(playerUUID);
 
@@ -51,7 +56,7 @@ public class PlayerManager {
         } else return Optional.empty();
     }
 
-    public static boolean isPlayerOnline(UUID playerUUID) {
+    public boolean isPlayerOnline(UUID playerUUID) {
         Optional<User> oUser = getUser(playerUUID);
 
         if (oUser.isPresent()) {
@@ -59,7 +64,7 @@ public class PlayerManager {
         } else return false;
     }
 
-    public static void setDeathInWarZone(UUID playerUUID, boolean didDieInWarZone) {
+    public void setDeathInWarZone(UUID playerUUID, boolean didDieInWarZone) {
         Path playerFile = Paths.get(playersPath + "/" + playerUUID.toString() + ".conf");
 
         try {
@@ -75,7 +80,7 @@ public class PlayerManager {
         }
     }
 
-    public static boolean lastDeathAtWarZone(UUID playerUUID) {
+    public boolean lastDeathAtWarZone(UUID playerUUID) {
         Path playerFile = Paths.get(playersPath + "/" + playerUUID.toString() + ".conf");
 
         try {
