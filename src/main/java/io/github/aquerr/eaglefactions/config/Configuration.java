@@ -51,23 +51,7 @@ public class Configuration {
         } else {
             configLoader = HoconConfigurationLoader.builder().setPath(configPath).build();
             load();
-            checkNodes();
             save();
-        }
-    }
-
-    private void checkNodes() {
-        Method[] methods = Settings.class.getDeclaredMethods();
-        for (Method method : methods) {
-            if (!method.getName().equals("setup") && !method.getName().equals("addWorld")) {
-
-                try {
-                    Object o = method.invoke(null);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-
-            }
         }
     }
 

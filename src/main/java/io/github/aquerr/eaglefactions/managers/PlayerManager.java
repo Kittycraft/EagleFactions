@@ -21,6 +21,7 @@ import java.util.UUID;
 /**
  * Created by Aquerr on 2017-08-04.
  */
+//TODO: Review the use of knowing if a player died in the warzone.
 @Singleton
 public class PlayerManager {
     private Path playersPath;

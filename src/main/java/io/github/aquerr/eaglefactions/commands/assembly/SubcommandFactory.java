@@ -16,7 +16,7 @@ public class SubcommandFactory extends AbstractModule {
     private Map<List<String>, CommandSpec> subcommands = new HashMap<>();
 
     @Inject
-    SubcommandFactory(@Named("main injector") Injector injector) {
+    SubcommandFactory(Injector injector) {
         Reflections reflections = new Reflections("io.github.aquerr.eaglefactions");
         Set<Class<?>> subTypes = reflections.getTypesAnnotatedWith(Subcommand.class);
         for (Class<?> listener : subTypes) {
@@ -42,7 +42,7 @@ public class SubcommandFactory extends AbstractModule {
 
     @Provides
     @Named("subcommands")
-    Map<List<String>, CommandSpec> getSubcommands() {
+    Map getSubcommands() {
         return subcommands;
     }
 }

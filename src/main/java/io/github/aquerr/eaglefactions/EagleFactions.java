@@ -8,6 +8,7 @@ import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.commands.general.HelpCommand;
 import io.github.aquerr.eaglefactions.config.Config;
 import io.github.aquerr.eaglefactions.config.Configuration;
 import io.github.aquerr.eaglefactions.entities.ChatEnum;
@@ -23,6 +24,7 @@ import nl.riebie.mcclans.persistence.DatabaseHandler;
 import nl.riebie.mcclans.persistence.FileUtils;
 import nl.riebie.mcclans.persistence.TaskExecutor;
 import org.slf4j.Logger;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -58,6 +60,9 @@ public class EagleFactions extends AbstractModule {
     @ConfigDir(sharedRoot = false)
     private Path configDir;
 
+    @Inject
+    private Game game;
+
     @Deprecated
     public static EagleFactions getEagleFactions() {
         return eagleFactions;
@@ -81,10 +86,15 @@ public class EagleFactions extends AbstractModule {
     }
 
     @Provides
-    @Named("main injector")
-    Injector getInjector() {
-        return injector;
+    Game getGame(){
+        return game;
     }
+
+//    @Provides
+//    @Named("main injector")
+//    Injector getInjector() {
+//        return injector;
+//    }
 
     @Provides
     List<Invite> getInviteList() {
@@ -106,6 +116,7 @@ public class EagleFactions extends AbstractModule {
         injector.getInstance(FactionLogic.class);
         injector.getInstance(PlayerManager.class);
         injector.getInstance(PowerManager.class);
+        configuration = injector.getInstance(Configuration.class);
         injector.getInstance(MessageLoader.class);
         injector.getInstance(PVPLogger.class);
         injector = injector.createChildInjector(injector.getInstance(io.github.aquerr.eaglefactions.commands.assembly.SubcommandFactory.class));
@@ -117,7 +128,7 @@ public class EagleFactions extends AbstractModule {
         CommandSpec commandEagleFactions = CommandSpec.builder()
                 .description(Text.of("Help Command"))
                 .executor(injector.getInstance(HelpCommand.class))
-                .children(injector.getInstance(Key.get(HashMap.class, Names.named("subcommands"))))
+                .children(injector.getInstance(Key.get(Map.class, Names.named("subcommands"))))
                 .build();
 
         //Register commands
