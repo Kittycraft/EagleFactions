@@ -18,6 +18,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
+@Deprecated
 public class PermCommand implements CommandExecutor {
 
     private static final TextColor constant = TextColors.GOLD;
@@ -75,7 +76,6 @@ public class PermCommand implements CommandExecutor {
                     } else if (action.isPresent() && action.get() == PermAction.create) {
                         faction.groups.put(group.get(), new Group(group.get()));
                         src.sendMessage(Text.of(PluginInfo.PluginPrefix, constant, "Created group \"", fillIn, group.get(), constant, "\" (priority=25)."));
-                        FactionsCache.getInstance().requestSave();
                         return CommandResult.success();
                     } else {
                         src.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "Your faction does not contain that group! Use \"/f perm group "

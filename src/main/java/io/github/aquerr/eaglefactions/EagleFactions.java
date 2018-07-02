@@ -90,12 +90,6 @@ public class EagleFactions extends AbstractModule {
         return game;
     }
 
-//    @Provides
-//    @Named("main injector")
-//    Injector getInjector() {
-//        return injector;
-//    }
-
     @Provides
     List<Invite> getInviteList() {
         return InviteList;

@@ -8,6 +8,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 @Singleton
@@ -19,13 +20,20 @@ public class SubcommandFactory extends AbstractModule {
         Reflections reflections = new Reflections("io.github.aquerr.eaglefactions");
         Set<Class<?>> subTypes = reflections.getTypesAnnotatedWith(Subcommand.class);
         for (Class<?> listener : subTypes) {
-            Subcommand instance = (Subcommand) injector.getInstance(listener);
+            Object instance = injector.getInstance(listener);
+            Subcommand subcommand = null;
+            for(Annotation annotation : listener.getAnnotations()){
+                if(annotation instanceof Subcommand){
+                    subcommand = (Subcommand) annotation;
+                    break;
+                }
+            }
             CommandSpec.Builder builder = CommandSpec.builder()
-                    .description(Text.of(instance.desc()))
-                    .permission(instance.permission())
+                    .description(Text.of(subcommand.desc()))
+                    .permission(subcommand.permission())
                     .executor((CommandExecutor) instance)
                     .arguments(((FactionCommand) instance).getArguments());
-            subcommands.put(Arrays.asList(instance.aliases()), builder.build());
+            subcommands.put(Arrays.asList(subcommand.aliases()), builder.build());
         }
     }
 
@@ -35,7 +43,7 @@ public class SubcommandFactory extends AbstractModule {
 
     @Provides
     @Named("subcommands")
-    Map getSubcommands() {
+    public Map getSubcommands() {
         return subcommands;
     }
 }

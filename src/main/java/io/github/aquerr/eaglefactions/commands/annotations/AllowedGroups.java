@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AllowedGroups {
-    CommandUser[] getGroups() default CommandUser.PLAYER;
+    CommandUser[] groups();
 }

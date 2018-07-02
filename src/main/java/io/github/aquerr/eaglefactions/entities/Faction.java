@@ -23,7 +23,7 @@ public class Faction implements Cloneable {
     public Map<String, Group> groups;
 
     //Constructor used while creating a new faction.
-    public Faction(String factionName, String factionTag, FactionPlayer factionLeader) {
+    public Faction(String factionName, FactionPlayer factionLeader) {
         this.name = factionName;
         this.owner = factionLeader.uuid;
         this.members = new ArrayList<>();

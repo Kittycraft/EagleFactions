@@ -3,13 +3,14 @@ package io.github.aquerr.eaglefactions.logic;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import io.github.aquerr.eaglefactions.EagleFactions;
 import io.github.aquerr.eaglefactions.PluginInfo;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.*;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
-import org.spongepowered.api.Game;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.player.Player;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static io.github.aquerr.eaglefactions.entities.RelationType.*;
+import static org.spongepowered.api.text.format.TextColors.GREEN;
 
 /**
  * Created by Aquerr on 2017-07-12.
@@ -38,13 +40,13 @@ public class FactionLogic {
     private static Settings settings;
     private static PlayerManager playerManager;
     private static FactionsCache cache;
-    private Game game;
+    private Logger logger;
 
     @Inject
-    FactionLogic(Settings settings, FactionsCache cache, Game game, PlayerManager playerManager) {
+    FactionLogic(Settings settings, FactionsCache cache, PlayerManager playerManager, @Named("factions") Logger logger) {
         FactionLogic.settings = settings;
         FactionLogic.cache = cache;
-        this.game = game;
+        this.logger = logger;
     }
 
     public static List<Player> getOnlinePlayers(Faction faction) {
@@ -76,6 +78,37 @@ public class FactionLogic {
             }
         }
         return end;
+    }
+
+    public void notifyAllPlayers(Object... args) {
+        for (Player player : Sponge.getServer().getOnlinePlayers()) {
+            Text.Builder builder = Text.builder();
+            for (Object arg : args) {
+                if (arg instanceof Text) {
+                    builder.append((Text) arg);
+                } else if (arg instanceof String) {
+                    builder.append(Text.of(arg));
+                } else if (arg instanceof Player) {
+                    if (player.equals(arg)) {
+                        builder.append(Text.of(GREEN, "You"));
+                    } else {
+                        builder.append(Text.of(getRelationColor(getPlayerFactionName(player), getPlayerFactionName((Player) arg)), ((Player) arg).getName()));
+                    }
+                } else if (arg instanceof Faction) {
+                    builder.append(Text.of(getRelationColor(getPlayerFactionName(player), ((Faction) arg).name), ((Faction) arg).name));
+                } else if (arg instanceof TextColor) {
+                    builder.append(Text.of(arg));
+                } else {
+                    logger.warn("Attempted to notify all players with illegal object type: " + arg.getClass().getCanonicalName());
+                }
+            }
+            player.sendMessage(builder.build());
+        }
+    }
+
+    public String getPlayerFactionName(Player player) {
+        Optional<Faction> playerFaction = cache.getFactionByPlayer(player.getUniqueId());
+        return playerFaction.isPresent() ? playerFaction.get().name : "wilderness";
     }
 
     public static TextColor getRelationColor(String factionA, String factionB) {
@@ -119,12 +152,6 @@ public class FactionLogic {
 
     public static void informFaction(Faction faction, Text text) {
         getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
-    }
-
-    public static void createFaction(String factionName, String factionTag, UUID playerUUID) {
-        Faction faction = new Faction(factionName, factionTag, new FactionPlayer(playerUUID.toString(), playerManager.getPlayerName(playerUUID).get(), factionName));
-        FactionsCache.getInstance().addFaction(faction);
-        FactionsCache.getInstance().updatePlayer(playerUUID.toString(), factionName);
     }
 
     public static void leaveFaction(UUID playerUUID, String factionName) {

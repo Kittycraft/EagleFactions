@@ -11,7 +11,6 @@ import java.util.UUID;
 public class FactionPlayer extends PermissionsObject {
 
     public final String uuid, name, faction;
-    //TODO: Make a better way to store last online for players that are not in a faction.
     public long lastOnline;
 
     public FactionPlayer(String uuid, String name, String faction) {
@@ -73,4 +72,5 @@ public class FactionPlayer extends PermissionsObject {
         }
         return lastOnline;
     }
+
 }

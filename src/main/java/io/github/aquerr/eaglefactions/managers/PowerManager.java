@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
+@Deprecated
 public class PowerManager {
     private CommentedConfigurationNode _factionsNode;
     private Path playersPath;
