@@ -7,11 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Subcommand {
-    String[] aliases();
-
-    String desc();
-
-    String permission();
-
+public @interface Arguments {
+    Arg[] arguments();
 }

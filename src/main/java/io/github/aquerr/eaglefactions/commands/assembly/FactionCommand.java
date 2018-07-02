@@ -1,8 +1,11 @@
 package io.github.aquerr.eaglefactions.commands.assembly;
 
 import com.google.inject.Inject;
+import com.sun.istack.internal.NotNull;
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.commands.annotations.AllowedGroups;
+import io.github.aquerr.eaglefactions.commands.annotations.Arg;
+import io.github.aquerr.eaglefactions.commands.annotations.Arguments;
 import io.github.aquerr.eaglefactions.commands.annotations.RequiresFaction;
 import io.github.aquerr.eaglefactions.commands.enums.CommandUser;
 import io.github.aquerr.eaglefactions.entities.Faction;
@@ -11,10 +14,13 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import io.github.aquerr.eaglefactions.commands.arguments.FactionArgument;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,5 +79,30 @@ public abstract class FactionCommand implements CommandExecutor {
     }
 
     protected abstract boolean executeCommand(CommandSource source, CommandContext context);
+
+    public CommandElement getArguments() {
+        if (this instanceof Arguments) {
+            Arg[] arguments = ((Arguments) this).arguments();
+            CommandElement[] elements = new CommandElement[arguments.length];
+            for (int i = 0; i < arguments.length; i++) {
+                elements[i] = getElement(arguments[i]);
+            }
+            return GenericArguments.seq(elements);
+        }
+        return GenericArguments.none();
+    }
+
+    private static CommandElement getElement(@NotNull Arg arg) {
+        CommandElement inner;
+        switch (arg.type()) {
+            case PLAYER:
+                inner = GenericArguments.player(Text.of(arg.key()));
+            case FACTION:
+                inner = new FactionArgument(Text.of(arg.key()));
+            default:
+                inner = GenericArguments.string(Text.of(arg.key()));
+        }
+        return arg.optional() ? GenericArguments.optional(inner) : inner;
+    }
 
 }

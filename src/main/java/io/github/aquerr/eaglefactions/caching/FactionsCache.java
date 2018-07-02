@@ -18,7 +18,6 @@ public class FactionsCache {
     private Map<String, Faction> playerUUIDMap = new HashMap<>();
     private Map<UUID, Map<Vector3i, FactionClaim>> claims = new HashMap<>();
     private List<FactionRelation> relations = new LinkedList<>();
-    private boolean requireSave = false;
 
     FactionsCache() {
         instance = this;
@@ -33,10 +32,6 @@ public class FactionsCache {
 
     public void setFactionsCache(FactionsCache factionsCache) {
         instance = factionsCache;
-    }
-
-    public void requestSave() {
-        requireSave = true;
     }
 
     public List<Faction> getFactions() {

@@ -1,32 +1,41 @@
-package io.github.aquerr.eaglefactions.parsers;
+package io.github.aquerr.eaglefactions.commands.arguments;
 
 import io.github.aquerr.eaglefactions.caching.FactionsCache;
+import io.github.aquerr.eaglefactions.entities.Faction;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class FactionNameArgument extends CommandElement {
-    public FactionNameArgument(@Nullable Text key) {
+public class FactionArgument extends CommandElement {
+
+    private FactionsCache cache = FactionsCache.getInstance();
+
+    public FactionArgument(@Nullable Text key) {
         super(key);
     }
 
     @Nullable
     @Override
-    protected String parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        if (args.hasNext()) {
-            return args.next();
-        } else {
-            return null;
+    protected Faction parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
+        Optional<Faction> faction = Optional.empty();
+        if(args.hasNext()) {
+            faction = cache.getFaction(args.next());
         }
+        if(!faction.isPresent() && source instanceof Player){
+            faction = cache.getFactionByPlayer(((Player) source).getUniqueId());
+        }
+        return faction.isPresent() ? faction.get() : null;
     }
 
     @Override
@@ -39,5 +48,10 @@ public class FactionNameArgument extends CommandElement {
         }
 
         return new ArrayList(factionNames);
+    }
+
+    @Override
+    public Text getUsage(CommandSource src) {
+        return Text.of("[faction=your]");
     }
 }
