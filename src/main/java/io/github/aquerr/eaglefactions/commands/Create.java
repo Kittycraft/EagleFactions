@@ -42,6 +42,11 @@ public class Create extends FactionCommand {
             return true;
         }
 
+        if (factionName.matches("^[A-Za-z][A-Za-z0-9]*$")) {
+            source.sendMessage(Text.of(RED, "That name is already in use."));
+            return true;
+        }
+
         Faction faction = new Faction(factionName, new FactionPlayer(player.getUniqueId().toString(), player.getName(), factionName));
         cache.addFaction(faction);
         cache.updatePlayer(player.getUniqueId().toString(), factionName);

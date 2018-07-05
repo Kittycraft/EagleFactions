@@ -19,6 +19,7 @@ public class GeneralArgumentParseException extends ArgumentParseException {
 
     @Override
     public boolean shouldIncludeUsage() {
+        System.out.println("This method was run!!!");
         return false;
     }
 }

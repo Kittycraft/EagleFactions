@@ -1,26 +1,20 @@
 package io.github.aquerr.eaglefactions.entities;
 
-import org.spongepowered.api.text.Text;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Aquerr on 2017-07-13.
  */
 public class Faction implements Cloneable {
     public final long creationTime;
+    public final UUID fid;
     public String name;
-    @Deprecated
-    public Text Tag = Text.of("Deprecated");
     public List<FactionPlayer> members;
-    public FactionPlayer Leader;
     public String owner;
     public List<FactionClaim> claims;
     public FactionHome Home;
     public Map<String, Group> groups;
+    public String description;
 
     //Constructor used while creating a new faction.
     public Faction(String factionName, FactionPlayer factionLeader) {
@@ -32,6 +26,7 @@ public class Faction implements Cloneable {
         this.groups = new HashMap<>();
         this.Home = null;
         this.creationTime = System.currentTimeMillis();
+        this.fid = UUID.randomUUID();
 
         groups.put("leader", new Group("leader", 1, "[^-]"));
         groups.put("officer", new Group("officer", 10, "f ally",
@@ -47,7 +42,7 @@ public class Faction implements Cloneable {
         factionLeader.addGroup("leader");
     }
 
-    //Constructor used while getting a faction from storage.
+    //TODO: Constructor used while getting a faction from storage.
     public Faction(String factionName, String factionLeader, List<FactionPlayer> members, List<FactionClaim> claims, FactionHome home, Map<String, Group> groups, long creationTime) {
         this.name = factionName;
         this.owner = factionLeader;
@@ -56,6 +51,19 @@ public class Faction implements Cloneable {
         this.Home = home;
         this.groups = groups;
         this.creationTime = creationTime;
+        this.fid = UUID.randomUUID();
+    }
+
+    //TODO: Temp constructor for FID passing
+    public Faction(String factionName, String factionLeader, List<FactionPlayer> members, List<FactionClaim> claims, FactionHome home, Map<String, Group> groups, long creationTime, UUID fid) {
+        this.name = factionName;
+        this.owner = factionLeader;
+        this.members = members;
+        this.claims = claims;
+        this.Home = home;
+        this.groups = groups;
+        this.creationTime = creationTime;
+        this.fid = fid;
     }
 
     public FactionPlayer getMember(String name) {
@@ -65,15 +73,6 @@ public class Faction implements Cloneable {
             }
         }
         return null;
-    }
-
-    public boolean containsMember(String name) {
-        for (FactionPlayer p : members) {
-            if (p.uuid.equals(name)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean isAllowed(String player, String perm) {
@@ -102,5 +101,17 @@ public class Faction implements Cloneable {
     @Override
     public Faction clone() {
         return new Faction(name, owner, cloneMembers(), (List) ((ArrayList) claims).clone(), Home, cloneGroups(), creationTime);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Faction){
+            return fid.equals(((Faction) obj).fid);
+        }
+        return false;
+    }
+
+    public String getClaimRatio(){
+
     }
 }

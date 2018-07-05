@@ -37,12 +37,12 @@ public class EnemyCommand implements CommandExecutor {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction!"));
         } else if (!factionB.isPresent()) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must specify a faction or player!"));
-        } else if (factionA.get().name.equals(factionB.get().name)) {
+        } else if (factionA.get().equals(factionB.get())) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not enemy your own faction!"));
         } else {
             List<FactionRelation> relations = FactionsCache.getInstance().getRelations();
             for (int i = 0; i < relations.size(); i++) {
-                if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
+                if (relations.get(i).factionA.equals(factionA.get().fid) && relations.get(i).factionB.equals(factionB.get().fid)) {
                     if (relations.get(i).type == RelationType.ENEMY) {
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already enemies with that faction!"));
                         return CommandResult.success();
@@ -51,7 +51,7 @@ public class EnemyCommand implements CommandExecutor {
                     break;
                 }
             }
-            relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ENEMY));
+            relations.add(new FactionRelation(factionA.get().fid, factionB.get().fid, RelationType.ENEMY));
             FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "Your faction has enemied ", TextColors.RED, factionB.get().name, TextColors.WHITE, "!"));
             FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.RED, factionA.get().name, TextColors.WHITE, " has enemied your faction!"));
         }

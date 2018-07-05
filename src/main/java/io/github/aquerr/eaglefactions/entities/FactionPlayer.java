@@ -12,6 +12,9 @@ public class FactionPlayer extends PermissionsObject {
 
     public final String uuid, name, faction;
     public long lastOnline;
+    private double power = 0;
+    public double maxPower = 10;
+    public double minPower = 0;
 
     public FactionPlayer(String uuid, String name, String faction) {
         this(uuid, name, faction, new String[]{});
@@ -70,6 +73,17 @@ public class FactionPlayer extends PermissionsObject {
         if (Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(UUID.fromString(uuid)).isPresent()) {
             lastOnline = System.currentTimeMillis();
         }
+        return lastOnline;
+    }
+
+
+    public double getPower(boolean assumeOnline){
+        long preLastOnline = lastOnline;
+        if (assumeOnline || Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(UUID.fromString(uuid)).isPresent()) {
+            lastOnline = System.currentTimeMillis();
+        }
+
+
         return lastOnline;
     }
 

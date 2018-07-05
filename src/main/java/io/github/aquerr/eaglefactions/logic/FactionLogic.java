@@ -10,6 +10,8 @@ import io.github.aquerr.eaglefactions.caching.FactionsCache;
 import io.github.aquerr.eaglefactions.config.Settings;
 import io.github.aquerr.eaglefactions.entities.*;
 import io.github.aquerr.eaglefactions.managers.PlayerManager;
+import io.github.aquerr.eaglefactions.wrapper.SafeZone;
+import io.github.aquerr.eaglefactions.wrapper.Wilderness;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
@@ -42,19 +44,22 @@ public class FactionLogic {
     private static FactionsCache cache;
     private Logger logger;
 
+    private static FactionLogic self;
+
     @Inject
     FactionLogic(Settings settings, FactionsCache cache, PlayerManager playerManager, @Named("factions") Logger logger) {
         FactionLogic.settings = settings;
         FactionLogic.cache = cache;
         this.logger = logger;
+        self = this;
     }
 
-    public static List<Player> getOnlinePlayers(Faction faction) {
+    public List<Player> getOnlinePlayers(Faction faction) {
         List<Player> factionPlayers = new ArrayList<>();
 
         for (FactionPlayer uuid : faction.members) {
             if (!uuid.uuid.equals("") && playerManager.isPlayerOnline(UUID.fromString(uuid.uuid))) {
-                factionPlayers.add(playerManager.getPlayer(UUID.fromString(uuid.uuid)).get());
+                factionPlayers.add(playerManager.getEntityPlayer(UUID.fromString(uuid.uuid)).get());
             }
         }
 
@@ -70,10 +75,10 @@ public class FactionLogic {
         return NEUTRAL;
     }
 
-    public static List<Faction> getRelationGroup(String faction, RelationType type) {
+    public static List<Faction> getRelationGroup(Faction faction, RelationType type) {
         List<Faction> all = FactionsCache.getInstance().getFactions(), end = new ArrayList<>();
         for (Faction f : all) {
-            if (getRelation(faction, f.name) == type) {
+            if (getRelation(faction.fid, f.fid) == type) {
                 end.add(f);
             }
         }
@@ -82,51 +87,67 @@ public class FactionLogic {
 
     public void notifyAllPlayers(Object... args) {
         for (Player player : Sponge.getServer().getOnlinePlayers()) {
-            Text.Builder builder = Text.builder();
-            for (Object arg : args) {
-                if (arg instanceof Text) {
-                    builder.append((Text) arg);
-                } else if (arg instanceof String) {
-                    builder.append(Text.of(arg));
-                } else if (arg instanceof Player) {
-                    if (player.equals(arg)) {
-                        builder.append(Text.of(GREEN, "You"));
-                    } else {
-                        builder.append(Text.of(getRelationColor(getPlayerFactionName(player), getPlayerFactionName((Player) arg)), ((Player) arg).getName()));
-                    }
-                } else if (arg instanceof Faction) {
-                    builder.append(Text.of(getRelationColor(getPlayerFactionName(player), ((Faction) arg).name), ((Faction) arg).name));
-                } else if (arg instanceof TextColor) {
-                    builder.append(Text.of(arg));
-                } else {
-                    logger.warn("Attempted to notify all players with illegal object type: " + arg.getClass().getCanonicalName());
-                }
-            }
-            player.sendMessage(builder.build());
+            informPlayer(player, args);
         }
     }
 
-    public String getPlayerFactionName(Player player) {
-        Optional<Faction> playerFaction = cache.getFactionByPlayer(player.getUniqueId());
-        return playerFaction.isPresent() ? playerFaction.get().name : "wilderness";
+    public void informPlayer(Player player, Object... args){
+        Text.Builder builder = Text.builder();
+        for (Object arg : args) {
+            if (arg instanceof Text) {
+                builder.append((Text) arg);
+            } else if (arg instanceof String) {
+                builder.append(Text.of(arg));
+            } else if (arg instanceof Player) {
+                if (player.equals(arg)) {
+                    builder.append(Text.of(GREEN, "You"));
+                } else {
+                    builder.append(Text.of(getRelationColor(getPlayerFID(player), getPlayerFID((Player) arg)), ((Player) arg).getName()));
+                }
+            } else if (arg instanceof Faction) {
+                builder.append(Text.of(getRelationColor(getPlayerFID(player), ((Faction) arg).fid), ((Faction) arg).name));
+            } else if (arg instanceof TextColor) {
+                builder.append(Text.of(arg));
+            } else {
+                logger.warn("Attempted to notify all players with illegal object type: " + arg.getClass().getCanonicalName());
+            }
+        }
+        player.sendMessage(builder.build());
     }
 
-    public static TextColor getRelationColor(String factionA, String factionB) {
+    public UUID getPlayerFID(Player player) {
+        Optional<Faction> playerFaction = cache.getFactionByPlayer(player.getUniqueId());
+        return playerFaction.isPresent() ? playerFaction.get().fid : Wilderness.get().fid;
+    }
+
+    /**
+     *
+     * @param factionA Viewer
+     * @param factionB The faction to get your relation to.
+     * @return
+     */
+    public static TextColor getRelationColor(UUID factionA, UUID factionB) {
         switch (getRelation(factionA, factionB)) {
             case ALLY:
-                return TextColors.GREEN;
+                return TextColors.DARK_PURPLE;
             case SAME:
                 return TextColors.GREEN;
             case ENEMY:
                 return TextColors.RED;
             case TRUCE:
-                return TextColors.GREEN;
+                return TextColors.LIGHT_PURPLE;
             default:
-                return TextColors.GRAY;
+                if(factionB.equals(SafeZone.get().fid)) {
+                    return TextColors.GOLD;
+                }else if(factionB.equals(Wilderness.get().fid)){
+                    return TextColors.DARK_GREEN;
+                }else{
+                    return TextColors.WHITE;
+                }
         }
     }
 
-    public static RelationType getRelation(String factionA, String factionB) {
+    public static RelationType getRelation(UUID factionA, UUID factionB) {
         if (factionA.equals(factionB)) {
             return SAME;
         }
@@ -150,8 +171,9 @@ public class FactionLogic {
         return NEUTRAL;
     }
 
+    //TODO: Maybe move this to Faction?
     public static void informFaction(Faction faction, Text text) {
-        getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
+        self.getOnlinePlayers(faction).forEach(p -> p.sendMessage(text));
     }
 
     public static void leaveFaction(UUID playerUUID, String factionName) {
@@ -184,18 +206,6 @@ public class FactionLogic {
             faction.Home = null;
         }
 
-    }
-
-    @Deprecated
-    public static List<String> getFactionsTags() {
-        List<Faction> factionsList = FactionsCache.getInstance().getFactions();
-        List<String> factionsTags = new ArrayList<>();
-
-        for (Faction faction : factionsList) {
-            factionsTags.add(faction.Tag.toPlain());
-        }
-
-        return factionsTags;
     }
 
     public static boolean hasOnlinePlayers(Faction faction) {

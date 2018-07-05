@@ -1,11 +1,13 @@
 package io.github.aquerr.eaglefactions.entities;
 
+import java.util.UUID;
+
 public class FactionRelation implements Cloneable {
 
-    public final String factionA, factionB;
+    public final UUID factionA, factionB;
     public final RelationType type;
 
-    public FactionRelation(String factionA, String factionB, RelationType type) {
+    public FactionRelation(UUID factionA, UUID factionB, RelationType type) {
         this.factionA = factionA;
         this.factionB = factionB;
         this.type = type;
@@ -16,8 +18,8 @@ public class FactionRelation implements Cloneable {
         if (components.length != 3) {
             throw new Exception();
         }
-        factionA = components[0];
-        factionB = components[1];
+        factionA = UUID.fromString(components[0]);
+        factionB = UUID.fromString(components[1]);
         type = RelationType.parseType(components[2]);
     }
 

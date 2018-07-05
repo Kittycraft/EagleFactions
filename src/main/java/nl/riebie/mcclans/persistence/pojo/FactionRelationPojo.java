@@ -25,13 +25,15 @@ package nl.riebie.mcclans.persistence.pojo;
 import io.github.aquerr.eaglefactions.entities.FactionRelation;
 import io.github.aquerr.eaglefactions.entities.RelationType;
 
+import java.util.UUID;
+
 /**
  * Created by Kippers on 28/03/2016.
  */
 public class FactionRelationPojo {
 
-    public String FactionA = null;
-    public String FactionB = null;
+    public UUID FactionA = null;
+    public UUID FactionB = null;
     public RelationType relation = RelationType.NEUTRAL;
 
     public static FactionRelationPojo from(FactionRelation relation) {

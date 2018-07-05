@@ -3,6 +3,7 @@ package io.github.aquerr.eaglefactions.managers;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import io.github.aquerr.eaglefactions.entities.FactionPlayer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -15,8 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Aquerr on 2017-08-04.
@@ -25,6 +25,10 @@ import java.util.UUID;
 @Singleton
 public class PlayerManager {
     private Path playersPath;
+
+    private Map<UUID, FactionPlayer> playerMap = new HashMap<>();
+    private List<FactionPlayer> playerList = new ArrayList<>();
+    private UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
 
     @Inject
     PlayerManager(@Named("config dir") Path configDir) {
@@ -36,29 +40,14 @@ public class PlayerManager {
         }
     }
 
-    public Optional<String> getPlayerName(UUID playerUUID) {
-        Optional<User> oUser = getUser(playerUUID);
-
-        return Optional.of(oUser.get().getName());
-    }
-
-    public Optional<Player> getPlayer(UUID playerUUID) {
-        Optional<User> oUser = getUser(playerUUID);
-
+    public Optional<Player> getEntityPlayer(UUID playerUUID) {
+        Optional<User> oUser = userStorageService.get(playerUUID);
         return oUser.get().getPlayer();
     }
 
-    private Optional<User> getUser(UUID playerUUID) {
-        UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-        Optional<User> oUser = userStorageService.get(playerUUID);
-
-        if (oUser.isPresent()) {
-            return oUser;
-        } else return Optional.empty();
-    }
 
     public boolean isPlayerOnline(UUID playerUUID) {
-        Optional<User> oUser = getUser(playerUUID);
+        Optional<User> oUser = userStorageService.get(playerUUID);
 
         if (oUser.isPresent()) {
             return oUser.get().isOnline();
@@ -67,6 +56,7 @@ public class PlayerManager {
 
     public void setDeathInWarZone(UUID playerUUID, boolean didDieInWarZone) {
         Path playerFile = Paths.get(playersPath + "/" + playerUUID.toString() + ".conf");
+
 
         try {
             ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(playerFile).build();

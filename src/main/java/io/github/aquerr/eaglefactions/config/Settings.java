@@ -57,40 +57,12 @@ public class Settings {
         return configuration.getInt(3, "name", "min-length");
     }
 
-    public int getMaxTagLength() {
-        return configuration.getInt(5, "tag", "max-length");
-    }
-
-    public int getMinTagLength() {
-        return configuration.getInt(2, "tag", "min-length");
-    }
-
     public boolean getMobSpawning() {
         return configuration.getBoolean(false, "spawn", "mobs");
     }
 
-    public boolean getBlockEnteringFactions() {
-        return configuration.getBoolean(true, "block-entering-faction-while-offline");
-    }
-
-    public boolean requireConnectedClaims() {
-        return configuration.getBoolean(true, "connected-claims");
-    }
-
-    public boolean shouldBlockSafeZoneFromWarZone() {
-        return configuration.getBoolean(false, "block-safezone-from-warzone");
-    }
-
     public boolean isPlayerLimit() {
         return configuration.getBoolean(false, "player-limit", "toggled");
-    }
-
-    public boolean isPeriodicSaving() {
-        return configuration.getBoolean(true, "saving", "periodic");
-    }
-
-    public int getSaveDelay() {
-        return configuration.getInt(10, "saving", "delay");
     }
 
     public int getPlayerLimit() {

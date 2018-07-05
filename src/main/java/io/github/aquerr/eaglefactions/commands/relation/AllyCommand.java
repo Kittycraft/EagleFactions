@@ -38,12 +38,12 @@ public class AllyCommand implements CommandExecutor {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must be in a faction!"));
         } else if (!factionB.isPresent()) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You must specify a faction or player!"));
-        } else if (factionA.get().name.equals(factionB.get().name)) {
+        } else if (factionA.get().equals(factionB.get())) {
             player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You can not ally your own faction!"));
         } else {
             List<FactionRelation> relations = FactionsCache.getInstance().getRelations();
             for (int i = 0; i < relations.size(); i++) {
-                if (relations.get(i).factionA.equals(factionA.get().name) && relations.get(i).factionB.equals(factionB.get().name)) {
+                if (relations.get(i).factionA.equals(factionA.get().fid) && relations.get(i).factionB.equals(factionB.get().fid)) {
                     if (relations.get(i).type == RelationType.ALLY) {
                         player.sendMessage(Text.of(PluginInfo.ErrorPrefix, TextColors.RED, "You are already allies with that faction!"));
                         return CommandResult.success();
@@ -52,7 +52,7 @@ public class AllyCommand implements CommandExecutor {
                     break;
                 }
             }
-            relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.ALLY));
+            relations.add(new FactionRelation(factionA.get().fid, factionB.get().fid, RelationType.ALLY));
             if (FactionLogic.getOneWayRelation(factionB.get().name, factionA.get().name) == RelationType.ALLY) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now allied to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));
                 FactionLogic.informFaction(factionB.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "The faction ", TextColors.GREEN, factionA.get().name, TextColors.WHITE, " has accepted your alliance request!"));

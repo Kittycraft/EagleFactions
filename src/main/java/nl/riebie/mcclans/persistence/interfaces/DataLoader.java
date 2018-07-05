@@ -112,8 +112,12 @@ public abstract class DataLoader {
         }
     }
 
-    protected void loadedRelation(String factionA, String factionB, RelationType type) {
+    protected void loadedRelation(UUID factionA, UUID factionB, RelationType type) {
         cache.getRelations().add(new FactionRelation(factionA, factionB, type));
+    }
+
+    //TODO: Place holder until long term fix (required for saving)
+    protected void loadedRelation(String factionA, String factionB, RelationType type) {
     }
 
     protected void loadedClaim(Vector3i chunk, UUID world, String faction) {

@@ -130,8 +130,8 @@ public class DatabaseSaver extends DataSaver {
     }
 
     public static PreparedStatement getInsertFactionRelationQuery(FactionRelation relation) {
-        return QueryGenerator.createInsertQuery("ef_relations", databaseConnectionOwner.getConnection()).value("factionA", relation.factionA)
-                .value("factionB", relation.factionB).value("relation", relation.type.identifier).create();
+        return QueryGenerator.createInsertQuery("ef_relations", databaseConnectionOwner.getConnection()).value("factionA", relation.factionA.toString())
+                .value("factionB", relation.factionB.toString()).value("relation", relation.type.identifier).create();
     }
 
     public static PreparedStatement getDeleteFactionRelationQuery(String factionA, String factionB) {

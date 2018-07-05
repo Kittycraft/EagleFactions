@@ -46,10 +46,6 @@ public class PlayerDeathListener extends GenericListener {
 
             Optional<Faction> optionalChunkFaction = FactionsCache.getInstance().getFactionByChunk(player.getWorld().getUniqueId(), player.getLocation().getChunkPosition());
 
-            if (settings.getWarZoneWorldNames().contains(player.getWorld().getName()) || (optionalChunkFaction.isPresent() && optionalChunkFaction.get().name.equals("WarZone"))) {
-                playerManager.setDeathInWarZone(player.getUniqueId(), true);
-            }
-
             if (settings.shouldBlockHomeAfterDeathInOwnFaction()) {
                 Optional<Faction> optionalPlayerFaction = FactionsCache.getInstance().getFactionByPlayer(player.getUniqueId());
 

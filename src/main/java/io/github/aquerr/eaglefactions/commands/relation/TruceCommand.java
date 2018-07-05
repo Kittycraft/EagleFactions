@@ -53,7 +53,7 @@ public class TruceCommand implements CommandExecutor {
                     break;
                 }
             }
-            relations.add(new FactionRelation(factionA.get().name, factionB.get().name, RelationType.TRUCE));
+            relations.add(new FactionRelation(factionA.get().fid, factionB.get().fid, RelationType.TRUCE));
             RelationType post = FactionLogic.getRelation(factionA.get().name, factionB.get().name);
             if (pre == RelationType.ALLY) {
                 FactionLogic.informFaction(factionA.get(), Text.of(PluginInfo.PluginPrefix, TextColors.WHITE, "You are now truced to ", TextColors.GREEN, factionB.get().name, TextColors.WHITE, "!"));

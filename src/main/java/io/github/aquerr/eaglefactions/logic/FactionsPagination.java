@@ -14,7 +14,7 @@ import static org.spongepowered.api.text.format.TextColors.*;
 public class FactionsPagination {
 
     private int page = 1;
-    private int linesPerPage = 5;
+    private int linesPerPage = 9;
     private String baseCommand = null;
     private Text title = Text.of(RED, "ERROR");
     private List<Text> contents = new ArrayList<>();
