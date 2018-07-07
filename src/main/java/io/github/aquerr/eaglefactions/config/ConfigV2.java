@@ -1,9 +1,9 @@
 package io.github.aquerr.eaglefactions.config;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -75,38 +75,41 @@ public class ConfigV2 {
     public boolean getBoolean(Setting node) {
         try {
             if(settings.has(node.getPath())){
-                return settings.get(node.getPath()).getAsBoolean();;
+                return settings.get(node.getPath()).getAsBoolean();
             }else{
                 logger.warn("Could not find the value \"" + node.getPath() + "\" in config!");
             }
         } catch (ClassCastException e) {
-            logger.warn("String value \"" + node.name() + "\" has an illegal type in config!", e);
+            logger.warn("Boolean value \"" + node.name() + "\" has an illegal type in config!", e);
         } catch (IllegalStateException e) {
-            logger.warn("String value \"" + node.name() + "\" can not be an array in config!");
+            logger.warn("Boolean value \"" + node.name() + "\" can not be an array in config!");
         }
         setValue(node.getPath(), node.getDefaultValue());
         return (boolean) node.getDefaultValue();
     }
 
-    public double getNumber(String node) {
+    public double getNumber(Setting node) {
         try {
-            String value = settings.get(node.getPath()).getAsString();
-            if(value != null){
-                return value;
+            if(settings.has(node.getPath())){
+                return settings.get(node.getPath()).getAsDouble();
             }else{
                 logger.warn("Could not find the value \"" + node.getPath() + "\" in config!");
             }
         } catch (ClassCastException e) {
-            logger.warn("String value \"" + node.name() + "\" has an illegal type in config!", e);
+            logger.warn("Numeric value \"" + node.name() + "\" has an illegal type in config!", e);
         } catch (IllegalStateException e) {
-            logger.warn("String value \"" + node.name() + "\" can not be an array in config!");
+            logger.warn("Numeric value \"" + node.name() + "\" can not be an array in config!");
         }
         setValue(node.getPath(), node.getDefaultValue());
-        return (String) node.getDefaultValue();
+        return (double) node.getDefaultValue();
     }
 
-    public void setValue(String node, Object value) {
-        configuration.setValue(value, node);
+    public void setValue(String path, Object value) {
+        if(settings.has(path)){
+            settings.remove(path);
+        }
+        Gson gson = new Gson();
+        settings.add(path, gson.toJsonTree(value));
     }
 
 }

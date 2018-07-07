@@ -4,7 +4,9 @@ public enum Setting {
     MAX_POWER("powerMax", 10),
     MIN_POWER("powerMin", 0),
     POWER_PER_HOUR("powerPerHour", 2),
-    POWER_PER_DEATH("powerPerDeath", -2);
+    POWER_PER_DEATH("powerPerDeath", -2),
+    HOME_ON_DEATH("homesTeleportToOnDeathActive", false),
+    HOME_ON_DEATH_PRIORITY("homesTeleportToOnDeathPriority", "NORMAL");
 
     private final String path;
     private final Object defaultValue;
